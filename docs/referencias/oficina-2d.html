@@ -1,0 +1,880 @@
+<title>Oficina Virtual SCALEx</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#0A1C21; --panel:#0F262C; --panel-2:#13313A; --line:#1F434B; --line-2:#2A5159;
+  --ink:#E4EFED; --muted:#8AA9AB; --faint:#5F8185;
+  --accent:#3FC1B0; --amber:#F5A524; --amber-ink:#2B1B00; --blue:#7FA8FF; --violet:#C39BFF; --idle:#7D979A;
+  --display:"Bricolage Grotesque", "IBM Plex Sans", system-ui, sans-serif;
+  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 var(--sans);padding-inline:16px;padding-block:14px 24px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{max-width:1560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:12px;min-width:0}
+.brand h1{font:700 26px/1 var(--display);letter-spacing:-.01em;margin:0}
+.brand h1 span{color:var(--accent)}
+.brand p{margin:0;color:var(--muted);font-size:13px}
+.clock{font:500 13px var(--mono);color:var(--ink);background:var(--panel);border:1px solid var(--line);padding:6px 10px;border-radius:8px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.controls{display:flex;gap:8px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:8px;overflow:hidden}
+.seg button{background:transparent;border:0;padding:6px 11px;font-size:13px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--panel-2);color:var(--ink)}
+.btn{background:var(--panel-2);border:1px solid var(--line-2);border-radius:8px;padding:6px 12px;font-size:13px}
+.kpis{display:flex;flex-wrap:wrap;gap:10px 26px;margin-left:auto;align-items:center}
+.kpi{display:flex;flex-direction:column;gap:1px;min-width:0}
+.kpi b{font:600 20px/1.1 var(--mono);font-variant-numeric:tabular-nums}
+.kpi small{color:var(--muted);font-size:11.5px;letter-spacing:.02em}
+.kpi.warn b{color:var(--amber)}
+.ratio{min-width:200px}
+.ratio .bar{position:relative;height:8px;border-radius:5px;background:var(--amber);overflow:visible;margin-top:6px}
+.ratio .bar i{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:5px 0 0 5px;transition:width .6s}
+.ratio .bar em{position:absolute;left:80%;top:-4px;bottom:-4px;width:2px;background:var(--ink);opacity:.7}
+.ratio .lbl{display:flex;justify-content:space-between;font:500 11.5px var(--mono);color:var(--muted);margin-top:4px;gap:10px}
+
+/* main */
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px;align-items:start}
+.floor{display:flex;flex-direction:column;gap:12px;min-width:0}
+.canvas-wrap{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+canvas{display:block;width:100%}
+.alert{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:var(--amber);color:var(--amber-ink);border:0;border-radius:999px;padding:7px 8px 7px 14px;font-weight:600;font-size:13px;box-shadow:0 6px 24px rgba(0,0,0,.35);white-space:nowrap;max-width:calc(100% - 24px)}
+.alert span{overflow:hidden;text-overflow:ellipsis}
+.alert u{text-decoration:none;background:var(--amber-ink);color:var(--amber);border-radius:999px;padding:3px 10px;font-size:12px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--muted);font-size:12.5px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.clients{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.client{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.client .svc{font:500 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.client b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.client small{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prog{height:4px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:4px}
+.prog i{display:block;height:100%;background:var(--accent);transition:width .8s}
+.note{color:var(--faint);font-size:12px;margin:0}
+
+/* side */
+.side{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;min-height:560px;max-height:calc(100vh - 120px);overflow:hidden}
+.tabs{display:flex;border-bottom:1px solid var(--line);padding:6px;gap:4px}
+.tabs button{flex:1;background:transparent;border:0;border-radius:8px;padding:8px 6px;color:var(--muted);font-weight:500;font-size:13px;display:inline-flex;justify-content:center;align-items:center;gap:6px}
+.tabs button[aria-selected="true"]{background:var(--panel-2);color:var(--ink)}
+.badge{background:var(--amber);color:var(--amber-ink);border-radius:999px;font:600 11px var(--mono);padding:1px 7px}
+.badge[data-n="0"]{background:var(--line-2);color:var(--muted)}
+.pane{overflow:auto;padding:12px;display:flex;flex-direction:column;gap:10px;flex:1}
+.row{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px;border-radius:10px;border:1px solid transparent;background:transparent;text-align:left;width:100%}
+.row:hover{background:var(--panel-2)}
+.row.sel{border-color:var(--line-2);background:var(--panel-2)}
+.row img,.dhead img,.decision img{width:40px;height:40px;border-radius:10px;background:var(--panel-2)}
+.row b{display:block;font-weight:600;font-size:13.5px}
+.row small{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:500;border-radius:999px;padding:2px 9px;background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--c);white-space:nowrap}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--c)}
+.chip.pulse::before{animation:pulse 1.1s infinite}
+@keyframes pulse{50%{opacity:.25}}
+.decision{border:1px solid color-mix(in srgb,var(--amber) 45%,var(--line));background:color-mix(in srgb,var(--amber) 7%,var(--panel));border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.decision header{display:flex;gap:10px;align-items:center}
+.decision header b{display:block;font-size:14px;line-height:1.3}
+.decision header small{color:var(--muted);font-size:12px}
+.decision .amt{font:600 15px var(--mono);margin:0;color:var(--amber)}
+.decision ul{margin:0;padding-left:18px;color:var(--ink);font-size:13px;display:flex;flex-direction:column;gap:3px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.approve{background:var(--amber);color:var(--amber-ink);border:0;border-radius:8px;padding:8px 14px;font-weight:600}
+.changes{background:transparent;border:1px solid var(--line-2);border-radius:8px;padding:8px 14px}
+.empty{color:var(--muted);font-size:13px;padding:18px 8px;text-align:center;line-height:1.55}
+.toggle{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12.5px;padding:2px 4px}
+.feed{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.feed li{display:grid;grid-template-columns:44px 10px minmax(0,1fr);gap:8px;align-items:baseline;font-size:12.5px;padding:5px 4px;border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
+.feed time{font:500 11.5px var(--mono);color:var(--faint)}
+.feed .dot{transform:translateY(1px)}
+.feed li.wait{color:var(--amber)}
+
+/* drawer */
+.drawer{position:absolute;inset:0;background:var(--panel);display:flex;flex-direction:column;z-index:2}
+.drawer .pane{gap:14px}
+.dtop{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)}
+.dtop span{font:500 11px var(--mono);letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.dhead{display:flex;gap:12px;align-items:center}
+.dhead img{width:64px;height:64px;border-radius:14px}
+.dhead h3{font:700 20px/1.15 var(--display);margin:0}
+.dhead p{margin:2px 0 6px;color:var(--muted);font-size:13px}
+.drawer h4{margin:0 0 6px;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.drawer section p{margin:0}
+.now{background:var(--panel-2);border-radius:10px;padding:10px 12px;font-weight:500}
+.queue{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.queue li{display:grid;grid-template-columns:92px minmax(0,1fr);gap:8px;font-size:13px;align-items:baseline}
+.queue li span{font:500 10.5px var(--mono);text-transform:uppercase;letter-spacing:.06em}
+.skills{display:flex;flex-wrap:wrap;gap:6px}
+.skills span{border:1px solid var(--line-2);border-radius:6px;padding:3px 8px;font-size:12px}
+.ctx{margin:0;padding-left:18px;font-size:13px;color:var(--ink)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stats div{background:var(--panel-2);border-radius:10px;padding:10px 12px}
+.stats b{display:block;font:600 20px var(--mono);font-variant-numeric:tabular-nums}
+.stats small{color:var(--muted);font-size:12px}
+
+@media (max-width:1100px){.stage{grid-template-columns:minmax(0,1fr)}.side{max-height:none;min-height:480px}.kpis{margin-left:0}}
+@media (max-width:720px){.clients{grid-template-columns:repeat(2,minmax(0,1fr))}.brand{flex-wrap:wrap}.ratio{min-width:160px}}
+@media (prefers-reduced-motion:reduce){.chip.pulse::before{animation:none}.prog i,.ratio .bar i{transition:none}}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <h1>SCALE<span>x</span></h1>
+      <p>Oficina virtual · agentes en operación</p>
+    </div>
+    <div class="clock" id="clock">Lunes · 08:50</div>
+    <div class="controls">
+      <button class="btn" id="pause" type="button">Pausar</button>
+      <div class="seg" role="group" aria-label="Velocidad">
+        <button type="button" data-speed="1" aria-pressed="true">1×</button>
+        <button type="button" data-speed="2" aria-pressed="false">2×</button>
+        <button type="button" data-speed="4" aria-pressed="false">4×</button>
+      </div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><b id="k-active">0/12</b><small>Agentes activos</small></div>
+      <div class="kpi"><b id="k-auto">0</b><small>Tareas automatizadas hoy</small></div>
+      <div class="kpi" id="k-wait-wrap"><b id="k-wait">0</b><small>Esperan tu decisión</small></div>
+      <div class="kpi ratio">
+        <small>Esfuerzo del día · meta 80/20</small>
+        <div class="bar"><i id="r-bar" style="width:80%"></i><em></em></div>
+        <div class="lbl"><span id="r-a">Agentes —</span><span id="r-h">Tú —</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="stage">
+    <section class="floor" aria-label="Plano de la oficina">
+      <div class="canvas-wrap" id="wrap">
+        <canvas id="office" aria-label="Plano animado de la oficina virtual con los agentes en tiempo real"></canvas>
+        <button class="alert" id="alert" type="button" hidden><span id="alert-t"></span><u>Revisar</u></button>
+      </div>
+      <div class="legend" id="legend"></div>
+      <div class="clients" id="clients"></div>
+      <p class="note">Simulación con datos y clientes de ejemplo. En producción, cada movimiento lo dispara un evento real del agente: una tarea, una reunión o una decisión que requiere a una persona.</p>
+    </section>
+
+    <aside class="side" aria-label="Panel de control">
+      <div class="tabs" role="tablist">
+        <button role="tab" type="button" data-tab="team" aria-selected="true">Equipo</button>
+        <button role="tab" type="button" data-tab="inbox" aria-selected="false">Decisiones <span class="badge" id="badge" data-n="0">0</span></button>
+        <button role="tab" type="button" data-tab="feed" aria-selected="false">Actividad</button>
+      </div>
+      <div class="pane" id="p-team"></div>
+      <div class="pane" id="p-inbox" hidden></div>
+      <div class="pane" id="p-feed" hidden><ul class="feed" id="feed"></ul></div>
+
+      <div class="drawer" id="drawer" hidden>
+        <div class="dtop"><span>Ficha del agente</span><button class="btn" id="close" type="button">Cerrar</button></div>
+        <div class="pane" id="dbody"></div>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<script>
+(()=>{
+"use strict";
+const W=1200,H=720, WALK=120, MIN_PER_SEC=1.5, MIN0=8*60+50;
+const DAYS=['Lunes','Martes','Miércoles','Jueves','Viernes'];
+const ST={
+  working:{l:'Trabajando',c:'#3FC1B0'},
+  meeting:{l:'En reunión',c:'#7FA8FF'},
+  collab:{l:'Colaborando',c:'#C39BFF'},
+  awaiting:{l:'Espera tu decisión',c:'#F5A524'},
+  idle:{l:'En pausa',c:'#7D979A'}
+};
+const cv=document.getElementById('office'), g=cv.getContext('2d'), wrap=document.getElementById('wrap');
+let T=0, speed=1, paused=false, DAY=0, dayStart=0, scaleF=1;
+let autoCount=0, autoMin=0, humanMin=0, meetingTitle='', decId=0;
+let hover=null, selected=null;
+const inbox=[], feed=[], chips=[];
+let ver=0, inboxVer=0, feedVer=0, clientVer=0;
+const bump=()=>{ver++};
+const rand=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+/* ---------- map ---------- */
+const ROOMS={
+  dir:{name:'DIRECCIÓN GENERAL',x:20,y:20,w:260,h:200,floor:'#183B43',doors:[{in:[262,110],n:'A1',side:'r',at:110}]},
+  sp:{name:'SENIOR PARTNER',x:20,y:240,w:260,h:180,floor:'#183B43',doors:[{in:[262,330],n:'A3',side:'r',at:330}]},
+  lounge:{name:'LOUNGE',x:20,y:440,w:260,h:260,floor:'#1B3A37',doors:[{in:[262,570],n:'A5',side:'r',at:570}]},
+  junta:{name:'SALA DE JUNTAS',x:300,y:20,w:400,h:250,floor:'#1A414A',glass:true,doors:[{in:[500,252],n:'h1a',side:'b',at:500}]},
+  agustin:{name:'OFICINA DE AGUSTÍN',x:720,y:20,w:220,h:250,floor:'#2A2B1F',human:true,doors:[{in:[830,252],n:'h1c',side:'b',at:830}]},
+  lab:{name:'LABORATORIO DE ANÁLISIS',x:960,y:20,w:220,h:300,floor:'#15343C',doors:[{in:[978,170],n:'B1',side:'l',at:170}]},
+  pm:{name:'GESTIÓN DE PROYECTOS',x:960,y:340,w:220,h:180,floor:'#15343C',doors:[{in:[978,430],n:'B3',side:'l',at:430}]},
+  bull:{name:'PISO DE CONSULTORÍA',x:300,y:290,w:640,h:230,floor:'#143139',doors:[{in:[620,308],n:'h1b',side:'t',at:620},{in:[620,502],n:'h2b',side:'b',at:620}]},
+  lobby:{name:'RECEPCIÓN DE CLIENTES',x:300,y:540,w:400,h:160,floor:'#193A40',doors:[{in:[500,558],n:'h2a',side:'t',at:500}],entrance:560},
+  motor:{name:'MOTOR DE AUTOMATIZACIÓN',x:720,y:540,w:460,h:160,floor:'#0E2328',motor:true,doors:[{in:[830,558],n:'h2c',side:'t',at:830}]}
+};
+const N={A1:[290,110],A2:[290,280],A3:[290,330],A4:[290,530],A5:[290,570],h1a:[500,280],h1b:[620,280],h1c:[830,280],B1:[950,170],B2:[950,280],B3:[950,430],B4:[950,530],h2a:[500,530],h2b:[620,530],h2c:[830,530]};
+const EDGES=[['A1','A2'],['A2','A3'],['A3','A4'],['A4','A5'],['A2','h1a'],['h1a','h1b'],['h1b','h1c'],['h1c','B2'],['B1','B2'],['B2','B3'],['B3','B4'],['A4','h2a'],['h2a','h2b'],['h2b','h2c'],['h2c','B4']];
+const ADJ={}; for(const k in N) ADJ[k]=[];
+const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
+for(const [a,b] of EDGES){const d=dist(N[a],N[b]);ADJ[a].push([b,d]);ADJ[b].push([a,d]);}
+function dijkstra(s,t){
+  const D={},P={},Q=new Set(Object.keys(N));
+  for(const k in N)D[k]=Infinity; D[s]=0;
+  while(Q.size){let u=null;for(const k of Q)if(u===null||D[k]<D[u])u=k;Q.delete(u);if(u===t)break;
+    for(const [v,w] of ADJ[u]) if(D[u]+w<D[v]){D[v]=D[u]+w;P[v]=u;}}
+  const nodes=[];let c=t;while(c){nodes.unshift(c);c=P[c];}
+  return {d:D[t],nodes};
+}
+function route(p,room,x,y){
+  if(p.room===room) return [[x,y]];
+  const A=ROOMS[p.room],B=ROOMS[room];let best=null;
+  for(const da of A.doors)for(const db of B.doors){
+    const r=dijkstra(da.n,db.n);const tot=dist([p.x,p.y],da.in)+r.d+dist(db.in,[x,y]);
+    if(!best||tot<best.tot)best={tot,path:[da.in,...r.nodes.map(k=>N[k]),db.in,[x,y]]};
+  }
+  return best.path;
+}
+
+/* seats & spots */
+const JSEATS=[];for(let i=0;i<12;i++){const a=-Math.PI/2+i*Math.PI*2/12;JSEATS.push([500+Math.cos(a)*168,150+Math.sin(a)*84]);}
+const AGU_SPOTS=[{x:785,y:172},{x:875,y:172},{x:830,y:186},{x:790,y:228},{x:870,y:228}].map(s=>({...s,taken:false}));
+const COFFEE=[[70,525],[120,560],[210,560],[90,640],[170,650]];
+const BULL_ROW1=[380,500,620,740,860], ROW1Y=335, ROW2Y=435;
+
+/* ---------- people ---------- */
+const DEF=[
+{id:'elena',name:'Elena Garza',role:'Directora General',shirt:'#2F6F8F',hair:'#2B1D16',skin:'#E0B48F',long:true,room:'dir',x:150,y:112,lane:1,
+ persona:'Visión de conjunto. Decide prioridades y protege la rentabilidad de la firma. Habla poco y pregunta mucho.',
+ skills:['Priorización de cartera','Gobierno corporativo','Asignación de recursos','Rentabilidad por cliente'],
+ ctx:['Plan estratégico SCALEx 2027','Objetivos Q4 de la firma','Cartera de clientes activa'],
+ routine:['Revisando rentabilidad por cliente','Priorizando la cartera del Q4','Leyendo el tablero semanal de la firma']},
+{id:'ricardo',name:'Ricardo Salinas',role:'Senior Partner',shirt:'#3B3F58',tie:'#C2872F',hair:'#8D8D8D',skin:'#D9A57C',room:'sp',x:150,y:330,lane:2,
+ persona:'Huele el problema real detrás del síntoma. Dueño de la relación con el cliente y de cada propuesta que sale de la firma.',
+ skills:['Diagnóstico estratégico','Diseño de propuestas','Pricing de consultoría','Negociación'],
+ ctx:['Metodología SCALEx','Historial de propuestas y tasas de cierre','Clientes activos y prospectos'],
+ routine:['Revisando hallazgos de diagnóstico','Afinando la narrativa de una propuesta','Llamada de seguimiento con cliente']},
+{id:'sofia',name:'Sofía Treviño',role:'Project Manager',shirt:'#B0566B',hair:'#4A2C1E',skin:'#F1C7A1',long:true,room:'pm',x:1070,y:486,lane:2,
+ persona:'Obsesiva del calendario. Convierte cada acuerdo en una tarea con dueño y fecha, y avisa antes de que algo se atrase.',
+ skills:['Plan de 14 semanas','Kanban','Seguimiento de acuerdos','Alertas de riesgo'],
+ ctx:['Calendario de entregables','Capacidad del equipo','Acuerdos abiertos por cliente'],
+ routine:['Actualizando el tablero kanban','Revisando vencimientos de la semana','Reasignando cargas de trabajo']},
+{id:'mateo',name:'Mateo Villarreal',role:'Consultor Senior',shirt:'#2E7D6B',hair:'#1E1511',skin:'#C68E63',room:'bull',x:380,y:ROW1Y+28,lane:1,
+ persona:'Traduce el diagnóstico en frameworks accionables. Defiende el método SCALEx y cuida que nadie salte pasos.',
+ skills:['Framework SCALEx','Procesos habilitadores','Mapa de escalabilidad','Facilitación'],
+ ctx:['Metodología SCALEx completa','Casos de éxito por industria','Diagnósticos SCANx del cliente'],
+ routine:['Ajustando un mapa de escalabilidad','Revisando procesos habilitadores','Preparando taller con cliente']},
+{id:'valeria',name:'Valeria Montemayor',role:'Consultora',shirt:'#7D5BA6',hair:'#2B1D16',skin:'#E8BC96',long:true,room:'bull',x:500,y:ROW1Y+28,lane:2,
+ persona:'Estructura y redacción impecables. Sus planes de trabajo se entienden a la primera lectura.',
+ skills:['Planes de trabajo','Árboles de problemas (MECE)','Documentación','Presentaciones ejecutivas'],
+ ctx:['Plantillas SCALEx','Entregables previos','Objetivos del cliente'],
+ routine:['Redactando entregable de fase 2','Armando presentación ejecutiva','Revisando un árbol de problemas']},
+{id:'diego',name:'Diego Leal',role:'Consultor Junior',shirt:'#C7773B',hair:'#3A2A20',skin:'#D9A57C',room:'bull',x:620,y:ROW1Y+28,lane:0,
+ persona:'Curioso y rápido. Levanta información, arma borradores y pregunta en cuanto algo no cuadra.',
+ skills:['Investigación de mercado','Benchmarks sectoriales','Borradores','Minutas'],
+ ctx:['Fuentes: INEGI, BMV, Banxico','Directorio de comparables','Minutas previas'],
+ routine:['Buscando benchmarks sectoriales','Redactando minuta','Limpiando datos de un cliente']},
+{id:'paula',name:'Paula Zambrano',role:'Comercial y Contenido',shirt:'#C24F4F',hair:'#6B3A22',skin:'#F1C7A1',long:true,room:'bull',x:740,y:ROW1Y+28,lane:2,
+ persona:'La primera voz de SCALEx ante el cliente. Cálida, puntual y siempre con el siguiente paso claro.',
+ skills:['Atención de leads','Cotización','Seguimiento comercial','Contenido de valor'],
+ ctx:['Catálogo de 24 servicios','Precios publicados','Embudo scalexlatam.com'],
+ routine:['Respondiendo leads del sitio','Publicando un estudio sectorial','Dando seguimiento a cotizaciones']},
+{id:'andres',name:'Andrés Quiroga',role:'Secretario Técnico BOARDx',shirt:'#56606E',tie:'#3FC1B0',hair:'#1E1511',skin:'#C68E63',room:'bull',x:860,y:ROW1Y+28,lane:2,
+ persona:'Guardián del protocolo: agenda con tiempos, actas, acuerdos y firmas. Nada queda sin trazabilidad.',
+ skills:['Actas y acuerdos','Scorecard trimestral','Trazabilidad','Agenda con tiempos'],
+ ctx:['Consejos técnicos activos','Acuerdos por trimestre','Scorecards de clientes'],
+ routine:['Dando seguimiento a acuerdos del consejo','Actualizando actas','Preparando convocatorias']},
+{id:'marco',name:'Marco Elizondo',role:'Coach TEAMx',shirt:'#A8893A',hair:'#3A2A20',skin:'#E0B48F',room:'bull',x:380,y:ROW2Y+28,lane:1,
+ persona:'Mide el cómo y el qué. Sugiere preguntas poderosas para que cualquier líder pueda hacer coaching.',
+ skills:['Evaluación semanal','Semáforo de desempeño','Preguntas poderosas','Radar de competencias'],
+ ctx:['Tableros TEAMx por cliente','7 dimensiones de desempeño','Historial de evaluaciones'],
+ routine:['Revisando radares de competencias','Preparando preguntas poderosas','Consolidando evaluaciones']},
+{id:'lucia',name:'Lucía Ibarra',role:'Analista Financiera',shirt:'#4A8FB5',hair:'#2B1D16',skin:'#E8BC96',long:true,room:'lab',x:1015,y:112,lane:1,
+ persona:'Solo cree en lo que cuadra. Normaliza estados financieros y encuentra el dinero escondido.',
+ skills:['EBITDA ajustado','Valuación por múltiplos','Ciclo de conversión de efectivo','Flujo de caja'],
+ ctx:['Estados financieros 5 años','Múltiplos por industria','Indicadores macro: CETES, inflación, tipo de cambio'],
+ routine:['Conciliando flujo de caja','Actualizando valuación por múltiplos','Revisando cuentas por cobrar']},
+{id:'tomas',name:'Tomás Rangel',role:'Analista de Datos',shirt:'#5E7F3A',hair:'#1E1511',skin:'#A8714D',room:'lab',x:1125,y:112,lane:0,
+ persona:'Convierte cualquier Excel caótico en un tablero vivo. Conecta el CRM del cliente y deja el dato al día.',
+ skills:['Modelos de datos','Tableros','Integraciones API y CRM','Indicadores'],
+ ctx:['Fuentes de datos por cliente','Diccionario de indicadores SCALEx','Accesos API'],
+ routine:['Refrescando tableros de clientes','Limpiando la base del CRM','Validando indicadores']},
+{id:'nora',name:'Nora',role:'Agente de Diagnóstico SCANx',shirt:'#1FA396',hair:'#CFD8DC',skin:'#E0B48F',long:true,room:'lab',x:1070,y:262,lane:0,
+ persona:'Diagnosticadora. Lee respuestas, detecta contradicciones entre áreas y pide evidencia cuando algo no cuadra.',
+ skills:['Psicometría indirecta','Multiperspectiva','Índice de confiabilidad','Preguntas adaptativas'],
+ ctx:['Banco de preguntas SCANx','Benchmarks por industria','Respuestas de stakeholders'],
+ routine:['Monitoreando diagnósticos abiertos','Enviando recordatorios a stakeholders','Calculando índices de confiabilidad']}
+];
+const AG={}, AGENTS=[], people=[];
+DEF.forEach((d,i)=>{
+  const a={...d,kind:'agent',idx:i,first:d.name.split(' ')[0],home:{room:d.room,x:d.x,y:d.y},path:[],moving:false,phase:0,
+    state:'working',task:d.routine[0],busy:null,ambient:false,nextAmb:rand(14,30),bubble:null,done:0,auto:0,
+    queue:[{t:d.routine[1],s:'hecho'},{t:d.routine[0],s:'en curso'},{t:d.routine[2],s:'pendiente'}]};
+  AG[d.id]=a;AGENTS.push(a);people.push(a);
+});
+const AGU={kind:'human',id:'agustin',name:'Agustín Lozano',first:'Agustín',role:'Tú · Socio director',shirt:'#E6ECEE',tie:'#F5A524',hair:'#3A2A20',skin:'#D9A57C',room:'agustin',x:830,y:82,path:[],phase:0,bubble:null};
+people.push(AGU);
+
+/* ---------- clients ---------- */
+const POOL={
+  lead:[{name:'Ferretera del Norte',contact:'Lic. Garza'},{name:'Lácteos San Isidro',contact:'Ing. Robles'},{name:'Transportes Cumbres',contact:'C.P. Ayala'},{name:'Muebles Arteaga',contact:'Sra. Arteaga'}],
+  board:['Grupo Alquimia Alimentos','Hoteles Bahía Azul','Clínica Dentalia Norte'],
+  teamx:['Autopartes Rivera','Farmacias del Valle','Constructora Roble']
+};
+let clients=[];
+function setClient(c,stage,pct){c.stage=stage;c.pct=pct;clientVer++;}
+
+/* ---------- sim primitives ---------- */
+const timers=[];
+const sleep=s=>new Promise(r=>timers.push({at:T+s,r}));
+function walkTo(p,room,x,y){
+  return new Promise(r=>{
+    if(p.room===room&&Math.hypot(p.x-x,p.y-y)<1){r();return;}
+    p.path=route(p,room,x,y);p.destRoom=room;p.onArrive=r;bump();
+  });
+}
+const goHome=a=>walkTo(a,a.home.room,a.home.x,a.home.y);
+function say(p,text,dur=4.4){p.bubble={text,until:T+dur};}
+function log(p,text,kind=''){
+  feed.unshift({time:clockStr(),who:p?p.first:null,color:p?(p.kind==='human'?'#F5A524':p.shirt):'#5F8185',text,kind});
+  if(feed.length>80)feed.pop();feedVer++;
+}
+async function line(p,text,dur=4.4){say(p,text,dur);log(p,text);await sleep(dur);}
+function setState(a,state,task){a.state=state;if(task!==undefined)a.task=task;bump();}
+function startTask(a,text,state='working'){
+  for(const q of a.queue)if(q.s==='en curso'){q.s='hecho';a.done++;}
+  a.queue.push({t:text,s:'en curso'});
+  if(a.queue.length>7)a.queue.splice(0,a.queue.length-7);
+  setState(a,state,text);
+}
+async function claim(list,tok){
+  const arr=[...list].sort((a,b)=>a.idx-b.idx);
+  for(const a of arr){while((a.busy&&a.busy!==tok)||a.ambient)await sleep(0.2);a.busy=tok;}
+}
+function release(list){for(const a of list){a.busy=null;a.nextAmb=T+rand(5,12);}}
+function burst(a,n){for(let i=0;i<n;i++)chips.push({x:745-i*22,lane:a.lane,c:a.shirt,owner:a});}
+
+async function meeting(list,title,tok,body){
+  await claim(list,tok);
+  meetingTitle=title;
+  list.forEach(a=>startTask(a,title,'meeting'));
+  const n=list.length;
+  await Promise.all(list.map((a,i)=>walkTo(a,'junta',...JSEATS[Math.round(i*12/n)%12])));
+  log(null,'Inicia en sala de juntas: '+title,'meet');
+  await body();
+  meetingTitle='';bump();
+  await Promise.all(list.map(a=>{setState(a,'working','Aterrizando acuerdos: '+title);return goHome(a);}));
+  release(list);
+}
+
+function askAgustin(a,item){
+  return new Promise(async res=>{
+    let s=AGU_SPOTS.find(q=>!q.taken)||AGU_SPOTS[0];s.taken=true;
+    setState(a,'collab','Llevando una decisión a Agustín');
+    await walkTo(a,'agustin',s.x,s.y);
+    setState(a,'awaiting',item.title);
+    a.queue.push({t:item.title,s:'espera'});
+    say(a,item.ask,5);
+    log(a,'espera tu decisión: '+item.title,'wait');
+    const d={id:++decId,agent:a,at:T,...item};
+    d.resolve=r=>{
+      const i=inbox.indexOf(d);if(i<0)return;inbox.splice(i,1);inboxVer++;
+      s.taken=false;humanMin+=45;
+      for(const q of a.queue)if(q.s==='espera')q.s='hecho';
+      say(AGU,r==='approve'?'Aprobado. Adelante.':'Ajusten el alcance, por favor.',3.6);
+      log(AGU,(r==='approve'?'aprobó: ':'pidió ajustes: ')+item.title,'human');
+      setState(a,'working',r==='approve'?'Ejecutando lo aprobado':'Incorporando ajustes de Agustín');
+      res(r);
+    };
+    inbox.push(d);inboxVer++;
+  });
+}
+
+function spawnVisitor(name,company){
+  const v={kind:'visitor',name,first:name,role:company,shirt:'#8C979A',tie:'#56606E',hair:pick(['#2B1D16','#8D8D8D','#3A2A20']),skin:pick(['#E0B48F','#C68E63','#D9A57C']),room:'lobby',x:500,y:698,path:[],phase:0,bubble:null};
+  people.push(v);return v;
+}
+const removeP=p=>{const i=people.indexOf(p);if(i>=0)people.splice(i,1);};
+
+/* ---------- scripts ---------- */
+async function leadThread(c){
+  const tok=Symbol('lead');
+  const v=spawnVisitor(c.contact,c.name);
+  setClient(c,'Llegó por SCANx en línea',8);
+  log(null,`Nuevo lead: ${c.name} completó el diagnóstico SCANx`,'sys');
+  await walkTo(v,'lobby',410,634);
+  const P=AG.paula;await claim([P],tok);
+  startTask(P,'Recibiendo a '+c.name,'collab');
+  await walkTo(P,'lobby',456,636);
+  await line(P,'Bienvenidos a SCALEx. Ya tenemos su diagnóstico.');
+  await line(v,'Queremos crecer, pero algo nos frena.');
+  await line(P,'Hoy mismo tendrán una propuesta concreta.');
+  startTask(P,'Registrando lead en CRM');goHome(P).then(()=>release([P]));
+
+  const No=AG.nora,L=AG.lucia,D=AG.diego;
+  await claim([D,L,No],tok);
+  setClient(c,'Procesando diagnóstico',22);
+  await Promise.all([
+    (async()=>{startTask(No,'Procesando 142 respuestas SCANx · 6 áreas');burst(No,14);await sleep(13);await line(No,'Contradicción: ventas dice 30 días de cobro, finanzas dice 74.');})(),
+    (async()=>{startTask(L,'Normalizando EBITDA 2021–2025');burst(L,10);await sleep(16);await line(L,'EBITDA ajustado 9.8% contra 14.1% de la industria.');})(),
+    (async()=>{startTask(D,'Benchmark: 6 comparables del sector');burst(D,8);await sleep(11);await line(D,'Los comparables cobran en 41 días promedio.');startTask(D,'Integrando benchmark al expediente');})()
+  ]);
+  release([D]);
+  setClient(c,'Diagnóstico listo',35);
+
+  const S=AG.sofia,R=AG.ricardo,M=AG.mateo,V=AG.valeria;
+  await claim([S],tok);
+  await line(S,`Kickoff de ${c.name} en sala de juntas.`,3.5);
+  await meeting([S,R,M,V,L,No],`Kickoff · ${c.name}`,tok,async()=>{
+    await line(S,'Objetivo: propuesta aprobada hoy.');
+    await line(No,'Índice de confiabilidad 71%. Ventas y finanzas no coinciden.');
+    await line(L,'El dinero está atorado en cobranza: 74 días.');
+    await line(R,'Ahí está el problema real. No es ventas, es flujo.');
+    await line(M,'Framework SCALEx fase 2: cobranza como proceso habilitador.');
+    await line(V,'Armo el plan de 14 semanas con 3 frentes.');
+    await line(R,'Precio sugerido: 186 mil. Lo llevo con Agustín.');
+  });
+  setClient(c,'Diseñando plan de trabajo',55);
+
+  await claim([V,D],tok);
+  startTask(V,'Plan de trabajo 14 semanas · 3 frentes');startTask(D,'Minuta del kickoff');burst(V,10);
+  await sleep(6);
+  startTask(D,'Consultando a Valeria','collab');
+  await walkTo(D,'bull',V.home.x+30,V.home.y+4);
+  await line(D,'¿Incluyo el tablero TEAMx en la semana 3?');
+  await line(V,'Mejor en la 4, después del mapa de procesos.');
+  await goHome(D);startTask(D,'Anexos de la propuesta');burst(D,5);
+  await sleep(7);
+  await line(V,'Plan listo. Ricardo, es tuyo.');
+  release([V,D]);
+  setClient(c,'Propuesta en tu revisión',75);
+
+  await claim([R],tok);
+  startTask(R,'Propuesta final · '+c.name);burst(R,6);await sleep(4);
+  let res=await askAgustin(R,{title:'Aprobar propuesta · '+c.name,client:c.name,amount:'$186,000 MXN · 14 semanas',
+    ask:'Agustín, necesito tu visto bueno.',
+    bullets:['Problema raíz: flujo atorado en cobranza (74 días contra 41 del sector).','Framework SCALEx fase 2 con cobranza como proceso habilitador.','Incluye TEAMx para 2 líderes comerciales desde la semana 4.']});
+  if(res==='changes'){
+    await line(R,'Entendido. Ajustamos alcance.',3);
+    await goHome(R);
+    await claim([V],tok);startTask(V,'Ajustando alcance a 12 semanas');burst(V,8);
+    setClient(c,'Ajustando alcance',68);
+    await sleep(10);await line(V,'Listo: 12 semanas, mismo impacto.');release([V]);
+    setClient(c,'Propuesta en tu revisión',80);
+    res=await askAgustin(R,{title:'Propuesta ajustada · '+c.name,client:c.name,amount:'$164,000 MXN · 12 semanas',
+      ask:'Ya con tus ajustes. ¿La enviamos?',
+      bullets:['Alcance ajustado a 12 semanas, como pediste.','Se mantiene el frente de cobranza y el tablero TEAMx.','Arranque sugerido: lunes próximo.']});
+  }
+  await line(R,'Aprobada. Paula, envíala hoy.',3.5);
+  goHome(R).then(()=>{startTask(R,pick(R.routine));release([R]);});
+  await claim([P],tok);
+  startTask(P,'Enviando propuesta a '+c.name,'collab');burst(P,4);
+  await walkTo(P,'lobby',456,636);
+  await line(P,'Propuesta enviada. Arrancamos el lunes.');
+  await line(v,'Excelente. Nos vemos el lunes.');
+  setClient(c,'Propuesta enviada',100);
+  goHome(P).then(()=>{startTask(P,pick(P.routine));release([P]);});
+  await walkTo(v,'lobby',500,712);removeP(v);
+}
+
+async function boardThread(c){
+  const tok=Symbol('board');
+  const A=AG.andres,Tm=AG.tomas,E=AG.elena;
+  await claim([A,Tm],tok);
+  setClient(c,'Preparando consejo técnico Q4',30);
+  startTask(A,'Consolidando scorecard Q3 · 12 indicadores');burst(A,8);
+  startTask(Tm,'Conectando el CRM del cliente vía API');burst(Tm,10);
+  await sleep(10);
+  startTask(Tm,'Llevando datos a Andrés','collab');
+  await walkTo(Tm,'bull',A.home.x+30,A.home.y+4);
+  await line(Tm,'Ventas ya entran en vivo al scorecard.');
+  await line(A,'Perfecto. Con eso cierro el Q3.');
+  goHome(Tm).then(()=>{startTask(Tm,pick(Tm.routine));release([Tm]);});
+  await sleep(5);
+  setClient(c,'Scorecard listo',55);
+  await claim([E],tok);
+  startTask(A,'Revisión con Dirección','collab');startTask(E,'Revisión del consejo '+c,'collab');
+  await walkTo(A,'dir',185,165);
+  await line(A,'KPI principal del Q3 cerró en 87%. Semáforo amarillo.');
+  await line(E,'Propongo temática Q4: "Cobrar a tiempo".');
+  await line(A,'Preparo agenda con tiempos y convocatoria.');
+  goHome(A).then(()=>startTask(A,'Agenda del consejo '+c));
+  setClient(c,'Temática Q4 en tu revisión',70);
+  await askAgustin(E,{title:'Temática y KPI del Q4 · '+c,client:c,amount:'Consejo técnico en 8 días',
+    ask:'Necesito validar la temática del trimestre.',
+    bullets:['Temática propuesta: "Cobrar a tiempo".','KPI principal: días de cartera por debajo de 45.','5 consejeros convocados · agenda de 2 h con tiempos.']});
+  await line(E,'Validado. Andrés, convoca.',3);
+  goHome(E).then(()=>{startTask(E,pick(E.routine));release([E]);});
+  await sleep(3);
+  startTask(A,'Convocatoria enviada a 5 consejeros');burst(A,5);
+  log(A,'envió la convocatoria del consejo de '+c,'done');
+  setClient(c,'Consejo convocado',100);
+  await sleep(6);release([A]);
+}
+
+async function teamxThread(c){
+  const tok=Symbol('teamx');
+  const Mc=AG.marco,S=AG.sofia;
+  await claim([Mc],tok);
+  setClient(c,'Evaluación semanal · semana 6',25);
+  startTask(Mc,'Evaluando a 14 líderes · semana 6');burst(Mc,12);
+  await sleep(14);
+  await line(Mc,'Dos líderes en rojo: eficiencia 78% y 81%.');
+  setClient(c,'2 líderes en rojo',50);
+  await claim([S],tok);
+  startTask(Mc,'Coordinando seguimiento con Sofía','collab');
+  await walkTo(Mc,'pm',1030,470);
+  await line(Mc,'El director comercial lleva 3 semanas en rojo.');
+  await line(S,'Eso ya pide una sesión presencial con Agustín.');
+  release([S]);
+  setClient(c,'Sesión 1:1 en tu revisión',65);
+  const res=await askAgustin(Mc,{title:'Sesión 1:1 presencial · '+c,client:c,amount:'45 min · jueves 10:00',
+    ask:'Aquí hace falta tu presencia.',
+    bullets:['Director comercial: 3 semanas en rojo (eficiencia 78%).','La IA preparó 3 preguntas poderosas y el radar comparado.','Es parte del 20% humano: la conversación la llevas tú.']});
+  await line(Mc,res==='approve'?'Agendado. Te dejo el brief listo.':'Busco otra fecha y te la propongo.',3.5);
+  await goHome(Mc);
+  startTask(Mc,'Brief de la sesión 1:1');burst(Mc,5);
+  setClient(c,res==='approve'?'Sesión agendada':'Reagendando sesión',100);
+  await sleep(6);release([Mc]);
+}
+
+/* ambient behaviour */
+const CHAT=['¿Tienes el último corte de datos?','Revisa mi borrador cuando puedas.','¿Qué benchmark usamos aquí?','Te mandé el tablero actualizado.','¿Validamos este supuesto?'];
+async function ambient(a){
+  a.ambient=true;
+  const r=Math.random();
+  if(r<0.62){startTask(a,pick(a.routine));await sleep(rand(10,18));}
+  else if(r<0.8){
+    setState(a,'idle','Pausa de café');
+    const c=pick(COFFEE);await walkTo(a,'lounge',c[0]+rand(-8,8),c[1]+rand(-6,6));
+    await sleep(rand(5,9));await goHome(a);startTask(a,pick(a.routine));
+  } else {
+    const b=pick(AGENTS.filter(x=>x!==a&&x.room===x.home.room&&!x.moving));
+    if(b){
+      setState(a,'collab','Consultando a '+b.first);
+      await walkTo(a,b.home.room,b.home.x+30,b.home.y+4);
+      say(a,pick(CHAT),3.6);await sleep(4);await goHome(a);startTask(a,pick(a.routine));
+    }
+  }
+  a.ambient=false;a.nextAmb=T+rand(6,14);
+}
+
+/* day loop */
+function newDay(){
+  DAY++;dayStart=T;autoCount=0;autoMin=0;humanMin=0;
+  AGENTS.forEach(a=>{a.done=0;a.auto=0;});
+  const i=DAY-1;
+  clients=[
+    {...POOL.lead[i%POOL.lead.length],svc:'SCANx → Propuesta',stage:'Por llegar',pct:0},
+    {name:POOL.board[i%POOL.board.length],svc:'BOARDx',stage:'Consejo Q4',pct:10},
+    {name:POOL.teamx[i%POOL.teamx.length],svc:'TEAMx',stage:'Semana 6',pct:10},
+    {name:'Distribuidora Palma',svc:'SCALEx fase 3',stage:'Implementación',pct:62}
+  ];
+  clientVer++;
+  log(null,`${DAYS[(DAY-1)%5]}: la oficina abre`,'sys');
+}
+async function runDays(){
+  for(;;){
+    newDay();
+    const [c1,c2,c3]=clients;
+    await sleep(5);
+    const E=AG.elena;
+    await line(E,'Standup en sala de juntas.',3);
+    await meeting(AGENTS,'Standup diario',Symbol('standup'),async()=>{
+      await line(E,`Buenos días. Prioridad de hoy: ${c1.name}.`);
+      await line(AG.sofia,'3 clientes activos y un lead nuevo. Habrá 3 decisiones para Agustín.');
+      await line(AG.marco,`TEAMx ${c3.name}: semana 6, dos líderes en rojo.`);
+      await line(AG.andres,`Consejo técnico de ${c2.name} en 8 días.`);
+      await line(E,'Perfecto. A trabajar.',3);
+    });
+    await Promise.all([leadThread(c1),sleep(16).then(()=>boardThread(c2.name)),sleep(34).then(()=>teamxThread(c3.name))]);
+    while(clockMin()<17*60+10)await sleep(1);
+    await claim([E],Symbol('close'));
+    await line(E,'Cierre del día: resumen ejecutivo enviado a Agustín.',5);
+    release([E]);
+    await sleep(8);
+  }
+}
+
+/* ---------- update ---------- */
+const clockMin=()=>MIN0+Math.floor((T-dayStart)*MIN_PER_SEC);
+function clockStr(){const m=clockMin();return String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
+const autoApprove=()=>document.getElementById('auto')?.checked;
+let palmaT=0;
+function update(dt){
+  if(paused)return;
+  const d=dt*speed;T+=d;
+  for(let i=timers.length-1;i>=0;i--)if(timers[i].at<=T){const t=timers[i];timers.splice(i,1);t.r();}
+  for(const p of people){
+    if(!p.path.length){p.moving=false;continue;}
+    p.moving=true;p.phase+=d;let left=WALK*d;
+    while(left>0&&p.path.length){
+      const [tx,ty]=p.path[0],dx=tx-p.x,dy=ty-p.y,ds=Math.hypot(dx,dy);
+      if(ds<=left){p.x=tx;p.y=ty;left-=ds;p.path.shift();}
+      else{p.x+=dx/ds*left;p.y+=dy/ds*left;left=0;}
+    }
+    if(!p.path.length){p.moving=false;p.room=p.destRoom;const r=p.onArrive;p.onArrive=null;r&&r();}
+  }
+  for(const a of AGENTS)if(!a.busy&&!a.ambient&&!a.moving&&T>=a.nextAmb)ambient(a);
+  for(const a of AGENTS)if(a.state==='working'&&!a.moving&&Math.random()<0.11*d)chips.push({x:745,lane:a.lane,c:a.shirt,owner:a});
+  for(let i=chips.length-1;i>=0;i--){const c=chips[i];c.x+=150*d;if(c.x>1158){chips.splice(i,1);autoCount++;autoMin+=2.5;c.owner.auto++;}}
+  for(const p of people)if(p.bubble&&T>p.bubble.until)p.bubble=null;
+  if(autoApprove())for(const dcs of [...inbox])if(T-dcs.at>9)dcs.resolve('approve');
+  palmaT+=d;if(palmaT>30&&clients[3]){palmaT=0;const c=clients[3];c.pct=c.pct>=98?40:c.pct+2;clientVer++;}
+}
+
+/* ---------- drawing ---------- */
+function rr(x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
+function figure(G,p,x,y,s,moving,phase){
+  G.save();G.translate(x,y);G.scale(s,s);
+  const sw=moving?Math.sin(phase*10):0, bob=moving?-Math.abs(sw)*1.4:0;
+  G.fillStyle='rgba(0,0,0,.35)';G.beginPath();G.ellipse(0,1,8,3,0,0,Math.PI*2);G.fill();
+  G.fillStyle='#1B2A33';
+  G.beginPath();G.roundRect?G.roundRect(-5,-8+bob,4,8+sw*1.6,1.5):G.rect(-5,-8+bob,4,8);G.fill();
+  G.beginPath();G.roundRect?G.roundRect(1,-8+bob,4,8-sw*1.6,1.5):G.rect(1,-8+bob,4,8);G.fill();
+  G.fillStyle=p.shirt;G.beginPath();G.roundRect?G.roundRect(-7.5,-21+bob,15,15,5):G.rect(-7.5,-21+bob,15,15);G.fill();
+  if(p.tie){G.fillStyle=p.tie;G.fillRect(-1,-20+bob,2,8);}
+  G.fillStyle=p.skin;G.beginPath();G.arc(0,-27+bob,6.5,0,Math.PI*2);G.fill();
+  G.fillStyle=p.hair;G.beginPath();G.arc(0,-28+bob,7,Math.PI*1.02,Math.PI*1.98);G.fill();
+  if(p.long){G.fillRect(-7,-29+bob,2.6,10);G.fillRect(4.4,-29+bob,2.6,10);}
+  G.restore();
+}
+function wall(r){
+  g.strokeStyle=r.human?'#B98524':r.glass?'#4F9FA3':r.motor?'#2A7D77':'#2F5A62';g.lineWidth=3;
+  g.strokeRect(r.x,r.y,r.w,r.h);
+  const gap=(d)=>{g.strokeStyle='#10282E';g.lineWidth=5;g.beginPath();
+    if(d.side==='r'){g.moveTo(r.x+r.w,d.at-19);g.lineTo(r.x+r.w,d.at+19);}
+    if(d.side==='l'){g.moveTo(r.x,d.at-19);g.lineTo(r.x,d.at+19);}
+    if(d.side==='t'){g.moveTo(d.at-19,r.y);g.lineTo(d.at+19,r.y);}
+    if(d.side==='b'){g.moveTo(d.at-19,r.y+r.h);g.lineTo(d.at+19,r.y+r.h);}
+    g.stroke();};
+  r.doors.forEach(gap);
+  if(r.entrance){gap({side:'b',at:500});}
+}
+function label(txt,x,y,col='#7FA3A6'){g.font='600 11px "IBM Plex Sans", sans-serif';g.fillStyle=col;if('letterSpacing' in g)g.letterSpacing='1.2px';g.fillText(txt,x,y);if('letterSpacing' in g)g.letterSpacing='0px';}
+function desk(x,y,owner){
+  g.fillStyle='#22474F';g.beginPath();g.arc(x,y+30,9,0,Math.PI*2);g.fill();
+  rr(x-32,y-12,64,24,4);g.fillStyle='#2C5860';g.fill();g.strokeStyle='#3B6E76';g.lineWidth=1;g.stroke();
+  rr(x-13,y-9,26,5,2);g.fillStyle='#0B1A1E';g.fill();
+  const lit=owner&&owner.state==='working'&&owner.room===owner.home.room&&!owner.moving&&Math.hypot(owner.x-owner.home.x,owner.y-owner.home.y)<3;
+  if(lit){g.fillStyle='rgba(63,193,176,.85)';g.fillRect(x-11,y-8,22,3);g.fillStyle='rgba(63,193,176,.12)';g.beginPath();g.ellipse(x,y+2,26,12,0,0,Math.PI*2);g.fill();}
+}
+function plant(x,y,r=11){g.fillStyle='#2F6B4F';g.beginPath();g.arc(x,y,r,0,Math.PI*2);g.fill();g.fillStyle='#3F8A63';g.beginPath();g.arc(x-3,y-3,r*.55,0,Math.PI*2);g.fill();}
+function wrapText(t,max){g.font='500 12.5px "IBM Plex Sans", sans-serif';const w=t.split(' ');const lines=[];let cur='';for(const x of w){const tr=cur?cur+' '+x:x;if(g.measureText(tr).width>max&&cur){lines.push(cur);cur=x;}else cur=tr;}if(cur)lines.push(cur);return lines.slice(0,3);}
+
+function drawMap(){
+  g.fillStyle='#10282E';g.fillRect(0,0,W,H);
+  g.strokeStyle='rgba(127,163,166,.10)';g.lineWidth=1;g.setLineDash([4,8]);g.beginPath();
+  for(const [a,b] of EDGES){g.moveTo(...N[a]);g.lineTo(...N[b]);}g.stroke();g.setLineDash([]);
+  for(const k in ROOMS){const r=ROOMS[k];g.fillStyle=r.floor;g.fillRect(r.x,r.y,r.w,r.h);}
+  // carpet texture in junta
+  g.strokeStyle='rgba(255,255,255,.025)';g.lineWidth=1;g.beginPath();for(let x=310;x<700;x+=16){g.moveTo(x,22);g.lineTo(x,268);}g.stroke();
+
+  // Dirección
+  rr(172,28,90,12,3);g.fillStyle='#2A4A40';g.fill();plant(40,200);
+  rr(95,72,110,28,5);g.fillStyle='#2C5860';g.fill();g.strokeStyle='#3B6E76';g.stroke();
+  desk(150,84,AG.elena);
+  [[115,165],[185,165]].forEach(([x,y])=>{g.fillStyle='#22474F';g.beginPath();g.arc(x,y,9,0,Math.PI*2);g.fill();});
+  // SP
+  rr(172,248,90,12,3);g.fillStyle='#2A4A40';g.fill();plant(258,400);
+  desk(150,302,AG.ricardo);
+  [[115,385],[185,385]].forEach(([x,y])=>{g.fillStyle='#22474F';g.beginPath();g.arc(x,y,9,0,Math.PI*2);g.fill();});
+  // Lounge
+  rr(36,470,150,30,10);g.fillStyle='#2E5A58';g.fill();
+  rr(215,466,48,30,5);g.fillStyle='#3A3F44';g.fill();g.fillStyle='#F5A524';g.fillRect(234,474,10,4);
+  g.fillStyle='#2A4A48';g.beginPath();g.ellipse(140,605,40,22,0,0,Math.PI*2);g.fill();
+  rr(36,670,110,20,8);g.fillStyle='#2E5A58';g.fill();plant(250,680,13);plant(40,610,9);
+  // Junta
+  g.fillStyle='#2C5860';g.strokeStyle='#4F9FA3';g.lineWidth=1.5;g.beginPath();g.ellipse(500,150,122,50,0,0,Math.PI*2);g.fill();g.stroke();
+  JSEATS.forEach(([x,y])=>{g.fillStyle='#22474F';g.beginPath();g.arc(x,y,9,0,Math.PI*2);g.fill();});
+  rr(420,28,200,24,4);g.fillStyle=meetingTitle?'#E4EFED':'#2A5159';g.fill();
+  g.font='600 12px "IBM Plex Sans", sans-serif';g.textAlign='center';g.fillStyle=meetingTitle?'#0A1C21':'#7FA3A6';
+  g.fillText(meetingTitle||'Sala disponible',520,44,190);g.textAlign='left';
+  // Agustín office
+  const glow=g.createRadialGradient(830,110,10,830,110,120);glow.addColorStop(0,'rgba(245,165,36,.18)');glow.addColorStop(1,'rgba(245,165,36,0)');
+  g.fillStyle=glow;g.fillRect(722,22,216,246);
+  rr(770,94,120,30,6);g.fillStyle='#4A3B22';g.fill();g.strokeStyle='#B98524';g.lineWidth=1;g.stroke();
+  rr(815,98,30,5,2);g.fillStyle='#0B1A1E';g.fill();
+  AGU_SPOTS.forEach(s=>{g.fillStyle='#3A3624';g.beginPath();g.arc(s.x,s.y,9,0,Math.PI*2);g.fill();});
+  plant(918,44,10);
+  rr(730,46,86,18,9);g.fillStyle='#F5A524';g.fill();g.font='600 10.5px "IBM Plex Sans", sans-serif';g.fillStyle='#2B1B00';g.textAlign='center';g.fillText('20% HUMANO',773,59);g.textAlign='left';
+  // Lab
+  rr(975,48,190,24,3);g.fillStyle='#0B1A1E';g.fill();
+  for(let i=0;i<16;i++){const h=4+Math.abs(Math.sin(T*0.9+i*0.8))*14;g.fillStyle=i%5===0?'#F5A524':'#3FC1B0';g.globalAlpha=.75;g.fillRect(982+i*11,70-h,6,h);}g.globalAlpha=1;
+  desk(1015,84,AG.lucia);desk(1125,84,AG.tomas);desk(1070,234,AG.nora);plant(1165,305,9);
+  // PM kanban
+  rr(975,366,190,52,4);g.fillStyle='#DDE8E6';g.fill();
+  const cols=[AGENTS.filter(a=>a.queue.some(q=>q.s==='pendiente')).length,AGENTS.filter(a=>a.state==='working').length,inbox.length,Math.min(6,Math.floor(autoCount/40)+2)];
+  const cc=['#8FB0B2','#3FC1B0','#F5A524','#7FA8FF'];
+  cols.forEach((n,ci)=>{const x0=979+ci*47;if(ci){g.fillStyle='#B9CAC8';g.fillRect(x0-2,370,1,44);}
+    for(let k=0;k<Math.min(n,6);k++){g.fillStyle=cc[ci];g.fillRect(x0+(k%3)*14,374+Math.floor(k/3)*16,11,11);}});
+  desk(1070,458,AG.sofia);
+  // Bullpen
+  BULL_ROW1.forEach(x=>desk(x,ROW1Y,AGENTS.find(a=>a.home.room==='bull'&&a.home.x===x&&a.home.y===ROW1Y+28)));
+  desk(380,ROW2Y,AG.marco);
+  [500,620,740,860].forEach(x=>{g.setLineDash([4,4]);g.strokeStyle='rgba(127,163,166,.35)';rr(x-32,ROW2Y-12,64,24,4);g.stroke();g.setLineDash([]);
+    g.font='500 11px "IBM Plex Sans", sans-serif';g.fillStyle='rgba(127,163,166,.6)';g.textAlign='center';g.fillText('+ agente',x,ROW2Y+4);g.textAlign='left';});
+  // Lobby
+  rr(560,580,120,26,6);g.fillStyle='#2C5860';g.fill();g.strokeStyle='#3B6E76';g.stroke();
+  rr(372,612,120,20,8);g.fillStyle='#2E5A58';g.fill();plant(680,680,12);plant(318,558,8);
+  g.fillStyle='rgba(127,163,166,.15)';g.fillRect(470,688,60,10);
+  g.font='500 10px "IBM Plex Sans", sans-serif';g.fillStyle='#7FA3A6';g.textAlign='center';g.fillText('ENTRADA',500,684);g.textAlign='left';
+  // Motor
+  const lanes=['Captura y limpieza de datos','Análisis y modelos','Documentos y entregables'];
+  lanes.forEach((l,i)=>{const y=598+i*33;rr(745,y-7,415,14,7);g.fillStyle='#0A1A1E';g.fill();g.strokeStyle='#1F4A50';g.lineWidth=1;g.stroke();
+    g.strokeStyle='rgba(63,193,176,.18)';g.setLineDash([2,10]);g.lineDashOffset=-(T*150)%12;g.beginPath();g.moveTo(750,y);g.lineTo(1155,y);g.stroke();g.setLineDash([]);g.lineDashOffset=0;
+    g.font='500 10px "IBM Plex Sans", sans-serif';g.fillStyle='#5F8185';g.fillText(l,748,y-10);});
+  for(const c of chips){if(c.x<745)continue;const y=598+c.lane*33;rr(c.x-6,y-4,12,8,2);g.fillStyle=c.c;g.fill();}
+  g.font='600 20px "IBM Plex Mono", monospace';g.fillStyle='#3FC1B0';g.textAlign='right';g.fillText(autoCount.toLocaleString('es-MX'),1168,572);
+  g.font='500 10px "IBM Plex Sans", sans-serif';g.fillStyle='#5F8185';g.fillText('tareas automatizadas hoy',1168,585);g.textAlign='left';
+  for(const k in ROOMS){const r=ROOMS[k];wall(r);label(r.name,r.x+10,r.y+17,r.human?'#E0A640':r.motor?'#3FC1B0':'#7FA3A6');}
+}
+
+function drawPeople(){
+  const sorted=[...people].sort((a,b)=>a.y-b.y);
+  if(selected&&selected.path.length){g.strokeStyle=selected.shirt;g.lineWidth=2;g.setLineDash([3,6]);g.beginPath();g.moveTo(selected.x,selected.y);selected.path.forEach(p=>g.lineTo(p[0],p[1]));g.stroke();g.setLineDash([]);}
+  for(const p of sorted){
+    if(p.kind==='agent'||p.kind==='human'){
+      const col=p.kind==='human'?'#F5A524':ST[p.state].c;
+      if(p.state==='awaiting'){const pu=(Math.sin(performance.now()/180)+1)/2;g.fillStyle=`rgba(245,165,36,${.18+pu*.25})`;g.beginPath();g.ellipse(p.x,p.y,22,10,0,0,Math.PI*2);g.fill();}
+      g.strokeStyle=col;g.lineWidth=p===selected?3.5:2.2;g.beginPath();g.ellipse(p.x,p.y,15,6.5,0,0,Math.PI*2);g.stroke();
+    }
+    figure(g,p,p.x,p.y,1.45,p.moving,p.phase);
+    g.font=(p===selected||p===hover?'600 ':'500 ')+'11.5px "IBM Plex Sans", sans-serif';g.textAlign='center';
+    g.lineWidth=3;g.strokeStyle='rgba(10,28,33,.85)';g.strokeText(p.kind==='human'?'Agustín (tú)':p.first,p.x,p.y+18);
+    g.fillStyle=p.kind==='human'?'#F5A524':p.kind==='visitor'?'#B8C4C6':'#E4EFED';g.fillText(p.kind==='human'?'Agustín (tú)':p.first,p.x,p.y+18);g.textAlign='left';
+    if(p.state==='awaiting'&&!p.bubble){g.fillStyle='#F5A524';g.beginPath();g.arc(p.x,p.y-60,8,0,Math.PI*2);g.fill();g.fillStyle='#2B1B00';g.font='700 12px "IBM Plex Sans", sans-serif';g.textAlign='center';g.fillText('!',p.x,p.y-56);g.textAlign='left';}
+  }
+  for(const p of sorted)if(p.bubble)bubble(p);
+  if(hover&&hover!==selected&&hover.kind!=='visitor')tag(hover);
+}
+function bubble(p){
+  const lines=wrapText(p.bubble.text,180);const w=Math.max(...lines.map(l=>g.measureText(l).width))+18,h=lines.length*16+10;
+  let x=Math.min(W-w-6,Math.max(6,p.x-w/2)),y=Math.max(6,p.y-58-h);
+  const aw=p.state==='awaiting';
+  g.fillStyle=aw?'#F5A524':p.kind==='visitor'?'#C9D3D4':'#F1F7F6';
+  rr(x,y,w,h,8);g.fill();g.beginPath();g.moveTo(p.x-6,y+h);g.lineTo(p.x,y+h+7);g.lineTo(p.x+6,y+h);g.fill();
+  g.fillStyle=aw?'#2B1B00':'#0A1C21';lines.forEach((l,i)=>g.fillText(l,x+9,y+19+i*16));
+}
+function tag(p){
+  const t1=p.name, t2=p.kind==='human'?'Recibe solo lo que requiere criterio humano':p.role+' · '+(p.moving?'En camino':ST[p.state].l);
+  g.font='600 12.5px "IBM Plex Sans", sans-serif';const w1=g.measureText(t1).width;g.font='500 11.5px "IBM Plex Sans", sans-serif';const w=Math.max(w1,g.measureText(t2).width)+20;
+  let x=Math.min(W-w-6,Math.max(6,p.x+18)),y=Math.max(6,p.y-60);
+  rr(x,y,w,40,8);g.fillStyle='rgba(15,38,44,.96)';g.fill();g.strokeStyle='#2A5159';g.lineWidth=1;g.stroke();
+  g.fillStyle='#E4EFED';g.font='600 12.5px "IBM Plex Sans", sans-serif';g.fillText(t1,x+10,y+17);
+  g.fillStyle='#8AA9AB';g.font='500 11.5px "IBM Plex Sans", sans-serif';g.fillText(t2,x+10,y+32);
+}
+
+function draw(){g.setTransform(scaleF,0,0,scaleF,0,0);drawMap();drawPeople();}
+function resize(){const w=wrap.clientWidth;const h=w*H/W;cv.style.height=h+'px';const dpr=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);scaleF=w/W*dpr;}
+new ResizeObserver(resize).observe(wrap);resize();
+
+/* ---------- avatars for UI ---------- */
+const AV={};
+function avatar(p){
+  if(AV[p.id||p.name])return AV[p.id||p.name];
+  const c=document.createElement('canvas');c.width=c.height=96;const G=c.getContext('2d');
+  G.fillStyle='#13313A';G.fillRect(0,0,96,96);
+  G.fillStyle=p.shirt;G.globalAlpha=.18;G.beginPath();G.arc(48,54,40,0,Math.PI*2);G.fill();G.globalAlpha=1;
+  figure(G,p,48,112,2.9,false,0);
+  return AV[p.id||p.name]=c.toDataURL();
+}
+
+/* ---------- pointer ---------- */
+function hit(e){const r=cv.getBoundingClientRect();const x=(e.clientX-r.left)*W/r.width,y=(e.clientY-r.top)*H/r.height;
+  let best=null,bd=1e9;for(const p of people){if(x>p.x-14&&x<p.x+14&&y>p.y-52&&y<p.y+8){const d=Math.abs(p.y-y);if(d<bd){bd=d;best=p;}}}return best;}
+cv.addEventListener('mousemove',e=>{hover=hit(e);cv.style.cursor=hover&&hover.kind!=='visitor'?'pointer':'default';});
+cv.addEventListener('mouseleave',()=>hover=null);
+cv.addEventListener('click',e=>{const p=hit(e);if(!p)return;if(p.kind==='agent')select(p);else if(p.kind==='human'){closeDrawer();setTab('inbox');}});
+
+/* ---------- UI ---------- */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function chip(a){const moving=a.moving&&a.state!=='awaiting';const s=ST[a.state];return `<span class="chip${a.state==='awaiting'?' pulse':''}" style="--c:${moving?'#8AA9AB':s.c}">${moving?'En camino':s.l}</span>`;}
+$('legend').innerHTML=Object.values(ST).map(s=>`<span><i class="dot" style="background:${s.c}"></i>${s.l}</span>`).join('')+`<span><i class="dot" style="background:#8C979A"></i>Cliente de visita</span>`;
+
+let tab='team';
+function setTab(t){tab=t;document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===t)));
+  ['team','inbox','feed'].forEach(k=>$('p-'+k).hidden=k!==t);lastInbox=-1;lastFeed=-1;renderUI(true);}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
+
+function renderTeam(){
+  $('p-team').innerHTML=AGENTS.map(a=>`<button type="button" class="row${a===selected?' sel':''}" data-agent="${a.id}">
+    <img src="${avatar(a)}" alt="">
+    <span><b>${esc(a.name)}</b><small>${esc(a.role)} · ${esc(a.task)}</small></span>${chip(a)}</button>`).join('');
+}
+$('p-team').addEventListener('pointerdown',e=>{const b=e.target.closest('[data-agent]');if(b)select(AG[b.dataset.agent]);});
+
+function decisionHTML(d){
+  const mins=Math.max(0,Math.round((T-d.at)*MIN_PER_SEC));
+  return `<article class="decision"><header><img src="${avatar(d.agent)}" alt=""><div><b>${esc(d.title)}</b><small>${esc(d.agent.name)} · ${esc(d.agent.role)} · hace ${mins} min</small></div></header>
+  <p class="amt">${esc(d.amount)}</p><ul>${d.bullets.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>
+  <div class="actions"><button class="approve" type="button" data-act="approve" data-id="${d.id}">Aprobar</button><button class="changes" type="button" data-act="changes" data-id="${d.id}">Pedir ajustes</button></div></article>`;
+}
+function renderInbox(){
+  const auto=autoApprove();
+  $('p-inbox').innerHTML=`<label class="toggle"><input type="checkbox" id="auto"${auto?' checked':''}> Modo presentación: aprobar solo después de 10 s</label>`+
+   (inbox.length?inbox.map(decisionHTML).join(''):`<p class="empty">Sin decisiones pendientes.<br>Los agentes resuelven el 80% operativo y solo te traen lo que requiere tu criterio.</p>`);
+}
+function onDecision(e){const b=e.target.closest('[data-act]');if(!b)return;const d=inbox.find(x=>x.id===+b.dataset.id);if(d)d.resolve(b.dataset.act);}
+$('p-inbox').addEventListener('click',onDecision);$('dbody').addEventListener('click',onDecision);
+
+function renderFeed(){$('feed').innerHTML=feed.map(f=>`<li class="${f.kind==='wait'?'wait':''}"><time>${f.time}</time><i class="dot" style="background:${f.color}"></i><span>${f.who?`<b>${esc(f.who)}</b> `:''}${esc(f.text)}</span></li>`).join('');}
+function renderClients(){$('clients').innerHTML=clients.map(c=>`<div class="client"><span class="svc">${esc(c.svc)}</span><b>${esc(c.name)}</b><small>${esc(c.stage)}</small><div class="prog"><i style="width:${c.pct}%"></i></div></div>`).join('');}
+
+const QS={'hecho':'#5F8185','en curso':'#3FC1B0','pendiente':'#8AA9AB','espera':'#F5A524'};
+function renderDrawer(){
+  const a=selected;if(!a)return;
+  const need=inbox.find(d=>d.agent===a);
+  $('dbody').innerHTML=`<div class="dhead"><img src="${avatar(a)}" alt=""><div><h3>${esc(a.name)}</h3><p>${esc(a.role)}</p>${chip(a)}</div></div>
+  ${need?decisionHTML(need):''}
+  <section><h4>Ahora</h4><p class="now">${esc(a.task)}</p></section>
+  <section><h4>Personalidad</h4><p>${esc(a.persona)}</p></section>
+  <section><h4>Cola de trabajo</h4><ol class="queue">${[...a.queue].reverse().map(q=>`<li><span style="color:${QS[q.s]}">${q.s==='espera'?'espera tu ok':q.s}</span>${esc(q.t)}</li>`).join('')}</ol></section>
+  <section><h4>Habilidades</h4><div class="skills">${a.skills.map(s=>`<span>${esc(s)}</span>`).join('')}</div></section>
+  <section><h4>Contexto cargado</h4><ul class="ctx">${a.ctx.map(s=>`<li>${esc(s)}</li>`).join('')}</ul></section>
+  <div class="stats"><div><b>${a.done}</b><small>Tareas cerradas hoy</small></div><div><b>${a.auto}</b><small>Automatizaciones disparadas</small></div></div>`;
+}
+function select(a){selected=a;$('drawer').hidden=false;lastDrawer='';renderUI(true);}
+function closeDrawer(){selected=null;$('drawer').hidden=true;}
+$('close').addEventListener('click',closeDrawer);
+
+let lastVer=-1,lastInbox=-1,lastFeed=-1,lastClient=-1,lastDrawer='',lastTeam=0;
+function renderUI(force){
+  $('clock').textContent=`${DAYS[(DAY-1+5)%5]} · ${clockStr()}`;
+  const active=AGENTS.filter(a=>a.state!=='idle').length;
+  $('k-active').textContent=`${active}/${AGENTS.length}`;
+  $('k-auto').textContent=autoCount.toLocaleString('es-MX');
+  $('k-wait').textContent=inbox.length;$('k-wait-wrap').classList.toggle('warn',inbox.length>0);
+  $('badge').textContent=inbox.length;$('badge').dataset.n=inbox.length;
+  const tot=autoMin+humanMin;
+  if(tot>0){const pa=Math.round(autoMin/tot*100);$('r-bar').style.width=pa+'%';$('r-a').textContent=`Agentes ${pa}%`;$('r-h').textContent=`Tú ${100-pa}%`;}
+  else{$('r-bar').style.width='80%';$('r-a').textContent='Agentes —';$('r-h').textContent='Tú —';}
+  const al=$('alert');
+  if(inbox.length&&!(tab==='inbox'&&$('drawer').hidden)){al.hidden=false;$('alert-t').textContent=inbox.length===1?`${inbox[0].agent.first} espera tu decisión`:`${inbox.length} decisiones esperan por ti`;}else al.hidden=true;
+  if(tab==='team'&&(force||performance.now()-lastTeam>600)){lastTeam=performance.now();renderTeam();}
+  if(tab==='inbox'&&(force||lastInbox!==inboxVer)){lastInbox=inboxVer;renderInbox();}
+  if(tab==='feed'&&(force||lastFeed!==feedVer)){lastFeed=feedVer;renderFeed();}
+  if(force||lastClient!==clientVer){lastClient=clientVer;renderClients();}
+  if(selected){const sig=[selected.task,selected.state,selected.moving,selected.done,selected.auto,selected.queue.length,inboxVer].join('|');if(force||sig!==lastDrawer){lastDrawer=sig;renderDrawer();}}
+}
+$('alert').addEventListener('click',()=>{const d=inbox[0];if(inbox.length===1&&d){select(d.agent);}else{closeDrawer();setTab('inbox');}});
+
+$('pause').addEventListener('click',()=>{paused=!paused;$('pause').textContent=paused?'Reanudar':'Pausar';});
+document.querySelectorAll('[data-speed]').forEach(b=>b.addEventListener('click',()=>{speed=+b.dataset.speed;document.querySelectorAll('[data-speed]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));}));
+
+/* ---------- boot ---------- */
+AGENTS.forEach(a=>{a.room=a.home.room;});
+say(AG.nora,'3 diagnósticos SCANx abiertos. Monitoreando.',6);
+say(AG.paula,'Nuevo lead desde scalexlatam.com.',6);
+say(AG.sofia,'Kanban al día. 2 entregables esta semana.',6);
+runDays();
+renderUI(true);
+let last=performance.now(),uiT=0;
+function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;update(dt);draw();uiT+=dt;if(uiT>.25){uiT=0;renderUI(false);}requestAnimationFrame(frame);}
+requestAnimationFrame(frame);
+})();
+</script>
