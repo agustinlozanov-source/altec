@@ -62,6 +62,7 @@ No se introduce otro framework, otro lenguaje ni HTML suelto. Si algo parece req
 
 - Los colores se definen **una sola vez** en `packages/ui` (variables CSS + preset de Tailwind). Ninguna app escribe hex de marca a mano.
 - Modo oscuro por defecto. Sin gradientes, excepto la variante **Altec.AI** (gradiente azul a verde), reservada para ALTEC VO y productos de IA.
+- **La identidad de marca aplica al dashboard, no al interior de la escena 3D.** La oficina de ALTEC VO usa el tema `studio` (el del prototipo) por defecto. Su color, sus medidas y sus ritmos viven en `packages/office3d/src/themes` y son configurables: quien quiera otra apariencia escribe otro tema, sin tocar un componente. El tema `altec` existe como alternativa vestida con la marca.
 - Tipografía: **Open Sans**, la fuente del logotipo. Títulos en Extrabold **itálico**, texto en regular, y JetBrains Mono para datos. Se declara en un solo lugar (`packages/ui/src/fonts.ts`).
 - El logotipo es recto y los títulos son itálicos: es una decisión de diseño tomada a conciencia (sep 2026), no un descuido. La itálica da personalidad sin competir con la marca.
 

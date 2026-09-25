@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import { roster, human } from "@altec/agents";
 import type { AgentRuntime } from "@altec/events";
-import { cameraViews, type CameraViewId } from "@altec/office3d";
+import { cameraViews, sceneThemes, type CameraViewId, type SceneThemeId } from "@altec/office3d";
 import { cn } from "@altec/ui";
 
 /** El canvas solo existe en el navegador: WebGL no se renderiza en el servidor. */
@@ -38,6 +38,7 @@ const stateDots: Record<AgentRuntime["state"], string> = {
 
 export function OfficeViewer() {
   const [view, setView] = useState<CameraViewId>("general");
+  const [themeId, setThemeId] = useState<SceneThemeId>("studio");
   const [selected, setSelected] = useState<string | null>(null);
 
   /**
@@ -61,6 +62,7 @@ export function OfficeViewer() {
           <OfficeCanvas
             agents={agents}
             view={view}
+            theme={sceneThemes[themeId]}
             selectedAgent={selected}
             onSelectAgent={setSelected}
           />
@@ -80,6 +82,27 @@ export function OfficeViewer() {
                 )}
               >
                 {v.label}
+              </button>
+            ))}
+          </div>
+
+          {/* La apariencia de la oficina es configurable: el dashboard va con la
+              identidad de ALTEC, la escena puede vestirse como se quiera. */}
+          <div className="absolute top-3 right-3 flex gap-1.5">
+            {(Object.keys(sceneThemes) as SceneThemeId[]).map((id) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setThemeId(id)}
+                aria-pressed={themeId === id}
+                className={cn(
+                  "rounded-pill border px-3 py-1.5 font-mono text-[10px] tracking-wide uppercase transition-colors",
+                  themeId === id
+                    ? "border-altec-cream/60 text-altec-cream bg-altec-black/70 backdrop-blur"
+                    : "border-altec-cream/15 text-altec-cream/45 hover:border-altec-cream/40 bg-altec-black/50 backdrop-blur",
+                )}
+              >
+                {id === "studio" ? "Original" : "ALTEC"}
               </button>
             ))}
           </div>

@@ -2,7 +2,7 @@
 
 import { Html } from "@react-three/drei";
 import type { Look } from "@altec/agents";
-import { stateColor } from "../palette";
+import { useSceneTheme } from "../themes";
 import { wx, wz } from "./coords";
 
 /**
@@ -17,7 +17,7 @@ import { wx, wz } from "./coords";
 export type CharacterProps = {
   at: readonly [number, number];
   look: Look;
-  state: keyof typeof stateColor;
+  state: "working" | "meeting" | "collab" | "awaiting" | "idle";
   name: string;
   /** Angulo en radianes hacia donde mira. */
   heading?: number;
@@ -36,14 +36,16 @@ export function Character({
   selected = false,
   onSelect,
 }: CharacterProps) {
-  const ring = stateColor[state];
+  const theme = useSceneTheme();
+  const ring = theme.state[state];
   const awaiting = state === "awaiting";
+  const { ringInner, ringOuter } = theme.character;
 
   return (
     <group position={[wx(at[0]), 0, wz(at[1])]} rotation={[0, heading, 0]}>
       {/* aro de estado en el piso (§8.3) */}
       <mesh position={[0, 0.8, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[9, selected ? 13 : 11.5, 32]} />
+        <ringGeometry args={[ringInner, selected ? ringOuter + 1.5 : ringOuter, 32]} />
         <meshBasicMaterial color={ring} transparent opacity={awaiting ? 0.95 : 0.7} />
       </mesh>
 
@@ -94,17 +96,18 @@ export function Character({
       {/* signo de admiracion cuando espera decision (§8.3) */}
       {awaiting ? (
         <Html position={[0, 56, 0]} center distanceFactor={420} pointerEvents="none">
-          <span className="text-vo-awaiting text-xl leading-none font-bold select-none">!</span>
+          <span className="text-xl leading-none font-bold select-none"
+            style={{ color: ring }}>!</span>
         </Html>
       ) : null}
 
       <Html position={[0, -2, 14]} center distanceFactor={560} pointerEvents="none" zIndexRange={[20, 0]}>
-        <span className="text-altec-cream/75 text-[10px] whitespace-nowrap select-none">{name}</span>
+        <span className="text-[10px] whitespace-nowrap text-white/80 select-none">{name}</span>
       </Html>
 
       {say ? (
         <Html position={[0, 50, 0]} center distanceFactor={420} pointerEvents="none" zIndexRange={[30, 0]}>
-          <span className="bg-altec-cream text-altec-black max-w-[180px] rounded-md px-2 py-1 text-[10px] leading-snug whitespace-normal shadow-lg select-none">
+          <span className="max-w-[180px] rounded-md bg-white px-2 py-1 text-[10px] leading-snug whitespace-normal text-black shadow-lg select-none">
             {say}
           </span>
         </Html>

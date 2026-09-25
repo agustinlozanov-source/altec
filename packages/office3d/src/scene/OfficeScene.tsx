@@ -2,16 +2,16 @@
 
 import { roster, human } from "@altec/agents";
 import type { AgentRuntime } from "@altec/events";
-import { lighting, scene as sceneColors } from "../palette";
 import { rooms, spotById } from "../layouts/default";
+import { useSceneTheme } from "../themes";
 import { Character } from "./Character";
-import { StaticFurniture, MeetingTable } from "./Furniture";
+import { StaticFurniture, MeetingRoom } from "./Furniture";
 import { Room } from "./Room";
 import { wx, wz } from "./coords";
 
 /**
  * Contenido de la escena. Solo dibuja lo que el estado le pasa: no decide nada
- * (docs/ALTEC-VO.md §2, principio 1).
+ * (docs/ALTEC-VO.md §2, principio 1). El color lo pone el tema.
  */
 
 export type OfficeSceneProps = {
@@ -27,6 +27,9 @@ export function OfficeScene({
   selectedAgent,
   onSelectAgent,
 }: OfficeSceneProps) {
+  const theme = useSceneTheme();
+  const { lighting } = theme;
+
   const litDesks = new Set(
     roster
       .filter((a) => {
@@ -37,20 +40,31 @@ export function OfficeScene({
   );
 
   const socio = rooms.find((r) => r.human);
+  const motor = rooms.find((r) => r.motor);
 
   return (
     <group>
-      {/* suelo general, mas alla de las salas */}
+      {/* Fondo del lienzo. Va aqui y no en el style del Canvas, que R3F pisa. */}
+      <color attach="background" args={[lighting.background]} />
+
       <mesh position={[0, -1, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[3200, 2400]} />
-        <meshStandardMaterial color={sceneColors.ground} roughness={1} />
+        <meshStandardMaterial color={lighting.ground} roughness={1} />
       </mesh>
 
-      <ambientLight intensity={0.55} color={lighting.hemiSky} />
-      <hemisphereLight args={[lighting.hemiSky, lighting.hemiGround, 1.15]} />
+      {/* losa bajo toda la planta */}
+      <mesh position={[0, -0.5, 0]} receiveShadow>
+        <boxGeometry args={[1216, 1, 736]} />
+        <meshStandardMaterial color={lighting.slab} roughness={0.9} />
+      </mesh>
+
+      <ambientLight intensity={lighting.ambientIntensity} color={lighting.hemiSky} />
+      <hemisphereLight
+        args={[lighting.hemiSky, lighting.hemiGround, lighting.hemiIntensity]}
+      />
       <directionalLight
-        position={[-260, 420, -180]}
-        intensity={2.1}
+        position={lighting.sunPosition as unknown as [number, number, number]}
+        intensity={lighting.sunIntensity}
         color={lighting.sun}
         castShadow
         shadow-mapSize={[2048, 2048]}
@@ -61,14 +75,23 @@ export function OfficeScene({
         shadow-camera-far={1200}
       />
 
-      {/* la oficina del socio se distingue por su luz calida (§8.2) */}
       {socio ? (
         <pointLight
           position={[wx(socio.x + socio.w / 2), 70, wz(socio.y + socio.h / 2)]}
-          intensity={2.4}
+          intensity={lighting.humanIntensity}
           distance={320}
-          decay={1.5}
+          decay={1.6}
           color={lighting.human}
+        />
+      ) : null}
+
+      {motor ? (
+        <pointLight
+          position={[wx(motor.x + motor.w / 2), 60, wz(motor.y + motor.h / 2)]}
+          intensity={lighting.accentIntensity}
+          distance={340}
+          decay={1.6}
+          color={lighting.accent}
         />
       ) : null}
 
@@ -76,7 +99,7 @@ export function OfficeScene({
         <Room key={room.id} room={room} />
       ))}
 
-      <MeetingTable title={meetingTitle} />
+      <MeetingRoom {...(meetingTitle ? { title: meetingTitle } : {})} />
       <StaticFurniture litDesks={litDesks} />
 
       {roster.map((agent) => {
@@ -104,7 +127,6 @@ export function OfficeScene({
         );
       })}
 
-      {/* el humano, en su oficina */}
       {(() => {
         const spot = spotById.get(human.home);
         if (!spot) return null;

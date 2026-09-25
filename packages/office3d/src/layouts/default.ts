@@ -1,11 +1,8 @@
-import { floors } from "../palette";
-
 /**
  * Layout de la oficina (docs/ALTEC-VO.md §8.2): el layout es dato, no codigo.
  *
- * La geometria esta portada de `docs/referencias/oficina-3d.html`. El color
- * NO: el prototipo usaba su propia paleta y aqui todo sale de los tokens de
- * marca via `../palette`.
+ * Aqui solo vive la GEOMETRIA, portada de `docs/referencias/oficina-3d.html`.
+ * El color no: lo pone el tema (`../themes`), que es intercambiable.
  *
  * Sistema de coordenadas: plano de 1200 x 720, origen arriba a la izquierda,
  * igual que el prototipo. La escena convierte a coordenadas de mundo; el
@@ -42,7 +39,6 @@ export type Room = {
   readonly y: number;
   readonly w: number;
   readonly h: number;
-  readonly floor: string;
   readonly doors: readonly Door[];
   /** Muros de cristal en lugar de opacos. */
   readonly glass?: boolean;
@@ -57,28 +53,24 @@ export const rooms: readonly Room[] = [
     id: "dir",
     name: "Dirección General",
     x: 20, y: 20, w: 260, h: 200,
-    floor: floors.office,
     doors: [{ inside: [262, 110], node: "A1", side: "r", at: 110 }],
   },
   {
     id: "sp",
     name: "Oficina de Partner",
     x: 20, y: 240, w: 260, h: 180,
-    floor: floors.office,
     doors: [{ inside: [262, 330], node: "A3", side: "r", at: 330 }],
   },
   {
     id: "lounge",
     name: "Lounge",
     x: 20, y: 440, w: 260, h: 260,
-    floor: floors.open,
     doors: [{ inside: [262, 570], node: "A5", side: "r", at: 570 }],
   },
   {
     id: "junta",
     name: "Sala de juntas",
     x: 300, y: 20, w: 400, h: 250,
-    floor: floors.meeting,
     glass: true,
     doors: [{ inside: [500, 252], node: "h1a", side: "b", at: 500 }],
   },
@@ -86,7 +78,6 @@ export const rooms: readonly Room[] = [
     id: "socio",
     name: "Oficina del socio · 20% humano",
     x: 720, y: 20, w: 220, h: 250,
-    floor: floors.human,
     human: true,
     doors: [{ inside: [830, 252], node: "h1c", side: "b", at: 830 }],
   },
@@ -94,21 +85,18 @@ export const rooms: readonly Room[] = [
     id: "lab",
     name: "Laboratorio de análisis",
     x: 960, y: 20, w: 220, h: 300,
-    floor: floors.open,
     doors: [{ inside: [978, 170], node: "B1", side: "l", at: 170 }],
   },
   {
     id: "pm",
     name: "Gestión de proyectos",
     x: 960, y: 340, w: 220, h: 180,
-    floor: floors.open,
     doors: [{ inside: [978, 430], node: "B3", side: "l", at: 430 }],
   },
   {
     id: "bull",
     name: "Piso de consultoría",
     x: 300, y: 290, w: 640, h: 230,
-    floor: floors.open,
     doors: [
       { inside: [620, 308], node: "h1b", side: "t", at: 620 },
       { inside: [620, 502], node: "h2b", side: "b", at: 620 },
@@ -118,7 +106,6 @@ export const rooms: readonly Room[] = [
     id: "lobby",
     name: "Recepción de clientes",
     x: 300, y: 540, w: 400, h: 160,
-    floor: floors.lobby,
     doors: [
       { inside: [500, 558], node: "h2a", side: "t", at: 500 },
       { inside: [500, 698], side: "b", at: 500 },
@@ -128,7 +115,6 @@ export const rooms: readonly Room[] = [
     id: "motor",
     name: "Motor de automatización · 80%",
     x: 720, y: 540, w: 460, h: 160,
-    floor: floors.technical,
     motor: true,
     doors: [{ inside: [830, 558], node: "h2c", side: "t", at: 830 }],
   },

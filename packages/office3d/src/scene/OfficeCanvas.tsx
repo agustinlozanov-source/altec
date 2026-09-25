@@ -2,10 +2,10 @@
 
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { NoToneMapping } from "three";
+import { ACESFilmicToneMapping, NoToneMapping } from "three";
 import { Suspense, useEffect, useRef } from "react";
 import type { AgentRuntime } from "@altec/events";
-import { scene as sceneColors } from "../palette";
+import { SceneThemeProvider, studioTheme, type SceneTheme } from "../themes";
 import { cameraViews, roomById, type CameraViewId } from "../layouts/default";
 import { OfficeScene } from "./OfficeScene";
 import { wx, wz } from "./coords";
@@ -69,6 +69,8 @@ function CameraRig({ view }: { view: CameraViewId }) {
 export type OfficeCanvasProps = {
   agents: Record<string, AgentRuntime>;
   view: CameraViewId;
+  /** Apariencia de la oficina. Por defecto, la del prototipo. */
+  theme?: SceneTheme;
   meetingTitle?: string;
   selectedAgent?: string | null;
   onSelectAgent?: (key: string | null) => void;
@@ -77,6 +79,7 @@ export type OfficeCanvasProps = {
 export function OfficeCanvas({
   agents,
   view,
+  theme = studioTheme,
   meetingTitle,
   selectedAgent,
   onSelectAgent,
@@ -85,20 +88,21 @@ export function OfficeCanvas({
     <Canvas
       shadows
       dpr={[1, 1.8]}
-      // Sin tone mapping filmico: apaga los neutros calidos y el look low-poly
-      // pide color plano.
-      gl={{ toneMapping: NoToneMapping }}
+      gl={{
+        toneMapping: theme.lighting.toneMapping === "none" ? NoToneMapping : ACESFilmicToneMapping,
+      }}
       camera={{ position: [-470, 620, 760], fov: 34, near: 1, far: 4000 }}
       onPointerMissed={() => onSelectAgent?.(null)}
-      style={{ background: sceneColors.background }}
     >
       <Suspense fallback={null}>
-        <OfficeScene
+        <SceneThemeProvider theme={theme}>
+          <OfficeScene
           agents={agents}
           {...(meetingTitle ? { meetingTitle } : {})}
           selectedAgent={selectedAgent ?? null}
           {...(onSelectAgent ? { onSelectAgent } : {})}
-        />
+          />
+        </SceneThemeProvider>
       </Suspense>
       <CameraRig view={view} />
     </Canvas>
