@@ -10,10 +10,16 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@altec/agents": "workspace:*",
+    "@altec/events": "workspace:*",
+    "@altec/office3d": "workspace:*",
+    "@react-three/drei": "^10.7.8",
+    "@react-three/fiber": "^9.8.0",
     "next": "^16.3.6",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "resend": "^6.29.0",
+    "three": "^0.186.1",
     "zod": "^4.6.5"
   },
   "devDependencies": {

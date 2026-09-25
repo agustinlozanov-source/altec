@@ -18,8 +18,9 @@ export const nav = [
   { label: "Nosotros", href: "/nosotros" },
   { label: "Empresas", href: "/empresas" },
   { label: "Consultoría", href: "/consultoria" },
+  { label: "ALTEC VO", href: "/oficina-virtual" },
   { label: "Contacto", href: "/contacto" },
 ] as const;
 
 /** Fase 1 solo publica Home, Nosotros y Contacto (docs/WEB.md §8). */
-export const phaseOneRoutes = new Set(["/", "/nosotros", "/contacto"]);
+export const phaseOneRoutes = new Set(["/", "/nosotros", "/contacto", "/oficina-virtual"]);

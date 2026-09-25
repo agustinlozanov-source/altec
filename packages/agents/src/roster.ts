@@ -43,7 +43,7 @@ export const roster: readonly AgentDefinition[] = [
       "Leyendo el tablero semanal",
     ],
     home: "dir.desk",
-    look: { wear: wear.ink, accent: wear.cream, hair: "#2b1d16", skin: "#e0b48f", longHair: true },
+    look: { wear: wear.charcoal, accent: wear.cream, hair: "#2b1d16", skin: "#e0b48f", longHair: true },
   },
   {
     key: "ricardo",
@@ -61,7 +61,7 @@ export const roster: readonly AgentDefinition[] = [
       "Llamada de seguimiento con cliente",
     ],
     home: "sp.desk",
-    look: { wear: wear.charcoal, accent: wear.sand, hair: "#8d8d8d", skin: "#d9a57c" },
+    look: { wear: wear.stone, accent: wear.cream, hair: "#8d8d8d", skin: "#d9a57c" },
   },
   {
     key: "mateo",
@@ -79,7 +79,7 @@ export const roster: readonly AgentDefinition[] = [
       "Preparando taller con cliente",
     ],
     home: "bull.desk-1",
-    look: { wear: wear.slate, hair: "#1e1511", skin: "#c68e63" },
+    look: { wear: wear.taupe, hair: "#1e1511", skin: "#c68e63" },
   },
   {
     key: "sofia",
@@ -115,7 +115,7 @@ export const roster: readonly AgentDefinition[] = [
       "Revisando un árbol de problemas",
     ],
     home: "bull.desk-2",
-    look: { wear: wear.stone, accent: wear.cream, hair: "#2b1d16", skin: "#e8bc96", longHair: true },
+    look: { wear: wear.sand, accent: wear.slate, hair: "#2b1d16", skin: "#e8bc96", longHair: true },
   },
   {
     key: "diego",
@@ -165,7 +165,7 @@ export const roster: readonly AgentDefinition[] = [
       "Preparando convocatorias",
     ],
     home: "bull.desk-5",
-    look: { wear: wear.charcoal, accent: wear.stone, hair: "#1e1511", skin: "#c68e63" },
+    look: { wear: wear.slate, accent: wear.cream, hair: "#1e1511", skin: "#c68e63" },
   },
   {
     key: "marco",
@@ -201,7 +201,7 @@ export const roster: readonly AgentDefinition[] = [
       "Revisando cuentas por cobrar",
     ],
     home: "lab.desk-1",
-    look: { wear: wear.slate, hair: "#2b1d16", skin: "#e8bc96", longHair: true },
+    look: { wear: wear.cream, accent: wear.taupe, hair: "#2b1d16", skin: "#e8bc96", longHair: true },
   },
   {
     key: "tomas",
@@ -215,7 +215,7 @@ export const roster: readonly AgentDefinition[] = [
     context: ["Fuentes de datos por cliente", "Diccionario de indicadores", "Accesos API"],
     routine: ["Refrescando tableros de clientes", "Limpiando la base del CRM", "Validando indicadores"],
     home: "lab.desk-2",
-    look: { wear: wear.stone, hair: "#1e1511", skin: "#a8714d" },
+    look: { wear: wear.taupe, accent: wear.cream, hair: "#1e1511", skin: "#a8714d" },
   },
   {
     key: "nora",
@@ -233,7 +233,7 @@ export const roster: readonly AgentDefinition[] = [
       "Calculando índices de confiabilidad",
     ],
     home: "lab.desk-3",
-    look: { wear: wear.ink, accent: wear.accent, hair: "#cfd8dc", skin: "#e0b48f", longHair: true },
+    look: { wear: wear.slate, accent: wear.accent, hair: "#cfd8dc", skin: "#e0b48f", longHair: true },
   },
 ];
 
