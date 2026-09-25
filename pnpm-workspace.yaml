@@ -2,5 +2,11 @@ packages:
   - "apps/*"
   - "packages/*"
 
-onlyBuiltDependencies:
-  - sharp
+# pnpm 11 no ejecuta scripts de instalacion salvo que se aprueben aqui.
+# Aplica igual en CI, asi que la lista tiene que estar completa antes de
+# desplegar en Netlify.
+allowBuilds:
+  # procesa imagenes: logos, favicon y Open Graph
+  sharp: true
+  # binding nativo del resolvedor de imports de ESLint
+  unrs-resolver: true

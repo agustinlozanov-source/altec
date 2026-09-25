@@ -1,0 +1,20 @@
+{
+  "name": "@altec/events",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@altec/config": "workspace:*",
+    "typescript": "^5.9.3"
+  }
+}

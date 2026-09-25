@@ -1,3 +1,6 @@
+export { altec, voState } from "./tokens";
+export type { AltecColor, VoStateColor } from "./tokens";
+
 export { cn } from "./cn";
 export type { ClassValue } from "./cn";
 
