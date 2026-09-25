@@ -457,7 +457,7 @@ Entregables:
 |---|---|---|
 | Framework | Next.js 14+ (App Router) | SSR, SEO nativo, escalabilidad |
 | Estilos | Tailwind CSS | Rapidez de desarrollo, consistencia |
-| Hosting | Vercel | Deploy automático, edge functions, SSL |
+| Hosting | Netlify | Deploy automático, SSL. Decidido en sep 2026; este documento proponía Vercel. `CLAUDE.md` manda. |
 | CMS (si necesario) | Contentful o Sanity | Contenido editable sin deploy |
 | Formularios | Resend + React Email | Emails transaccionales |
 | Analytics | Plausible o GA4 | Privacy-first o estándar |

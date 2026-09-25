@@ -44,7 +44,7 @@ Si dos documentos se contradicen, gana el de mayor prioridad. Si la contradicci√
 | Base de datos y auth | Supabase (Postgres, Auth, Realtime, Storage) |
 | Agentes | Claude Agent SDK (TypeScript) en `apps/engine` |
 | Correo | Resend + React Email |
-| Hosting | Vercel para `web`, `docs` y `vo`; Railway, Render o Fly.io para `engine` |
+| Hosting | **Netlify** para `web`, `docs` y `vo` (decidido sep 2026; el blueprint proponia Vercel). Railway, Render o Fly.io para `engine` |
 | Validaci√≥n | zod |
 
 No se introduce otro framework, otro lenguaje ni HTML suelto. Si algo parece requerirlo, pregunta primero.

@@ -46,3 +46,21 @@ su fase lo requiera (ver `CLAUDE.md`).
 Los colores, la tipografia y los breakpoints viven **solo** en
 `packages/ui/src/styles/theme.css`. Ninguna app escribe hex de marca a mano.
 Los logos van en `packages/ui/brand/`.
+
+## Despliegue
+
+`apps/web` se despliega en Netlify desde la raíz del repositorio. La
+configuración está en `netlify.toml`; no hace falta tocar los campos de build
+en el panel.
+
+Variables de entorno a configurar en Netlify (Site settings → Environment):
+
+| Variable | Para qué | Obligatoria |
+|---|---|---|
+| `NEXT_PUBLIC_SITE_URL` | URL pública del sitio. Alimenta metadata, Open Graph, `robots.txt` y `sitemap.xml`. | Sí |
+| `RESEND_API_KEY` | Envío del formulario de contacto. | No |
+| `CONTACT_FROM_EMAIL` | Remitente, con dominio verificado en Resend. | No |
+| `CONTACT_TO_EMAIL` | Destinatario. Por defecto `contacto@altec.mx`. | No |
+
+Sin las tres de Resend el formulario valida correctamente y ofrece el correo
+directo, en lugar de fallar en silencio.

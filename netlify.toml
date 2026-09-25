@@ -1,0 +1,31 @@
+# Despliegue de apps/web (altec.mx) desde el monorepo.
+# Netlify corre desde la raiz del repositorio para que pnpm vea el workspace
+# completo, y construye solo el paquete `web`.
+
+[build]
+  command = "pnpm build --filter web"
+  publish = "apps/web/.next"
+
+[build.environment]
+  NODE_VERSION = "24"
+  PNPM_VERSION = "11"
+  # Turborepo no necesita telemetria en CI
+  TURBO_TELEMETRY_DISABLED = "1"
+
+# El runtime de Next.js lo instala Netlify automaticamente al detectar el
+# framework. Se declara explicito para que no dependa de la deteccion.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+
+# Los assets con hash de Next son inmutables
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
