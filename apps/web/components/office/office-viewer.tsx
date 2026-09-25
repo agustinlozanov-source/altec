@@ -1,10 +1,16 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { roster, human } from "@altec/agents";
-import type { AgentRuntime } from "@altec/events";
-import { cameraViews, sceneThemes, type CameraViewId, type SceneThemeId } from "@altec/office3d";
+import {
+  cameraViews,
+  createOfficePeople,
+  sceneThemes,
+  type CameraViewId,
+  type Person,
+  type SceneThemeId,
+} from "@altec/office3d";
 import { cn } from "@altec/ui";
 
 /** El canvas solo existe en el navegador: WebGL no se renderiza en el servidor. */
@@ -20,7 +26,7 @@ const OfficeCanvas = dynamic(
   },
 );
 
-const stateLabels: Record<AgentRuntime["state"], string> = {
+const stateLabels: Record<Person["state"], string> = {
   working: "Trabajando",
   meeting: "En reunión",
   collab: "Colaborando",
@@ -28,7 +34,7 @@ const stateLabels: Record<AgentRuntime["state"], string> = {
   idle: "En pausa",
 };
 
-const stateDots: Record<AgentRuntime["state"], string> = {
+const stateDots: Record<Person["state"], string> = {
   working: "bg-vo-working",
   meeting: "bg-vo-meeting",
   collab: "bg-vo-collab",
@@ -39,19 +45,13 @@ const stateDots: Record<AgentRuntime["state"], string> = {
 export function OfficeViewer() {
   const [view, setView] = useState<CameraViewId>("general");
   const [themeId, setThemeId] = useState<SceneThemeId>("studio");
-  const [selected, setSelected] = useState<string | null>(null);
+  const overlay = useRef<HTMLDivElement>(null);
 
-  /**
-   * Todavia sin guion: cada agente arranca en su rutina. El estado ya tiene la
-   * forma que produce el reductor de eventos, asi que enchufar la simulacion
-   * no cambia nada de esta pantalla.
-   */
-  const agents: Record<string, AgentRuntime> = Object.fromEntries(
-    roster.map((a) => [
-      a.key,
-      { agentId: a.key, state: "working" as const, task: a.routine[0], tasksDone: 0 },
-    ]),
-  );
+  // Las personas son objetos mutables que la escena mueve cuadro a cuadro.
+  // Se crean una sola vez: volver a crearlas reiniciaria la oficina.
+  const people = useMemo(() => createOfficePeople(), []);
+  const byId = useMemo(() => new Map(people.map((p) => [p.id, p])), [people]);
+  const [selected, setSelected] = useState<string | null>(null);
 
   const agent = selected ? roster.find((a) => a.key === selected) : null;
 
@@ -60,12 +60,16 @@ export function OfficeViewer() {
       <div className="grid lg:grid-cols-[1fr_320px]">
         <div className="relative h-[420px] md:h-[560px] lg:h-[620px]">
           <OfficeCanvas
-            agents={agents}
+            people={people}
             view={view}
+            overlay={overlay}
             theme={sceneThemes[themeId]}
             selectedAgent={selected}
             onSelectAgent={setSelected}
           />
+
+          {/* Capa donde se proyectan nombres, globos y avisos de espera. */}
+          <div ref={overlay} className="pointer-events-none absolute inset-0 overflow-hidden" />
 
           <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
             {cameraViews.map((v) => (
@@ -163,7 +167,7 @@ export function OfficeViewer() {
           ) : (
             <ul className="flex-1 overflow-y-auto">
               {roster.map((a) => {
-                const state = agents[a.key]?.state ?? "idle";
+                const state = byId.get(a.key)?.state ?? "idle";
                 return (
                   <li key={a.key}>
                     <button

@@ -1,6 +1,7 @@
 export * from "./layouts/default";
 export * from "./routing";
 export * from "./themes";
+export * from "./runtime";
 
 export { OfficeCanvas } from "./scene/OfficeCanvas";
 export type { OfficeCanvasProps } from "./scene/OfficeCanvas";

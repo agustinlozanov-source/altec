@@ -1,9 +1,11 @@
 "use client";
 
-import { roster, human } from "@altec/agents";
-import type { AgentRuntime } from "@altec/events";
-import { rooms, spotById } from "../layouts/default";
+import { useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import { roster } from "@altec/agents";
+import { rooms } from "../layouts/default";
 import { useSceneTheme } from "../themes";
+import { createAmbientLoop, stepPerson, type Person } from "../runtime";
 import { Character } from "./Character";
 import { StaticFurniture, MeetingRoom } from "./Furniture";
 import { Room } from "./Room";
@@ -15,26 +17,43 @@ import { wx, wz } from "./coords";
  */
 
 export type OfficeSceneProps = {
-  agents: Record<string, AgentRuntime>;
+  people: Person[];
   meetingTitle?: string;
   selectedAgent?: string | null;
   onSelectAgent?: (key: string | null) => void;
+  /** Movimiento ambiental mientras no corre el guion del dia. */
+  ambient?: boolean;
 };
 
 export function OfficeScene({
-  agents,
+  people,
   meetingTitle,
   selectedAgent,
   onSelectAgent,
+  ambient = true,
 }: OfficeSceneProps) {
   const theme = useSceneTheme();
   const { lighting } = theme;
+  const ambientTick = useMemo(() => createAmbientLoop(people), [people]);
+  const clock = useRef(0);
 
+  useFrame((_, delta) => {
+    const dt = Math.min(delta, 0.1);
+    clock.current += dt;
+    for (const person of people) stepPerson(person, dt, theme.motion.walkSpeed);
+    for (const person of people) {
+      if (person.bubble && person.bubble.until < clock.current) person.bubble = null;
+    }
+    if (ambient) ambientTick(dt);
+  });
+
+  // Los monitores se encienden cuando su dueno esta en su lugar trabajando.
+  const byId = new Map(people.map((p) => [p.id, p]));
   const litDesks = new Set(
     roster
       .filter((a) => {
-        const runtime = agents[a.key];
-        return !runtime || runtime.state === "working";
+        const person = byId.get(a.key);
+        return person ? person.seat === a.home && person.state === "working" : true;
       })
       .map((a) => a.home),
   );
@@ -102,44 +121,15 @@ export function OfficeScene({
       <MeetingRoom {...(meetingTitle ? { title: meetingTitle } : {})} />
       <StaticFurniture litDesks={litDesks} />
 
-      {roster.map((agent) => {
-        const runtime = agents[agent.key];
-        const spotId = runtime?.spot ?? agent.home;
-        const spot = spotById.get(spotId) ?? spotById.get(agent.home);
-        if (!spot) return null;
+      {people.map((person) => (
+        <Character
+          key={person.id}
+          person={person}
+          selected={selectedAgent === person.id}
+          onSelect={() => onSelectAgent?.(selectedAgent === person.id ? null : person.id)}
+        />
+      ))}
 
-        const heading = spot.look
-          ? Math.atan2(spot.look[0] - spot.at[0], spot.look[1] - spot.at[1])
-          : 0;
-
-        return (
-          <Character
-            key={agent.key}
-            at={spot.at}
-            look={agent.look}
-            state={runtime?.state ?? "working"}
-            name={agent.shortName}
-            heading={heading}
-            {...(runtime?.say ? { say: runtime.say } : {})}
-            selected={selectedAgent === agent.key}
-            onSelect={() => onSelectAgent?.(selectedAgent === agent.key ? null : agent.key)}
-          />
-        );
-      })}
-
-      {(() => {
-        const spot = spotById.get(human.home);
-        if (!spot) return null;
-        return (
-          <Character
-            at={spot.at}
-            look={human.look}
-            state="idle"
-            name={human.shortName}
-            heading={Math.PI}
-          />
-        );
-      })()}
     </group>
   );
 }

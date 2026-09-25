@@ -4,10 +4,12 @@ import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { ACESFilmicToneMapping, NoToneMapping } from "three";
 import { Suspense, useEffect, useRef } from "react";
-import type { AgentRuntime } from "@altec/events";
+import type { RefObject } from "react";
+import type { Person } from "../runtime";
 import { SceneThemeProvider, studioTheme, type SceneTheme } from "../themes";
-import { cameraViews, roomById, type CameraViewId } from "../layouts/default";
+import { cameraViews, roomById, rooms, type CameraViewId } from "../layouts/default";
 import { OfficeScene } from "./OfficeScene";
+import { PeopleOverlay, RoomLabelsOverlay } from "./PeopleOverlay";
 import { wx, wz } from "./coords";
 
 /** Posicion de camara y objetivo para cada vista del panel (§8.4). */
@@ -67,8 +69,10 @@ function CameraRig({ view }: { view: CameraViewId }) {
 }
 
 export type OfficeCanvasProps = {
-  agents: Record<string, AgentRuntime>;
+  people: Person[];
   view: CameraViewId;
+  /** Contenedor donde se dibujan nombres y globos. */
+  overlay: RefObject<HTMLDivElement | null>;
   /** Apariencia de la oficina. Por defecto, la del prototipo. */
   theme?: SceneTheme;
   meetingTitle?: string;
@@ -77,8 +81,9 @@ export type OfficeCanvasProps = {
 };
 
 export function OfficeCanvas({
-  agents,
+  people,
   view,
+  overlay,
   theme = studioTheme,
   meetingTitle,
   selectedAgent,
@@ -97,10 +102,16 @@ export function OfficeCanvas({
       <Suspense fallback={null}>
         <SceneThemeProvider theme={theme}>
           <OfficeScene
-          agents={agents}
+          people={people}
           {...(meetingTitle ? { meetingTitle } : {})}
           selectedAgent={selectedAgent ?? null}
           {...(onSelectAgent ? { onSelectAgent } : {})}
+          />
+          <RoomLabelsOverlay rooms={rooms} container={overlay} />
+          <PeopleOverlay
+            people={people}
+            container={overlay}
+            selectedId={selectedAgent ?? null}
           />
         </SceneThemeProvider>
       </Suspense>

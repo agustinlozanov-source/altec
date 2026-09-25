@@ -1,6 +1,5 @@
 "use client";
 
-import { Html } from "@react-three/drei";
 import type { Room as RoomData } from "../layouts/default";
 import { useSceneTheme } from "../themes";
 import { wx, wz } from "./coords";
@@ -109,17 +108,6 @@ export function Room({ room }: { room: RoomData }) {
         </group>
       ))}
 
-      <Html
-        position={[wx(x + w / 2), 2, wz(y + h / 2)]}
-        center
-        distanceFactor={620}
-        pointerEvents="none"
-        zIndexRange={[10, 0]}
-      >
-        <span className="font-mono text-[10px] tracking-[0.18em] whitespace-nowrap uppercase select-none opacity-45">
-          {room.name}
-        </span>
-      </Html>
     </group>
   );
 }
