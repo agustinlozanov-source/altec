@@ -54,15 +54,16 @@ No se introduce otro framework, otro lenguaje ni HTML suelto. Si algo parece req
 | Token | Hex |
 |---|---|
 | `--altec-black` | `#000000` |
-| `--altec-cream` | `#F5E6D3` |
-| `--altec-green` | **`#CCFF78`** (verde oficial; sustituye a cualquier `#BEFF5E` que aparezca en material previo) |
+| `--altec-cream` | `#FFF0E4` |
+| `--altec-green` | **`#C1FF72`** (verde oficial, tomado de los archivos de marca; sustituye a `#CCFF78` y `#BEFF5E` de versiones previas) |
 | `--altec-dark-gray` | `#1A1A1A` |
 | `--altec-mid-gray` | `#6B6B6B` |
 | `--altec-white` | `#FFFFFF` |
 
 - Los colores se definen **una sola vez** en `packages/ui` (variables CSS + preset de Tailwind). Ninguna app escribe hex de marca a mano.
 - Modo oscuro por defecto. Sin gradientes, excepto la variante **Altec.AI** (gradiente azul a verde), reservada para ALTEC VO y productos de IA.
-- Tipografía: display bold itálica grotesca para títulos (la fuente corporativa que defina branding; mientras tanto, una alternativa de Google Fonts declarada en un solo lugar), sans limpia para texto y mono para datos.
+- Tipografía: **Open Sans**, la fuente del logotipo. Títulos en Extrabold **itálico**, texto en regular, y JetBrains Mono para datos. Se declara en un solo lugar (`packages/ui/src/fonts.ts`).
+- El logotipo es recto y los títulos son itálicos: es una decisión de diseño tomada a conciencia (sep 2026), no un descuido. La itálica da personalidad sin competir con la marca.
 
 ## Convenciones
 

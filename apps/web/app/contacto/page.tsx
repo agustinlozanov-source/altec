@@ -19,7 +19,7 @@ export default function ContactPage() {
           <h1 className="font-display text-altec-cream max-w-3xl text-4xl leading-[1.1] font-extrabold italic md:text-6xl">
             Hablemos.
           </h1>
-          <p className="text-altec-mid-gray mt-5 max-w-xl">
+          <p className="text-altec-cream/65 mt-5 max-w-xl">
             Inversión, consultoría, alianzas o prensa. Escríbenos y te respondemos.
           </p>
         </Container>
@@ -32,7 +32,7 @@ export default function ContactPage() {
           <aside className="flex flex-col gap-8">
             <div>
               <h2 className="text-altec-cream text-xs tracking-[0.18em] uppercase">Oficina</h2>
-              <p className="text-altec-mid-gray mt-3 text-sm">{site.address}</p>
+              <p className="text-altec-cream/65 mt-3 text-sm">{site.address}</p>
               <a
                 href={`mailto:${site.email}`}
                 className="text-altec-green hover:text-altec-green/80 mt-1 block text-sm"
@@ -49,7 +49,7 @@ export default function ContactPage() {
               className="rounded-card border-altec-cream/10 h-64 w-full border"
             />
 
-            <p className="text-altec-mid-gray border-altec-cream/10 border-t pt-6 text-xs leading-relaxed">
+            <p className="text-altec-cream/65 border-altec-cream/10 border-t pt-6 text-xs leading-relaxed">
               {site.legalName}. Toda la información de este sitio es confidencial y propiedad del
               grupo.
             </p>

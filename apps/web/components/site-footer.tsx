@@ -10,7 +10,7 @@ export function SiteFooter() {
       <Container className="grid gap-10 md:grid-cols-3">
         <div className="flex flex-col gap-4">
           <AltecLockup />
-          <p className="text-altec-mid-gray max-w-xs text-sm">
+          <p className="text-altec-cream/65 max-w-xs text-sm">
             {site.address}
             <br />
             <a href={`mailto:${site.email}`} className="hover:text-altec-cream">
@@ -26,12 +26,12 @@ export function SiteFooter() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-altec-mid-gray hover:text-altec-cream text-sm"
+                className="text-altec-cream/65 hover:text-altec-cream text-sm"
               >
                 {item.label}
               </Link>
             ) : (
-              <span key={item.href} className="text-altec-mid-gray/50 text-sm">
+              <span key={item.href} className="text-altec-cream/55 text-sm">
                 {item.label}
               </span>
             ),
@@ -52,7 +52,7 @@ export function SiteFooter() {
               href={company.url}
               target="_blank"
               rel="noreferrer noopener"
-              className="text-altec-mid-gray hover:text-altec-cream text-sm"
+              className="text-altec-cream/65 hover:text-altec-cream text-sm"
             >
               {company.name}
             </a>
@@ -61,7 +61,7 @@ export function SiteFooter() {
       </Container>
 
       <Container className="border-altec-cream/10 mt-12 border-t pt-6">
-        <p className="text-altec-mid-gray text-xs">
+        <p className="text-altec-cream/65 text-xs">
           {site.legalName} — CDMX, México. Toda la información de este sitio es confidencial y
           propiedad del grupo.
         </p>

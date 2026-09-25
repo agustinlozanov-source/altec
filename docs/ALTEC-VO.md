@@ -273,7 +273,7 @@ Hereda los tokens de `packages/ui` (`CLAUDE.md`). ALTEC VO es la única superfic
 
 - Fondo de interfaz: `--altec-black` y `--altec-dark-gray`.
 - Texto: `--altec-cream`.
-- Acento: `--altec-green` **`#CCFF78`**.
+- Acento: `--altec-green` **`#C1FF72`**.
 
 ### 9.2 Colores de estado
 
@@ -281,7 +281,7 @@ El verde de marca se usa para "trabajando" porque es el estado deseado. El ámba
 
 | Estado | Etiqueta | Color |
 |---|---|---|
-| `working` | Trabajando | `#CCFF78` (verde de marca) |
+| `working` | Trabajando | `#C1FF72` (verde de marca) |
 | `meeting` | En reunión | `#7FA8FF` |
 | `collab` | Colaborando | `#C39BFF` |
 | `awaiting` | Espera tu decisión | `#F5A524` (ámbar, uso exclusivo) |

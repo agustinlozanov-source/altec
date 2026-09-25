@@ -1,51 +1,81 @@
+import Image from "next/image";
 import { cn } from "../cn";
-import { AltecMark } from "./altec-mark";
+import logoDark from "../assets/altec-logo-dark.png";
+import logoLight from "../assets/altec-logo-light.png";
+import voDark from "../assets/altec-vo-dark.png";
+import voLight from "../assets/altec-vo-light.png";
 
 type Tone = "dark" | "light";
 
 /**
- * Logotipo "Altec" con las tres diagonales (docs/WEB.md §2.3).
- * `tone="dark"` es la version para fondo negro (texto cream);
+ * Logotipo oficial de ALTEC (docs/WEB.md §2.3).
+ * `tone="dark"` es la version para fondo oscuro (texto cream);
  * `tone="light"` la de fondo claro (texto negro).
  *
- * PROVISIONAL: el wordmark se compone tipograficamente con Open Sans
- * Extrabold italico, que es la fuente del logo. Cuando lleguen los SVG
- * oficiales (packages/ui/brand/logo/), este componente los monta en lugar
- * del texto y ninguna app se entera.
+ * El tamano se controla por altura: `className="h-7 w-auto"`. Los archivos
+ * vienen recortados al contenido, asi que la altura que pidas es la altura
+ * real del logotipo.
  */
 export function AltecLogo({
   tone = "dark",
   className,
-  withMark = true,
+  alt = "ALTEC Group",
+  priority = false,
 }: {
   tone?: Tone;
   className?: string;
-  withMark?: boolean;
+  alt?: string;
+  priority?: boolean;
 }) {
   return (
-    <span className={cn("inline-flex items-baseline gap-[0.18em]", className)}>
-      <span
-        className={cn(
-          "font-display text-[1em] leading-none font-extrabold italic tracking-[-0.02em]",
-          tone === "dark" ? "text-altec-cream" : "text-altec-black",
-        )}
-      >
-        Altec
-      </span>
-      {withMark ? <AltecMark className="h-[0.62em] w-auto self-start" /> : null}
-    </span>
+    <Image
+      src={tone === "dark" ? logoDark : logoLight}
+      alt={alt}
+      priority={priority}
+      aria-hidden={alt === "" ? true : undefined}
+      className={cn("w-auto", className)}
+    />
   );
 }
 
 /**
- * Bloque de logo con la razon social debajo, como aparece en el brandbook
- * (docs/WEB.md §2.3: subtexto corporativo sobre el logo limpio, sin diagonales).
+ * Variante Altec VO, la unica que usa el gradiente (docs/ALTEC-VO.md §9.1).
+ * Reservada para ALTEC VO y productos de IA.
+ */
+export function AltecVOLogo({
+  tone = "dark",
+  className,
+  alt = "ALTEC VO",
+  priority = false,
+}: {
+  tone?: Tone;
+  className?: string;
+  alt?: string;
+  priority?: boolean;
+}) {
+  return (
+    <Image
+      src={tone === "dark" ? voDark : voLight}
+      alt={alt}
+      priority={priority}
+      className={cn("w-auto", className)}
+    />
+  );
+}
+
+/**
+ * Bloque de logo con la razon social debajo (docs/WEB.md §2.3).
  */
 export function AltecLockup({ tone = "dark", className }: { tone?: Tone; className?: string }) {
   return (
-    <span className={cn("inline-flex flex-col gap-1", className)}>
-      <AltecLogo tone={tone} withMark={false} className="text-2xl" />
-      <span className="text-altec-mid-gray text-[0.6rem] tracking-[0.18em] uppercase">
+    <span className={cn("inline-flex flex-col items-start gap-2", className)}>
+      <AltecLogo tone={tone} className="h-7" />
+      <span
+        className={cn(
+          "text-[0.6rem] tracking-[0.18em] uppercase",
+          tone === "dark" ? "text-altec-cream/65" : "text-altec-black/60",
+        )}
+      >
         ALTEC Group SAPI de CV
       </span>
     </span>

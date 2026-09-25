@@ -19,7 +19,7 @@ export function SiteHeader() {
     <header className="bg-altec-black/80 border-altec-cream/10 sticky top-0 z-40 border-b backdrop-blur-md">
       <Container className="flex h-16 items-center justify-between gap-4">
         <Link href="/" aria-label="ALTEC Group, ir al inicio" className="shrink-0">
-          <AltecLogo className="text-xl" />
+          <AltecLogo className="h-6 md:h-7" alt="" priority />
         </Link>
 
         <nav aria-label="Navegación principal" className="hidden items-center gap-7 lg:flex">
@@ -32,7 +32,7 @@ export function SiteHeader() {
                 <span
                   key={item.href}
                   title="Próximamente — Fase 2"
-                  className="text-altec-mid-gray cursor-default text-sm"
+                  className="text-altec-cream/55 cursor-default text-sm"
                 >
                   {item.label}
                 </span>
@@ -94,7 +94,7 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ) : (
-              <span key={item.href} className="text-altec-mid-gray py-2 text-base">
+              <span key={item.href} className="text-altec-cream/55 py-2 text-base">
                 {item.label}
                 <span className="ml-2 text-xs">· próximamente</span>
               </span>

@@ -41,7 +41,7 @@ export function AltCycle({ className }: { className?: string }) {
         ))}
       </ol>
 
-      <p className="text-altec-black/50 flex items-center gap-2 font-mono text-xs">
+      <p className="text-altec-black/60 flex items-center gap-2 font-mono text-xs">
         <span aria-hidden="true" className="text-altec-green">
           ↻
         </span>

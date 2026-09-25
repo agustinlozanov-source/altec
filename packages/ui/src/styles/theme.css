@@ -7,15 +7,18 @@
 @theme {
   /* --- Paleta de marca (docs/WEB.md §2.1) --- */
   --color-altec-black: #000000;
-  --color-altec-cream: #f5e6d3;
-  --color-altec-green: #ccff78;
+  --color-altec-cream: #fff0e4;
+  --color-altec-green: #c1ff72;
   --color-altec-dark-gray: #1a1a1a;
+  /* OJO: sobre negro da 3.9:1, por debajo del 4.5:1 que exige AA. Sirve para
+     bordes, iconos y texto grande, no para texto corrido sobre fondo oscuro.
+     Para texto secundario en oscuro usa `text-altec-cream/65` (7.8:1). */
   --color-altec-mid-gray: #6b6b6b;
   --color-altec-white: #ffffff;
 
   /* --- Estados de agente en ALTEC VO (docs/ALTEC-VO.md §9.2) ---
      El ambar es de uso exclusivo para "espera tu decision". No usarlo para nada mas. */
-  --color-vo-working: #ccff78;
+  --color-vo-working: #c1ff72;
   --color-vo-meeting: #7fa8ff;
   --color-vo-collab: #c39bff;
   --color-vo-awaiting: #f5a524;

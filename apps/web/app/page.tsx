@@ -21,13 +21,13 @@ export default function HomePage() {
       {/* --- Hero (docs/WEB.md §4.1) --- */}
       <section className="bg-altec-black flex min-h-[calc(100svh-4rem)] items-center py-20">
         <Container className="flex flex-col items-start gap-8">
-          <AltecLogo className="text-5xl md:text-7xl wide:text-8xl" />
+          <AltecLogo className="h-14 md:h-20 wide:h-24" priority />
 
           <h1 className="font-display text-altec-cream max-w-3xl text-3xl leading-[1.1] font-extrabold italic md:text-5xl wide:text-6xl">
             Advisory · Learning · Technology
           </h1>
 
-          <p className="text-altec-mid-gray max-w-2xl text-base md:text-lg">
+          <p className="text-altec-cream/65 max-w-2xl text-base md:text-lg">
             El grupo empresarial que integra consultoría, educación y tecnología para escalar PyMEs
             en Latinoamérica.
           </p>
@@ -61,7 +61,7 @@ export default function HomePage() {
           Nuestras empresas
         </h2>
 
-        <p className="text-altec-mid-gray mt-4 max-w-2xl text-base">
+        <p className="text-altec-cream/65 mt-4 max-w-2xl text-base">
           Cinco empresas con operación propia, integradas bajo un holding. Cada una mantiene su
           marca y su dominio; ALTEC las conecta.
         </p>

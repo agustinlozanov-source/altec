@@ -15,7 +15,7 @@ export function CompanyCard({ company }: { company: Company }) {
         </span>
       </div>
 
-      <p className="text-altec-mid-gray text-sm">{company.industry}</p>
+      <p className="text-altec-cream/65 text-sm">{company.industry}</p>
 
       <p className="text-altec-cream font-mono text-sm leading-relaxed">{company.metric}</p>
 

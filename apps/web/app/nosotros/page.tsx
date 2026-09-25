@@ -85,7 +85,7 @@ export default function AboutPage() {
             >
               <div
                 aria-hidden="true"
-                className="border-altec-cream/15 text-altec-mid-gray font-display flex h-14 w-14 shrink-0 items-center justify-center rounded-full border text-lg font-extrabold italic"
+                className="border-altec-cream/15 text-altec-cream/65 font-display flex h-14 w-14 shrink-0 items-center justify-center rounded-full border text-lg font-extrabold italic"
               >
                 {initials(person.name)}
               </div>
@@ -95,7 +95,7 @@ export default function AboutPage() {
                   {person.name}
                 </h3>
                 <p className="text-altec-green mt-0.5 font-mono text-xs">{person.role}</p>
-                <p className="text-altec-mid-gray mt-3 text-sm leading-relaxed">{person.bio}</p>
+                <p className="text-altec-cream/65 mt-3 text-sm leading-relaxed">{person.bio}</p>
               </div>
             </article>
           ))}
@@ -124,7 +124,7 @@ export default function AboutPage() {
               <h3 className="font-display text-altec-black mt-3 text-xl font-extrabold italic">
                 {pillar.name}
               </h3>
-              <p className="text-altec-black/50 mt-1 text-xs tracking-wide uppercase">
+              <p className="text-altec-black/60 mt-1 text-xs tracking-wide uppercase">
                 {pillar.full}
               </p>
               <p className="text-altec-black/70 mt-3 text-sm leading-relaxed">{pillar.text}</p>

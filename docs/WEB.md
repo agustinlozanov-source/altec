@@ -30,8 +30,8 @@ Extraída directamente del brandbook y los logos oficiales:
 | Token | Hex | Uso |
 |---|---|---|
 | `--altec-black` | `#000000` | Fondo principal, textos en modo claro |
-| `--altec-cream` | `#F5E6D3` | Textos sobre fondo oscuro, fondo modo claro |
-| `--altec-green` | `#CCFF78` | Acento principal, CTAs, isotipo (las tres diagonales). **Verde oficial confirmado** (sustituye al `#BEFF5E` de versiones previas). |
+| `--altec-cream` | `#FFF0E4` | Textos sobre fondo oscuro, fondo modo claro |
+| `--altec-green` | `#C1FF72` | Acento principal, CTAs, isotipo (las tres diagonales). **Verde oficial**, medido directamente sobre los archivos de marca (sustituye a `#CCFF78` y `#BEFF5E` de versiones previas). |
 | `--altec-dark-gray` | `#1A1A1A` | Fondos secundarios, cards |
 | `--altec-mid-gray` | `#6B6B6B` | Textos secundarios, subtítulos |
 | `--altec-white` | `#FFFFFF` | Fondos alternativos, contraste |

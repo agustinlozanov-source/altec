@@ -9,7 +9,7 @@ const initialState: ContactState = { status: "idle" };
 
 const fieldClass =
   "w-full rounded-card border border-altec-cream/15 bg-altec-dark-gray px-4 py-3 text-sm " +
-  "text-altec-cream placeholder:text-altec-mid-gray focus:border-altec-green focus:outline-none";
+  "text-altec-cream placeholder:text-altec-cream/65 focus:border-altec-green focus:outline-none";
 
 function Field({
   label,
@@ -28,11 +28,11 @@ function Field({
     <div className="flex flex-col gap-2">
       <label htmlFor={name} className="text-altec-cream text-sm">
         {label}
-        {optional ? <span className="text-altec-mid-gray"> (opcional)</span> : null}
+        {optional ? <span className="text-altec-cream/65"> (opcional)</span> : null}
       </label>
       {children}
       {error ? (
-        <p id={`${name}-error`} role="alert" className="text-xs text-[#F5A524]">
+        <p id={`${name}-error`} role="alert" className="text-xs text-vo-awaiting">
           {error}
         </p>
       ) : null}
@@ -53,7 +53,7 @@ export function ContactForm() {
         <p className="font-display text-altec-cream text-xl font-extrabold italic">
           Mensaje enviado.
         </p>
-        <p className="text-altec-mid-gray mt-2 text-sm">
+        <p className="text-altec-cream/65 mt-2 text-sm">
           Gracias por escribirnos. Te respondemos en breve.
         </p>
       </div>
@@ -155,7 +155,7 @@ export function ContactForm() {
       </Field>
 
       {state.status === "error" && state.message ? (
-        <p role="alert" className="text-sm text-[#F5A524]">
+        <p role="alert" className="text-sm text-vo-awaiting">
           {state.message}
         </p>
       ) : null}
