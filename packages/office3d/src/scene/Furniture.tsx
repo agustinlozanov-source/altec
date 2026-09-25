@@ -72,9 +72,18 @@ export function Monitor({ at, lit = false }: { at: Point; lit?: boolean }) {
 }
 
 /** Escritorio de trabajo: tablero, patas, teclado, raton, monitor y silla. */
+/**
+ * Distancia entre el escritorio y quien lo ocupa. En el prototipo el
+ * escritorio se dibuja en `y` y la silla en `y + 28`, y el agente se sienta en
+ * la silla. El `spot` del layout es la posicion del AGENTE, asi que el
+ * escritorio va 28 unidades delante y la silla justo bajo el agente.
+ */
+const SEAT_OFFSET = 28;
+
 export function Desk({ spot, lit = false }: { spot: Spot; lit?: boolean }) {
   const { furniture } = useSceneTheme();
-  const [x, y] = spot.at;
+  const [x, seatY] = spot.at;
+  const y = seatY - SEAT_OFFSET;
   const vacant = spot.kind === "vacant";
 
   if (vacant) {
@@ -119,7 +128,7 @@ export function Desk({ spot, lit = false }: { spot: Spot; lit?: boolean }) {
         </mesh>
       </group>
       <Monitor at={[x, y - 6]} lit={lit} />
-      <Chair at={[x, y + 28]} look={[x, y]} />
+      <Chair at={[x, seatY]} look={[x, y]} />
     </group>
   );
 }

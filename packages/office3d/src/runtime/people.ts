@@ -120,44 +120,50 @@ export const walkHome = (person: Person) => walkToSpot(person, person.home);
  * plano por segundo.
  */
 export function stepPerson(person: Person, dt: number, speed: number): void {
-  const target = person.path[0];
-
-  if (!target) {
-    if (person.moving) {
-      person.moving = false;
-      const arrive = person.onArrive;
-      person.onArrive = undefined;
-      arrive?.();
-    }
+  if (person.path.length === 0) {
+    person.moving = false;
     return;
   }
 
   person.moving = true;
+  // La fase es tiempo caminando, no distancia: el balanceo lo calcula la
+  // figura como sin(phase * 10), igual que el prototipo.
+  person.phase += dt;
 
-  const dx = target[0] - person.x;
-  const dy = target[1] - person.y;
-  const distance = Math.hypot(dx, dy);
-  const stride = speed * dt;
+  // Se consume TODO el avance del cuadro aunque cruce varios tramos. Avanzar
+  // un solo tramo por cuadro hace que el paso se atore en cada esquina.
+  let left = speed * dt;
 
-  if (distance <= stride) {
-    person.x = target[0];
-    person.y = target[1];
-    person.path.shift();
-    if (person.path.length === 0) {
-      if (person.destRoom) person.room = person.destRoom;
-      person.destRoom = null;
-      person.moving = false;
-      const arrive = person.onArrive;
-      person.onArrive = undefined;
-      arrive?.();
+  while (left > 0 && person.path.length) {
+    const target = person.path[0];
+    if (!target) break;
+
+    const dx = target[0] - person.x;
+    const dy = target[1] - person.y;
+    const distance = Math.hypot(dx, dy);
+
+    if (distance > 0.01) person.dir = Math.atan2(dx, dy);
+
+    if (distance <= left) {
+      person.x = target[0];
+      person.y = target[1];
+      left -= distance;
+      person.path.shift();
+    } else {
+      person.x += (dx / distance) * left;
+      person.y += (dy / distance) * left;
+      left = 0;
     }
-    return;
   }
 
-  person.x += (dx / distance) * stride;
-  person.y += (dy / distance) * stride;
-  person.dir = Math.atan2(dx, dy);
-  person.phase += (stride / 26) * Math.PI;
+  if (person.path.length === 0) {
+    person.moving = false;
+    if (person.destRoom) person.room = person.destRoom;
+    person.destRoom = null;
+    const arrive = person.onArrive;
+    person.onArrive = undefined;
+    arrive?.();
+  }
 }
 
 /** Dice si la persona deberia estar sentada. */

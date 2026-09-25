@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Container, Section } from "@altec/ui";
+import { AltecVOLogo, Container, Section } from "@altec/ui";
 import { OfficeViewer } from "@/components/office/office-viewer";
 
 export const metadata: Metadata = {
@@ -28,10 +28,9 @@ export default function VirtualOfficePage() {
     <>
       <section className="bg-altec-black pt-20 pb-10 md:pt-28">
         <Container>
-          <p className="text-altec-green font-mono text-xs tracking-[0.2em] uppercase">
-            ALTEC VO
-          </p>
-          <h1 className="font-display text-altec-cream mt-4 max-w-3xl text-4xl leading-[1.1] font-extrabold italic md:text-6xl">
+          <AltecVOLogo className="h-9 md:h-12" priority />
+
+          <h1 className="font-display text-altec-cream mt-6 max-w-3xl text-4xl leading-[1.1] font-extrabold italic md:text-6xl">
             Una firma que puedes ver trabajar.
           </h1>
           <p className="text-altec-cream/65 mt-6 max-w-2xl text-base md:text-lg">

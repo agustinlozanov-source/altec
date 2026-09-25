@@ -108,7 +108,7 @@ export const studioTheme: SceneTheme = {
   },
 
   motion: {
-    walkSpeed: 62,
+    walkSpeed: 120,
     bobRate: 3.4,
     bobHeight: 1.1,
     cameraEase: 0.9,
