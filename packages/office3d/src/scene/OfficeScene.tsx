@@ -1,11 +1,15 @@
 "use client";
 
 import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
 import { roster } from "@altec/agents";
 import { rooms } from "../layouts/default";
 import { useSceneTheme } from "../themes";
-import { createAmbientLoop, stepPerson, type Person } from "../runtime";
+import { stepPerson } from "../runtime/people";
+import type { DayScript } from "../runtime/script";
+import type { Simulation } from "../runtime/sim";
+import { Boards } from "./Boards";
+import { Motor } from "./Motor";
+import { SelectedPath } from "./SelectedPath";
 import { Character } from "./Character";
 import { StaticFurniture, MeetingRoom } from "./Furniture";
 import { Room } from "./Room";
@@ -17,34 +21,24 @@ import { wx, wz } from "./coords";
  */
 
 export type OfficeSceneProps = {
-  people: Person[];
-  meetingTitle?: string;
+  sim: Simulation;
+  script: DayScript;
   selectedAgent?: string | null;
   onSelectAgent?: (key: string | null) => void;
-  /** Movimiento ambiental mientras no corre el guion del dia. */
-  ambient?: boolean;
 };
 
-export function OfficeScene({
-  people,
-  meetingTitle,
-  selectedAgent,
-  onSelectAgent,
-  ambient = true,
-}: OfficeSceneProps) {
+export function OfficeScene({ sim, script, selectedAgent, onSelectAgent }: OfficeSceneProps) {
   const theme = useSceneTheme();
   const { lighting } = theme;
-  const ambientTick = useMemo(() => createAmbientLoop(people), [people]);
-  const clock = useRef(0);
+  const people = sim.people;
 
   useFrame((_, delta) => {
-    const dt = Math.min(delta, 0.1);
-    clock.current += dt;
-    for (const person of people) stepPerson(person, dt, theme.motion.walkSpeed);
-    for (const person of people) {
-      if (person.bubble && person.bubble.until < clock.current) person.bubble = null;
-    }
-    if (ambient) ambientTick(dt);
+    // La simulacion manda: lleva el reloj, la pausa y la velocidad, y mueve a
+    // cada persona. La escena solo dibuja el resultado.
+    sim.step(Math.min(delta, 0.1), (person, d) =>
+      stepPerson(person, d, theme.motion.walkSpeed),
+    );
+    if (!sim.paused) script.tickAmbient();
   });
 
   // Los monitores se encienden cuando su dueno esta en su lugar trabajando.
@@ -118,8 +112,11 @@ export function OfficeScene({
         <Room key={room.id} room={room} />
       ))}
 
-      <MeetingRoom {...(meetingTitle ? { title: meetingTitle } : {})} />
+      <MeetingRoom {...(sim.meetingTitle ? { title: sim.meetingTitle } : {})} />
       <StaticFurniture litDesks={litDesks} />
+      <Motor sim={sim} />
+      <Boards sim={sim} />
+      <SelectedPath people={people} selectedId={selectedAgent ?? null} />
 
       {people.map((person) => (
         <Character

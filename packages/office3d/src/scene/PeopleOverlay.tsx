@@ -178,3 +178,48 @@ export function RoomLabelsOverlay({
 
   return null;
 }
+
+/** Contador de tareas automatizadas, flotando sobre el motor (§8.2). */
+export function MotorCounter({
+  value,
+  container,
+}: {
+  value: number;
+  container: RefObject<HTMLDivElement | null>;
+}) {
+  const { camera, size } = useThree();
+  const node = useRef<HTMLDivElement | null>(null);
+  const vec = useRef(new Vector3());
+
+  useEffect(() => {
+    const host = container.current;
+    if (!host) return;
+    const el = document.createElement("div");
+    el.className =
+      "absolute left-0 top-0 -translate-x-1/2 text-center whitespace-nowrap " +
+      "font-mono text-lg tabular-nums text-white/90";
+    host.appendChild(el);
+    node.current = el;
+    return () => {
+      el.remove();
+      node.current = null;
+    };
+  }, [container]);
+
+  useFrame(() => {
+    const el = node.current;
+    if (!el) return;
+    vec.current.set(wx(1100), 40, wz(560)).project(camera);
+    const ok = vec.current.z < 1 && vec.current.z > -1;
+    el.hidden = !ok;
+    if (!ok) return;
+    const x = ((vec.current.x + 1) / 2) * size.width;
+    const y = ((1 - vec.current.y) / 2) * size.height;
+    el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`;
+    el.innerHTML =
+      `${value.toLocaleString("es-MX")}` +
+      `<span class="block text-[9px] uppercase tracking-[0.15em] text-white/45">tareas automatizadas</span>`;
+  });
+
+  return null;
+}

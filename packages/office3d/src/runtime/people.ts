@@ -115,6 +115,30 @@ export function walkToSpot(person: Person, spotId: string): Promise<void> {
 
 export const walkHome = (person: Person) => walkToSpot(person, person.home);
 
+/** Manda a una persona a un punto cualquiera, no necesariamente un lugar con nombre. */
+export function walkToPoint(
+  person: Person,
+  room: string,
+  x: number,
+  y: number,
+  look?: Point,
+): Promise<void> {
+  if (person.room === room && Math.hypot(person.x - x, person.y - y) < 1) {
+    if (look) person.dir = Math.atan2(look[0] - person.x, look[1] - person.y);
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve) => {
+    person.path = route({ room: person.room, at: [person.x, person.y] }, room, [x, y]);
+    person.destRoom = room;
+    person.seat = null;
+    person.onArrive = () => {
+      if (look) person.dir = Math.atan2(look[0] - person.x, look[1] - person.y);
+      resolve();
+    };
+  });
+}
+
 /**
  * Avanza una persona un cuadro. `dt` en segundos, `speed` en unidades de
  * plano por segundo.

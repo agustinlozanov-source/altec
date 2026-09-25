@@ -1,25 +1,22 @@
 "use client";
 
 import { OrbitControls } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
-import { ACESFilmicToneMapping, NoToneMapping } from "three";
-import { Suspense, useEffect, useRef } from "react";
-import type { RefObject } from "react";
-import type { Person } from "../runtime";
-import { SceneThemeProvider, studioTheme, type SceneTheme } from "../themes";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Suspense, useEffect, useRef, type RefObject } from "react";
+import { ACESFilmicToneMapping, NoToneMapping, Vector3 } from "three";
 import { cameraViews, roomById, rooms, type CameraViewId } from "../layouts/default";
+import type { DayScript } from "../runtime/script";
+import type { Simulation } from "../runtime/sim";
+import { SceneThemeProvider, studioTheme, type SceneTheme } from "../themes";
 import { OfficeScene } from "./OfficeScene";
-import { PeopleOverlay, RoomLabelsOverlay } from "./PeopleOverlay";
+import { MotorCounter, PeopleOverlay, RoomLabelsOverlay } from "./PeopleOverlay";
 import { wx, wz } from "./coords";
 
 /** Posicion de camara y objetivo para cada vista del panel (§8.4). */
-function viewTarget(view: CameraViewId): {
-  position: [number, number, number];
-  target: [number, number, number];
-} {
+function viewTarget(view: CameraViewId): { position: Vector3; target: Vector3 } {
   const general = {
-    position: [-470, 620, 760] as [number, number, number],
-    target: [0, 0, 30] as [number, number, number],
+    position: new Vector3(-470, 620, 760),
+    target: new Vector3(0, 0, 30),
   };
   if (view === "general") return general;
 
@@ -28,32 +25,90 @@ function viewTarget(view: CameraViewId): {
 
   const cx = wx(room.x + room.w / 2);
   const cz = wz(room.y + room.h / 2);
-  // Lo justo para que se lean las caras y los nombres, sin perder la sala.
   const span = Math.max(room.w, room.h);
   const dist = Math.max(span * 0.62, 190);
+
   return {
-    position: [cx - dist * 0.55, dist * 0.78, cz + dist * 0.95],
-    target: [cx, 22, cz],
+    position: new Vector3(cx - dist * 0.55, dist * 0.78, cz + dist * 0.95),
+    target: new Vector3(cx, 22, cz),
   };
 }
 
 type ControlsLike = {
-  object: { position: { set: (x: number, y: number, z: number) => void } };
-  target: { set: (x: number, y: number, z: number) => void };
+  target: Vector3;
   update: () => void;
+  addEventListener: (type: string, fn: () => void) => void;
+  removeEventListener: (type: string, fn: () => void) => void;
 };
 
-function CameraRig({ view }: { view: CameraViewId }) {
+/**
+ * Camara: obedece los botones de vista y, si la automatica esta encendida, se
+ * acerca sola cuando empieza una junta o llega una decision. Se apaga sola en
+ * cuanto el usuario mueve la camara, como en el prototipo.
+ */
+function CameraRig({
+  view,
+  sim,
+  autoCam,
+  onUserMove,
+  onAutoView,
+}: {
+  view: CameraViewId;
+  sim: Simulation;
+  autoCam: boolean;
+  onUserMove: () => void;
+  onAutoView: (view: CameraViewId) => void;
+}) {
   const controls = useRef<ControlsLike | null>(null);
+  const { camera } = useThree();
+  const anim = useRef<{ fromP: Vector3; fromT: Vector3; toP: Vector3; toT: Vector3; t: number } | null>(
+    null,
+  );
 
   useEffect(() => {
     const node = controls.current;
     if (!node) return;
     const { position, target } = viewTarget(view);
-    node.object.position.set(...position);
-    node.target.set(...target);
+    anim.current = {
+      fromP: camera.position.clone(),
+      fromT: node.target.clone(),
+      toP: position,
+      toT: target,
+      t: 0,
+    };
+  }, [view, camera]);
+
+  useEffect(() => {
+    const node = controls.current;
+    if (!node) return;
+    const handler = () => {
+      anim.current = null;
+      onUserMove();
+    };
+    node.addEventListener("start", handler);
+    return () => node.removeEventListener("start", handler);
+  }, [onUserMove]);
+
+  // La simulacion pide foco; solo se obedece si la automatica esta encendida.
+  useEffect(() => {
+    if (!autoCam || !sim.focusRequest) return;
+    const requested = sim.focusRequest as CameraViewId;
+    sim.focusRequest = null;
+    if (cameraViews.some((v) => v.id === requested)) onAutoView(requested);
+  });
+
+  useFrame((_, delta) => {
+    const node = controls.current;
+    const a = anim.current;
+    if (!node || !a) return;
+
+    a.t = Math.min(1, a.t + delta / 1.3);
+    const e = 1 - Math.pow(1 - a.t, 3);
+    camera.position.lerpVectors(a.fromP, a.toP, e);
+    node.target.lerpVectors(a.fromT, a.toT, e);
     node.update();
-  }, [view]);
+    if (a.t >= 1) anim.current = null;
+  });
 
   return (
     <OrbitControls
@@ -63,29 +118,34 @@ function CameraRig({ view }: { view: CameraViewId }) {
       minDistance={110}
       maxDistance={1500}
       maxPolarAngle={Math.PI / 2.35}
-      target={[0, 0, 40]}
+      target={[0, 0, 30]}
     />
   );
 }
 
 export type OfficeCanvasProps = {
-  people: Person[];
+  sim: Simulation;
+  script: DayScript;
   view: CameraViewId;
-  /** Contenedor donde se dibujan nombres y globos. */
   overlay: RefObject<HTMLDivElement | null>;
+  autoCam: boolean;
+  onUserMove: () => void;
+  onAutoView: (view: CameraViewId) => void;
   /** Apariencia de la oficina. Por defecto, la del prototipo. */
   theme?: SceneTheme;
-  meetingTitle?: string;
   selectedAgent?: string | null;
   onSelectAgent?: (key: string | null) => void;
 };
 
 export function OfficeCanvas({
-  people,
+  sim,
+  script,
   view,
   overlay,
+  autoCam,
+  onUserMove,
+  onAutoView,
   theme = studioTheme,
-  meetingTitle,
   selectedAgent,
   onSelectAgent,
 }: OfficeCanvasProps) {
@@ -102,20 +162,27 @@ export function OfficeCanvas({
       <Suspense fallback={null}>
         <SceneThemeProvider theme={theme}>
           <OfficeScene
-          people={people}
-          {...(meetingTitle ? { meetingTitle } : {})}
-          selectedAgent={selectedAgent ?? null}
-          {...(onSelectAgent ? { onSelectAgent } : {})}
+            sim={sim}
+            script={script}
+            selectedAgent={selectedAgent ?? null}
+            {...(onSelectAgent ? { onSelectAgent } : {})}
           />
           <RoomLabelsOverlay rooms={rooms} container={overlay} />
+          <MotorCounter value={sim.automatedTasks} container={overlay} />
           <PeopleOverlay
-            people={people}
+            people={sim.people}
             container={overlay}
             selectedId={selectedAgent ?? null}
           />
         </SceneThemeProvider>
       </Suspense>
-      <CameraRig view={view} />
+      <CameraRig
+        view={view}
+        sim={sim}
+        autoCam={autoCam}
+        onUserMove={onUserMove}
+        onAutoView={onAutoView}
+      />
     </Canvas>
   );
 }
