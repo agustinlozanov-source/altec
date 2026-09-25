@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+/* Tokens de marca: unica fuente de verdad, desde packages/ui */
+@import "@altec/ui/styles/theme.css";
+
+/* Las clases de @altec/ui viven fuera de esta app, hay que decirle a
+   Tailwind que tambien escanee ese paquete. */
+@source "../../../packages/ui/src";

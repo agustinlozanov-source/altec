@@ -1,0 +1,86 @@
+/*
+ * Tokens de marca de ALTEC. Fuente unica de verdad para todo el monorepo.
+ * Referencia: CLAUDE.md y docs/WEB.md §2.
+ * Ninguna app escribe hex de marca a mano. Si falta un color, se agrega aqui.
+ */
+
+@theme {
+  /* --- Paleta de marca (docs/WEB.md §2.1) --- */
+  --color-altec-black: #000000;
+  --color-altec-cream: #f5e6d3;
+  --color-altec-green: #ccff78;
+  --color-altec-dark-gray: #1a1a1a;
+  --color-altec-mid-gray: #6b6b6b;
+  --color-altec-white: #ffffff;
+
+  /* --- Estados de agente en ALTEC VO (docs/ALTEC-VO.md §9.2) ---
+     El ambar es de uso exclusivo para "espera tu decision". No usarlo para nada mas. */
+  --color-vo-working: #ccff78;
+  --color-vo-meeting: #7fa8ff;
+  --color-vo-collab: #c39bff;
+  --color-vo-awaiting: #f5a524;
+  --color-vo-idle: #6b6b6b;
+
+  /* --- Tipografia (docs/WEB.md §2.2) ---
+     Open Sans es la fuente del logo, asi que sirve para titulos y texto.
+     Los titulos usan Extrabold italico, que es el tratamiento del logotipo. */
+  --font-display: var(--font-open-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-open-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  /* --- Radios (docs/WEB.md §2.4: 8-12px en cards) --- */
+  --radius-card: 0.625rem;
+  --radius-pill: 9999px;
+
+  /* --- Breakpoints (docs/WEB.md §6.3) ---
+     Se reinician para dejar solo los cuatro del blueprint: la base es movil (320),
+     y de ahi md=768, lg=1024, wide=1440. No hay sm ni xl a proposito. */
+  --breakpoint-*: initial;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-wide: 1440px;
+}
+
+/*
+ * Alias con los nombres de token que nombra CLAUDE.md, para poder usarlos
+ * en CSS plano y en la escena 3D sin pasar por utilidades de Tailwind.
+ */
+:root {
+  --altec-black: var(--color-altec-black);
+  --altec-cream: var(--color-altec-cream);
+  --altec-green: var(--color-altec-green);
+  --altec-dark-gray: var(--color-altec-dark-gray);
+  --altec-mid-gray: var(--color-altec-mid-gray);
+  --altec-white: var(--color-altec-white);
+
+  /* Modo oscuro es el predeterminado (docs/WEB.md §2.4) */
+  color-scheme: dark;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-altec-black);
+    color: var(--color-altec-cream);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Accesibilidad: foco visible en todo el sitio (CLAUDE.md) */
+  :focus-visible {
+    outline: 2px solid var(--color-altec-green);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Accesibilidad: respetar prefers-reduced-motion (CLAUDE.md) */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
