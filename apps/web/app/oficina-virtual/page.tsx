@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { AltecVOLogo, Container, Section } from "@altec/ui";
+import { AltecVOHero, Container, Section } from "@altec/ui";
 import { OfficeViewer } from "@/components/office/office-viewer";
 
 export const metadata: Metadata = {
@@ -26,14 +26,15 @@ const principles = [
 export default function VirtualOfficePage() {
   return (
     <>
-      <section className="bg-altec-black pt-20 pb-10 md:pt-28">
-        <Container>
-          <AltecVOLogo className="h-9 md:h-12" priority />
+      {/* --- portada --- */}
+      <section className="bg-altec-black relative flex min-h-[62svh] items-end overflow-hidden pt-24 pb-14 md:min-h-[72svh] md:pt-32 md:pb-20">
+        <AltecVOHero />
 
-          <h1 className="font-display text-altec-cream mt-6 max-w-3xl text-4xl leading-[1.1] font-extrabold italic md:text-6xl">
+        <Container className="relative">
+          <h1 className="font-display text-altec-cream max-w-3xl text-4xl leading-[1.05] font-extrabold italic md:text-6xl wide:text-7xl">
             Una firma que puedes ver trabajar.
           </h1>
-          <p className="text-altec-cream/65 mt-6 max-w-2xl text-base md:text-lg">
+          <p className="text-altec-cream/75 mt-6 max-w-2xl text-base md:text-lg">
             Cada rol de la consultoría es un agente con personalidad, método y contexto. Trabajan,
             se reúnen, se pasan trabajo y, cuando algo requiere criterio humano, te lo traen.
           </p>
@@ -43,8 +44,7 @@ export default function VirtualOfficePage() {
       <Section tone="dark" className="pt-4 pb-16">
         <OfficeViewer />
         <p className="text-altec-cream/40 mt-4 font-mono text-[11px]">
-          Vista previa en construcción. Los agentes ya están en sus lugares; el día de trabajo con
-          guion, la bandeja de decisiones y el motor de automatización llegan enseguida.
+          Simulación de una jornada completa. Clientes y cifras son de ejemplo.
         </p>
       </Section>
 
