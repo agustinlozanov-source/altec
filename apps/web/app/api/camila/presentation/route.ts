@@ -8,7 +8,8 @@ import {
   claude,
   textOf,
 } from "@/lib/camila/claude";
-import { CAMILA_SYSTEM_PROMPT, PRESENTATION_PROMPT } from "@/lib/camila/prompt";
+import { agentByKey } from "@altec/agents";
+import { buildSystemPrompt, PRESENTATION_PROMPT } from "@/lib/camila/prompt";
 
 /**
  * Genera la presentación completa y la devuelve partida en bloques, uno por
@@ -28,7 +29,7 @@ export async function POST() {
     const stream = claude().messages.stream({
       model: CAMILA_MODEL,
       max_tokens: 8000,
-      system: cachedSystem(CAMILA_SYSTEM_PROMPT),
+      system: cachedSystem(systemPrompt()),
       output_config: { effort: "high" },
       messages: [{ role: "user", content: PRESENTATION_PROMPT }],
     });
@@ -57,4 +58,15 @@ export async function POST() {
     console.error("[camila] fallo al preparar la presentación:", error);
     return NextResponse.json({ error: "No se pudo preparar la presentación." }, { status: 500 });
   }
+}
+
+/** El contexto se arma en cada arranque, no en cada peticion: es estable. */
+let cached: string | null = null;
+function systemPrompt(): string {
+  if (!cached) {
+    const camila = agentByKey.get("camila");
+    if (!camila) throw new Error("Camila no está en el roster.");
+    cached = buildSystemPrompt(camila);
+  }
+  return cached;
 }

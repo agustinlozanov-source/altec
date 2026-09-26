@@ -419,7 +419,7 @@ export class DayScript {
     const token = Symbol("board");
     const andres = this.agent("andres");
     const tomas = this.agent("tomas");
-    const elena = this.agent("elena");
+    const camila = this.agent("camila");
 
     await this.claim([andres, tomas], token);
     this.sim.setClient(client, "Preparando consejo técnico Q4", 30);
@@ -444,17 +444,17 @@ export class DayScript {
     await this.sim.sleep(5);
     this.sim.setClient(client, "Scorecard listo", 55);
 
-    await this.claim([elena], token);
+    await this.claim([camila], token);
     this.startTask(andres, "Revisión con Dirección", "collab");
-    this.startTask(elena, "Revisión del consejo " + client.name, "collab");
+    this.startTask(camila, "Revisión del consejo " + client.name, "collab");
     await walkToSpot(andres, "dir.visit-1");
     await this.line(andres, "KPI principal del Q3 cerró en 87%. Semáforo amarillo.");
-    await this.line(elena, 'Propongo temática Q4: "Cobrar a tiempo".');
+    await this.line(camila, 'Propongo temática Q4: "Cobrar a tiempo".');
     await this.line(andres, "Preparo agenda con tiempos y convocatoria.");
     void walkHome(andres).then(() => this.startTask(andres, "Agenda del consejo " + client.name));
 
     this.sim.setClient(client, "Temática Q4 en tu revisión", 70);
-    await this.askHuman(elena, {
+    await this.askHuman(camila, {
       title: "Temática y KPI del Q4 · " + client.name,
       amount: "Consejo técnico en 8 días",
       ask: "Necesito validar la temática del trimestre.",
@@ -465,10 +465,10 @@ export class DayScript {
       ],
     });
 
-    await this.line(elena, "Validado. Andrés, convoca.", 3);
-    void walkHome(elena).then(() => {
-      this.startTask(elena, pick(roster.find((a) => a.key === "elena")!.routine));
-      this.release([elena]);
+    await this.line(camila, "Validado. Andrés, convoca.", 3);
+    void walkHome(camila).then(() => {
+      this.startTask(camila, pick(roster.find((a) => a.key === "camila")!.routine));
+      this.release([camila]);
     });
 
     await this.sim.sleep(3);
@@ -611,19 +611,19 @@ export class DayScript {
       if (!lead || !board || !teamx) return;
 
       await this.sim.sleep(5);
-      const elena = this.agent("elena");
-      await this.line(elena, "Standup en sala de juntas.", 3);
+      const camila = this.agent("camila");
+      await this.line(camila, "Standup en sala de juntas.", 3);
 
       const everyone = this.sim.people.filter((p) => p.kind === "agent");
       await this.meeting(everyone, "Standup diario", Symbol("standup"), async () => {
-        await this.line(elena, `Buenos días. Prioridad de hoy: ${lead.name}.`);
+        await this.line(camila, `Buenos días. Prioridad de hoy: ${lead.name}.`);
         await this.line(
           this.agent("sofia"),
           "3 clientes activos y un lead nuevo. Habrá 3 decisiones para Agustín.",
         );
         await this.line(this.agent("marco"), `TEAMx ${teamx.name}: semana 6, dos líderes en rojo.`);
         await this.line(this.agent("andres"), `Consejo técnico de ${board.name} en 8 días.`);
-        await this.line(elena, "Perfecto. A trabajar.", 3);
+        await this.line(camila, "Perfecto. A trabajar.", 3);
       });
 
       await Promise.all([
@@ -634,9 +634,9 @@ export class DayScript {
 
       while (this.sim.clockMinutes() < 17 * 60 + 10 && !this.stopped) await this.sim.sleep(1);
 
-      await this.claim([elena], Symbol("close"));
-      await this.line(elena, "Cierre del día: resumen ejecutivo enviado a Agustín.", 5);
-      this.release([elena]);
+      await this.claim([camila], Symbol("close"));
+      await this.line(camila, "Cierre del día: resumen ejecutivo enviado a Agustín.", 5);
+      this.release([camila]);
       await this.sim.sleep(8);
     }
   }

@@ -8,7 +8,8 @@ import {
   claude,
   textOf,
 } from "@/lib/camila/claude";
-import { CAMILA_SYSTEM_PROMPT } from "@/lib/camila/prompt";
+import { agentByKey } from "@altec/agents";
+import { buildSystemPrompt } from "@/lib/camila/prompt";
 
 /** Preguntas en vivo. La latencia importa: es una sala esperando. */
 export const runtime = "nodejs";
@@ -50,7 +51,7 @@ export async function POST(request: Request) {
     const response = await claude().messages.create({
       model: CAMILA_MODEL,
       max_tokens: 700,
-      system: cachedSystem(CAMILA_SYSTEM_PROMPT),
+      system: cachedSystem(systemPrompt()),
       // Efecto pensado: es una conversacion en vivo, no un analisis. El
       // esfuerzo bajo mantiene la respuesta en un par de segundos.
       output_config: { effort: "low" },
@@ -78,4 +79,15 @@ export async function POST(request: Request) {
     console.error("[camila] fallo al responder:", error);
     return NextResponse.json({ error: "Camila no pudo responder." }, { status: 500 });
   }
+}
+
+/** El contexto se arma en cada arranque, no en cada peticion: es estable. */
+let cached: string | null = null;
+function systemPrompt(): string {
+  if (!cached) {
+    const camila = agentByKey.get("camila");
+    if (!camila) throw new Error("Camila no está en el roster.");
+    cached = buildSystemPrompt(camila);
+  }
+  return cached;
 }
