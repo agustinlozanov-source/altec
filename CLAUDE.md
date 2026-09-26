@@ -70,6 +70,16 @@ No se introduce otro framework, otro lenguaje ni HTML suelto. Si algo parece req
 - Tipografía: **Open Sans**, la fuente del logotipo. Títulos en Extrabold **itálico**, texto en regular, y JetBrains Mono para datos. Se declara en un solo lugar (`packages/ui/src/fonts.ts`).
 - El logotipo es recto y los títulos son itálicos: es una decisión de diseño tomada a conciencia (sep 2026), no un descuido. La itálica da personalidad sin competir con la marca.
 
+## Agentes: reales contra puestos de relleno
+
+El roster (`packages/agents`) marca cada agente con `status`. **`real`** es un agente con personalidad, voz, reglas de escalamiento y límites trabajados, que puede hablar por la firma. **`placeholder`** es un puesto esbozado para que la oficina no se vea vacía en la demo; se reemplaza cuando le toque su turno.
+
+`buildSystemPrompt()` **rechaza** los puestos de relleno: soltarlos a hablar con inversionistas sería improvisar en nombre de la firma.
+
+**La separación que no se debe romper.** La personalidad de un agente es pública y vive en `packages/agents`, porque la consume la escena 3D en el navegador. El expediente de ALTEC —cap table, punto de equilibrio, monto de la ronda— es confidencial y vive en `apps/web/lib/camila/prompt.ts`, marcado con `import "server-only"`. El contexto final se arma juntando los dos **en el servidor**. Si alguien importa el expediente desde un componente de cliente, el build falla; está verificado.
+
+Dar de alta un agente real nuevo es una sola cosa: escribir su definición en el roster con `status: "real"`. No hay que duplicar el expediente ni tocar las rutas.
+
 ## Convenciones
 
 - **Contenido** en español de México. **Código** (nombres de variables, funciones, archivos, commits) en inglés.
