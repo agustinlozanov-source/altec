@@ -8,8 +8,8 @@ import { submitContact } from "./actions";
 const initialState: ContactState = { status: "idle" };
 
 const fieldClass =
-  "w-full rounded-card border border-altec-cream/15 bg-altec-dark-gray px-4 py-3 text-sm " +
-  "text-altec-cream placeholder:text-altec-cream/65 focus:border-altec-green focus:outline-none";
+  "w-full rounded-card border border-line bg-card px-4 py-3 text-sm " +
+  "text-ink placeholder:text-muted focus:border-altec-green focus:outline-none";
 
 function Field({
   label,
@@ -26,13 +26,13 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={name} className="text-altec-cream text-sm">
+      <label htmlFor={name} className="text-ink text-sm">
         {label}
-        {optional ? <span className="text-altec-cream/65"> (opcional)</span> : null}
+        {optional ? <span className="text-muted"> (opcional)</span> : null}
       </label>
       {children}
       {error ? (
-        <p id={`${name}-error`} role="alert" className="text-xs text-vo-awaiting">
+        <p id={`${name}-error`} role="alert" className="text-xs text-attention">
           {error}
         </p>
       ) : null}
@@ -50,10 +50,10 @@ export function ContactForm() {
         role="status"
         className="border-altec-green/40 bg-altec-green/5 rounded-card border p-8 text-center"
       >
-        <p className="font-display text-altec-cream text-xl font-extrabold italic">
+        <p className="font-display text-ink text-xl font-extrabold italic">
           Mensaje enviado.
         </p>
-        <p className="text-altec-cream/65 mt-2 text-sm">
+        <p className="text-muted mt-2 text-sm">
           Gracias por escribirnos. Te respondemos en breve.
         </p>
       </div>
@@ -155,7 +155,7 @@ export function ContactForm() {
       </Field>
 
       {state.status === "error" && state.message ? (
-        <p role="alert" className="text-sm text-vo-awaiting">
+        <p role="alert" className="text-sm text-attention">
           {state.message}
         </p>
       ) : null}

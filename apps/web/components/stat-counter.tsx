@@ -81,12 +81,12 @@ export function StatCounter({
 
   return (
     <div ref={ref} className="flex flex-col gap-1">
-      <span className="font-display text-altec-black text-4xl leading-none font-extrabold italic md:text-5xl">
+      <span className="font-display text-ink text-4xl leading-none font-extrabold italic md:text-5xl">
         {prefix}
         {shown.toLocaleString("es-MX")}
         {suffix}
       </span>
-      <span className="text-altec-black/60 text-sm">{label}</span>
+      <span className="text-muted text-sm">{label}</span>
     </div>
   );
 }

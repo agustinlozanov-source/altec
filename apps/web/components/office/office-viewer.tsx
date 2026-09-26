@@ -22,7 +22,7 @@ const OfficeCanvas = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="text-altec-cream/50 flex h-full items-center justify-center font-mono text-xs">
+      <div className="text-muted flex h-full items-center justify-center font-mono text-xs">
         Levantando la oficina…
       </div>
     ),
@@ -89,12 +89,12 @@ export function OfficeViewer() {
     "rounded-pill border px-3 py-1.5 font-mono text-[10px] uppercase tracking-wide transition-colors";
 
   return (
-    <div className="border-altec-cream/10 rounded-card overflow-hidden border">
+    <div className="border-line rounded-card overflow-hidden border">
       {/* --- barra superior: reloj, controles y KPIs --- */}
-      <div className="border-altec-cream/10 bg-altec-dark-gray flex flex-wrap items-center gap-x-6 gap-y-3 border-b px-4 py-3">
+      <div className="border-line bg-card flex flex-wrap items-center gap-x-6 gap-y-3 border-b px-4 py-3">
         <div className="flex items-center gap-3">
-          <span className="font-mono text-lg text-altec-cream tabular-nums">{sim.clock()}</span>
-          <span className="text-altec-cream/45 font-mono text-[10px] uppercase">
+          <span className="font-mono text-lg text-ink tabular-nums">{sim.clock()}</span>
+          <span className="text-muted font-mono text-[10px] uppercase">
             {sim.dayName()}
           </span>
         </div>
@@ -103,12 +103,12 @@ export function OfficeViewer() {
           <button
             type="button"
             onClick={() => sim.togglePause()}
-            className={cn(pillBase, "border-altec-cream/25 text-altec-cream hover:border-altec-cream/60")}
+            className={cn(pillBase, "border-line-strong text-ink hover:border-line-strong")}
           >
             {sim.paused ? "▶ Reanudar" : "❚❚ Pausa"}
           </button>
 
-          <div className="flex overflow-hidden rounded-pill border border-altec-cream/20">
+          <div className="flex overflow-hidden rounded-pill border border-line-strong">
             {[1, 2, 4].map((s) => (
               <button
                 key={s}
@@ -118,8 +118,8 @@ export function OfficeViewer() {
                 className={cn(
                   "px-2.5 py-1.5 font-mono text-[10px]",
                   sim.speed === s
-                    ? "bg-altec-green text-altec-black"
-                    : "text-altec-cream/60 hover:text-altec-cream",
+                    ? "bg-altec-green text-ink"
+                    : "text-muted hover:text-ink",
                 )}
               >
                 {s}×
@@ -127,7 +127,7 @@ export function OfficeViewer() {
             ))}
           </div>
 
-          <label className="text-altec-cream/55 ml-2 flex cursor-pointer items-center gap-1.5 text-[11px]">
+          <label className="text-muted ml-2 flex cursor-pointer items-center gap-1.5 text-[11px]">
             <input
               type="checkbox"
               checked={sim.autoApprove}
@@ -144,13 +144,13 @@ export function OfficeViewer() {
           <Kpi value={String(pending)} label="Esperan tu decisión" alert={pending > 0} />
 
           <div className="min-w-[150px]">
-            <div className="bg-altec-cream/10 h-1.5 w-full overflow-hidden rounded-full">
+            <div className="bg-ink/8 h-1.5 w-full overflow-hidden rounded-full">
               <div
                 className="bg-altec-green h-full rounded-full transition-[width] duration-500"
                 style={{ width: `${agentShare}%` }}
               />
             </div>
-            <p className="text-altec-cream/45 mt-1 font-mono text-[10px]">
+            <p className="text-muted mt-1 font-mono text-[10px]">
               {agentShare}% agentes · {100 - agentShare}% tú — meta 80/20
             </p>
           </div>
@@ -185,14 +185,14 @@ export function OfficeViewer() {
                 className={cn(
                   pillBase,
                   view === v.id
-                    ? "border-altec-green bg-altec-green text-altec-black"
-                    : "border-altec-cream/20 text-altec-cream/70 hover:border-altec-cream/50 bg-altec-black/60 backdrop-blur",
+                    ? "border-altec-green bg-altec-green text-ink"
+                    : "border-line-strong text-muted hover:border-line-strong bg-surface/80 backdrop-blur",
                 )}
               >
                 {v.label}
               </button>
             ))}
-            <label className="text-altec-cream/60 bg-altec-black/60 rounded-pill ml-1 flex cursor-pointer items-center gap-1.5 px-2.5 py-1.5 text-[10px] backdrop-blur">
+            <label className="text-muted bg-surface/80 rounded-pill ml-1 flex cursor-pointer items-center gap-1.5 px-2.5 py-1.5 text-[10px] backdrop-blur">
               <input
                 type="checkbox"
                 checked={autoCam}
@@ -213,8 +213,8 @@ export function OfficeViewer() {
                 className={cn(
                   pillBase,
                   themeId === id
-                    ? "border-altec-cream/60 text-altec-cream bg-altec-black/70 backdrop-blur"
-                    : "border-altec-cream/15 text-altec-cream/45 hover:border-altec-cream/40 bg-altec-black/50 backdrop-blur",
+                    ? "border-line-strong text-ink bg-surface/80 backdrop-blur"
+                    : "border-line text-muted hover:border-line-strong bg-surface/80 backdrop-blur",
                 )}
               >
                 {id === "studio" ? "Original" : "ALTEC"}
@@ -226,7 +226,7 @@ export function OfficeViewer() {
             <button
               type="button"
               onClick={() => setTab("inbox")}
-              className="bg-vo-awaiting text-altec-black rounded-pill absolute bottom-14 left-3 px-3.5 py-2 text-xs font-semibold shadow-lg"
+              className="bg-vo-awaiting text-ink rounded-pill absolute bottom-14 left-3 px-3.5 py-2 text-xs font-semibold shadow-lg"
             >
               {pending} {pending === 1 ? "decisión espera" : "decisiones esperan"} · Revisar
             </button>
@@ -234,21 +234,21 @@ export function OfficeViewer() {
 
           <div className="absolute bottom-3 left-3 flex flex-wrap gap-x-3 gap-y-1">
             {legend.map((item) => (
-              <span key={item.state} className="text-altec-cream/45 flex items-center gap-1.5 text-[10px]">
+              <span key={item.state} className="text-muted flex items-center gap-1.5 text-[10px]">
                 <span className={cn("h-1.5 w-1.5 rounded-full", stateDots[item.state])} />
                 {item.label}
               </span>
             ))}
           </div>
 
-          <p className="text-altec-cream/35 absolute right-3 bottom-3 font-mono text-[10px]">
+          <p className="text-muted absolute right-3 bottom-3 font-mono text-[10px]">
             arrastra para girar · rueda para acercar
           </p>
         </div>
 
         {/* --- panel lateral --- */}
-        <aside className="border-altec-cream/10 bg-altec-dark-gray flex max-h-[660px] flex-col border-t lg:border-t-0 lg:border-l">
-          <div className="border-altec-cream/10 flex border-b">
+        <aside className="border-line bg-card flex max-h-[660px] flex-col border-t lg:border-t-0 lg:border-l">
+          <div className="border-line flex border-b">
             {([
               ["team", "Equipo"],
               ["inbox", "Bandeja"],
@@ -263,13 +263,13 @@ export function OfficeViewer() {
                 className={cn(
                   "flex flex-1 items-center justify-center gap-1.5 py-3 text-xs transition-colors",
                   tab === id
-                    ? "text-altec-cream border-altec-green border-b-2"
-                    : "text-altec-cream/50 hover:text-altec-cream/80",
+                    ? "text-ink border-altec-green border-b-2"
+                    : "text-muted hover:text-ink/80",
                 )}
               >
                 {label}
                 {id === "inbox" && pending > 0 ? (
-                  <span className="bg-vo-awaiting text-altec-black rounded-full px-1.5 text-[10px] font-semibold">
+                  <span className="bg-vo-awaiting text-ink rounded-full px-1.5 text-[10px] font-semibold">
                     {pending}
                   </span>
                 ) : null}
@@ -278,18 +278,18 @@ export function OfficeViewer() {
           </div>
 
           {/* franja de clientes */}
-          <div className="border-altec-cream/10 flex gap-2 overflow-x-auto border-b px-3 py-2.5">
+          <div className="border-line flex gap-2 overflow-x-auto border-b px-3 py-2.5">
             {sim.clients.map((client) => (
               <div key={client.name} className="min-w-[140px] shrink-0">
-                <p className="text-altec-cream truncate text-[11px]">{client.name}</p>
-                <p className="text-altec-cream/40 truncate text-[10px]">{client.service}</p>
-                <div className="bg-altec-cream/10 mt-1 h-1 w-full overflow-hidden rounded-full">
+                <p className="text-ink truncate text-[11px]">{client.name}</p>
+                <p className="text-muted truncate text-[10px]">{client.service}</p>
+                <div className="bg-ink/8 mt-1 h-1 w-full overflow-hidden rounded-full">
                   <div
                     className="bg-vo-meeting h-full rounded-full transition-[width] duration-700"
                     style={{ width: `${client.progress}%` }}
                   />
                 </div>
-                <p className="text-altec-cream/45 mt-0.5 truncate text-[10px]">{client.stage}</p>
+                <p className="text-muted mt-0.5 truncate text-[10px]">{client.stage}</p>
               </div>
             ))}
           </div>
@@ -301,30 +301,30 @@ export function OfficeViewer() {
                   <button
                     type="button"
                     onClick={() => setSelected(null)}
-                    className="text-altec-cream/55 hover:text-altec-cream font-mono text-[10px] uppercase"
+                    className="text-muted hover:text-ink font-mono text-[10px] uppercase"
                   >
                     ← Volver al equipo
                   </button>
 
-                  <h3 className="font-display text-altec-cream mt-4 text-lg font-extrabold italic">
+                  <h3 className="font-display text-ink mt-4 text-lg font-extrabold italic">
                     {selectedDefinition.displayName}
                   </h3>
-                  <p className="text-altec-green font-mono text-[11px]">{selectedDefinition.role}</p>
+                  <p className="text-accent-ink font-mono text-[11px]">{selectedDefinition.role}</p>
 
-                  <p className="text-altec-cream/55 mt-3 flex items-center gap-1.5 text-[11px]">
+                  <p className="text-muted mt-3 flex items-center gap-1.5 text-[11px]">
                     <span className={cn("h-1.5 w-1.5 rounded-full", stateDots[selectedPerson.state])} />
                     {stateLabels[selectedPerson.state]} · {selectedPerson.task}
                   </p>
 
-                  <p className="text-altec-cream/65 mt-4 text-xs leading-relaxed">
+                  <p className="text-muted mt-4 text-xs leading-relaxed">
                     {selectedDefinition.persona}
                   </p>
 
                   <Header>Cola de trabajo</Header>
                   <ul className="mt-2 flex flex-col gap-1">
                     {sim.workOf(selectedPerson).queue.slice(-5).reverse().map((item, i) => (
-                      <li key={i} className="text-altec-cream/60 flex gap-2 text-[11px]">
-                        <span className="text-altec-cream/35 font-mono">{item.status}</span>
+                      <li key={i} className="text-muted flex gap-2 text-[11px]">
+                        <span className="text-muted font-mono">{item.status}</span>
                         <span className="min-w-0 flex-1">{item.text}</span>
                       </li>
                     ))}
@@ -335,7 +335,7 @@ export function OfficeViewer() {
                     {selectedDefinition.skills.map((skill) => (
                       <li
                         key={skill}
-                        className="border-altec-cream/15 text-altec-cream/70 rounded-pill border px-2.5 py-1 text-[10px]"
+                        className="border-line text-muted rounded-pill border px-2.5 py-1 text-[10px]"
                       >
                         {skill}
                       </li>
@@ -343,14 +343,14 @@ export function OfficeViewer() {
                   </ul>
 
                   <Header>Contexto cargado</Header>
-                  <ul className="text-altec-cream/60 mt-2 flex flex-col gap-1 text-[11px]">
+                  <ul className="text-muted mt-2 flex flex-col gap-1 text-[11px]">
                     {selectedDefinition.context.map((item) => (
                       <li key={item}>· {item}</li>
                     ))}
                   </ul>
 
                   <Header>Hoy</Header>
-                  <p className="text-altec-cream/60 mt-2 text-[11px]">
+                  <p className="text-muted mt-2 text-[11px]">
                     {sim.workOf(selectedPerson).done} tareas cerradas ·{" "}
                     {sim.workOf(selectedPerson).automated} automatizadas
                   </p>
@@ -364,7 +364,7 @@ export function OfficeViewer() {
                         <button
                           type="button"
                           onClick={() => setSelected(person.id)}
-                          className="hover:bg-altec-cream/5 border-altec-cream/5 flex w-full items-start gap-3 border-b px-5 py-3 text-left"
+                          className="hover:bg-ink/8 border-line flex w-full items-start gap-3 border-b px-5 py-3 text-left"
                         >
                           <span
                             className={cn(
@@ -373,13 +373,13 @@ export function OfficeViewer() {
                             )}
                           />
                           <span className="min-w-0">
-                            <span className="text-altec-cream block text-sm">
+                            <span className="text-ink block text-sm">
                               {definition?.displayName ?? person.label}
                             </span>
-                            <span className="text-altec-cream/50 block text-[11px]">
+                            <span className="text-muted block text-[11px]">
                               {definition?.role}
                             </span>
-                            <span className="text-altec-cream/40 mt-0.5 block truncate text-[11px]">
+                            <span className="text-muted mt-0.5 block truncate text-[11px]">
                               {stateLabels[person.state]} · {person.task}
                             </span>
                           </span>
@@ -393,7 +393,7 @@ export function OfficeViewer() {
 
             {tab === "inbox" ? (
               sim.inbox.length === 0 ? (
-                <p className="text-altec-cream/40 px-5 py-8 text-center text-xs">
+                <p className="text-muted px-5 py-8 text-center text-xs">
                   Nada espera tu decisión. Los agentes siguen trabajando.
                 </p>
               ) : (
@@ -403,18 +403,18 @@ export function OfficeViewer() {
                       key={decision.id}
                       className="border-vo-awaiting/40 bg-vo-awaiting/5 rounded-card border p-4"
                     >
-                      <p className="text-vo-awaiting font-mono text-[10px] uppercase">
+                      <p className="text-attention font-mono text-[10px] uppercase">
                         {decision.agentName} espera tu decisión
                       </p>
-                      <h4 className="text-altec-cream mt-1.5 text-sm font-semibold">
+                      <h4 className="text-ink mt-1.5 text-sm font-semibold">
                         {decision.title}
                       </h4>
                       {decision.amount ? (
-                        <p className="text-altec-cream/70 mt-0.5 font-mono text-[11px]">
+                        <p className="text-muted mt-0.5 font-mono text-[11px]">
                           {decision.amount}
                         </p>
                       ) : null}
-                      <ul className="text-altec-cream/60 mt-3 flex flex-col gap-1 text-[11px]">
+                      <ul className="text-muted mt-3 flex flex-col gap-1 text-[11px]">
                         {decision.bullets.map((b) => (
                           <li key={b}>· {b}</li>
                         ))}
@@ -423,14 +423,14 @@ export function OfficeViewer() {
                         <button
                           type="button"
                           onClick={() => decision.resolve("approve")}
-                          className="bg-altec-green text-altec-black rounded-pill px-4 py-2 text-xs font-semibold"
+                          className="bg-altec-green text-ink rounded-pill px-4 py-2 text-xs font-semibold"
                         >
                           Aprobar
                         </button>
                         <button
                           type="button"
                           onClick={() => decision.resolve("changes")}
-                          className="border-altec-cream/30 text-altec-cream rounded-pill border px-4 py-2 text-xs"
+                          className="border-line-strong text-ink rounded-pill border px-4 py-2 text-xs"
                         >
                           Pedir ajustes
                         </button>
@@ -446,16 +446,16 @@ export function OfficeViewer() {
                 {sim.feed.map((entry) => (
                   <li
                     key={entry.id}
-                    className="border-altec-cream/5 flex gap-2.5 border-b px-4 py-2.5 text-[11px]"
+                    className="border-line flex gap-2.5 border-b px-4 py-2.5 text-[11px]"
                   >
-                    <span className="text-altec-cream/35 font-mono tabular-nums">{entry.time}</span>
+                    <span className="text-muted font-mono tabular-nums">{entry.time}</span>
                     <span className="min-w-0 flex-1">
                       {entry.who ? (
                         <span style={{ color: entry.color }} className="font-semibold">
                           {entry.who}{" "}
                         </span>
                       ) : null}
-                      <span className="text-altec-cream/65">{entry.text}</span>
+                      <span className="text-muted">{entry.text}</span>
                     </span>
                   </li>
                 ))}
@@ -474,18 +474,18 @@ function Kpi({ value, label, alert = false }: { value: string; label: string; al
       <p
         className={cn(
           "font-display text-xl leading-none font-extrabold italic tabular-nums",
-          alert ? "text-vo-awaiting" : "text-altec-cream",
+          alert ? "text-attention" : "text-ink",
         )}
       >
         {value}
       </p>
-      <p className="text-altec-cream/45 mt-0.5 font-mono text-[10px]">{label}</p>
+      <p className="text-muted mt-0.5 font-mono text-[10px]">{label}</p>
     </div>
   );
 }
 
 function Header({ children }: { children: React.ReactNode }) {
   return (
-    <h4 className="text-altec-cream/90 mt-5 text-[10px] tracking-[0.18em] uppercase">{children}</h4>
+    <h4 className="text-ink/90 mt-5 text-[10px] tracking-[0.18em] uppercase">{children}</h4>
   );
 }

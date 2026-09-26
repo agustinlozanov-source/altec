@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { AltecLogo, Button, cn, Container } from "@altec/ui";
 import { nav, phaseOneRoutes, site } from "@/lib/site";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 /**
  * Navbar fija, fondo negro semitransparente con backdrop-blur (docs/WEB.md §3).
@@ -16,7 +17,7 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="bg-altec-black/80 border-altec-cream/10 sticky top-0 z-40 border-b backdrop-blur-md">
+    <header className="bg-surface/80 border-line sticky top-0 z-40 border-b backdrop-blur-md">
       <Container className="flex h-16 items-center justify-between gap-4">
         <Link href="/" aria-label="ALTEC Group, ir al inicio" className="shrink-0">
           <AltecLogo className="h-6 md:h-7" alt="" priority />
@@ -32,7 +33,7 @@ export function SiteHeader() {
                 <span
                   key={item.href}
                   title="Próximamente — Fase 2"
-                  className="text-altec-cream/55 cursor-default text-sm"
+                  className="text-muted cursor-default text-sm"
                 >
                   {item.label}
                 </span>
@@ -45,8 +46,8 @@ export function SiteHeader() {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "hover:text-altec-green text-sm transition-colors",
-                  active ? "text-altec-green" : "text-altec-cream",
+                  "hover:text-accent-ink text-sm transition-colors",
+                  active ? "text-accent-ink" : "text-ink",
                 )}
               >
                 {item.label}
@@ -56,6 +57,8 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
+
           <Button href={site.investorPortalUrl} size="sm">
             Portal Inversionista
           </Button>
@@ -66,7 +69,7 @@ export function SiteHeader() {
             aria-expanded={open}
             aria-controls="menu-movil"
             aria-label={open ? "Cerrar menú" : "Abrir menú"}
-            className="text-altec-cream -mr-2 p-2 lg:hidden"
+            className="text-ink -mr-2 p-2 lg:hidden"
           >
             <span aria-hidden="true" className="block text-lg leading-none">
               {open ? "✕" : "☰"}
@@ -78,7 +81,7 @@ export function SiteHeader() {
       <div
         id="menu-movil"
         hidden={!open}
-        className="border-altec-cream/10 bg-altec-black border-t lg:hidden"
+        className="border-line bg-surface border-t lg:hidden"
       >
         <Container className="flex flex-col gap-1 py-4">
           {nav.map((item) => {
@@ -89,12 +92,12 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="hover:text-altec-green text-altec-cream py-2 text-base"
+                className="hover:text-accent-ink text-ink py-2 text-base"
               >
                 {item.label}
               </Link>
             ) : (
-              <span key={item.href} className="text-altec-cream/55 py-2 text-base">
+              <span key={item.href} className="text-muted py-2 text-base">
                 {item.label}
                 <span className="ml-2 text-xs">· próximamente</span>
               </span>

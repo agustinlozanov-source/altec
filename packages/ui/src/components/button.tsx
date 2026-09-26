@@ -22,10 +22,10 @@ const sizes: Record<Size, string> = {
 
 const variants: Record<Variant, string> = {
   // El verde de marca sobre negro: el unico CTA de acento del sitio.
-  primary: "bg-altec-green text-altec-black hover:bg-altec-green/85",
+  primary: "bg-altec-green text-ink hover:bg-altec-green/85",
   secondary:
-    "border border-altec-cream/30 text-altec-cream hover:border-altec-cream hover:bg-altec-cream/5",
-  ghost: "text-altec-cream hover:text-altec-green",
+    "border border-line-strong text-ink hover:border-line-strong hover:bg-ink/8",
+  ghost: "text-ink hover:text-accent-ink",
 };
 
 type ButtonAsButton = { href?: undefined } & ButtonHTMLAttributes<HTMLButtonElement>;

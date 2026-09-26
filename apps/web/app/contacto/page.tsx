@@ -14,28 +14,28 @@ const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(site.address)
 export default function ContactPage() {
   return (
     <>
-      <section className="bg-altec-black pt-20 pb-12 md:pt-28">
+      <section className="bg-surface pt-20 pb-12 md:pt-28">
         <Container>
-          <h1 className="font-display text-altec-cream max-w-3xl text-4xl leading-[1.1] font-extrabold italic md:text-6xl">
+          <h1 className="font-display text-ink max-w-3xl text-4xl leading-[1.1] font-extrabold italic md:text-6xl">
             Hablemos.
           </h1>
-          <p className="text-altec-cream/65 mt-5 max-w-xl">
+          <p className="text-muted mt-5 max-w-xl">
             Inversión, consultoría, alianzas o prensa. Escríbenos y te respondemos.
           </p>
         </Container>
       </section>
 
-      <Section tone="dark" className="pt-8">
+      <Section tone="base" className="pt-8">
         <div className="grid gap-14 lg:grid-cols-[1.2fr_1fr]">
           <ContactForm />
 
           <aside className="flex flex-col gap-8">
             <div>
-              <h2 className="text-altec-cream text-xs tracking-[0.18em] uppercase">Oficina</h2>
-              <p className="text-altec-cream/65 mt-3 text-sm">{site.address}</p>
+              <h2 className="text-ink text-xs tracking-[0.18em] uppercase">Oficina</h2>
+              <p className="text-muted mt-3 text-sm">{site.address}</p>
               <a
                 href={`mailto:${site.email}`}
-                className="text-altec-green hover:text-altec-green/80 mt-1 block text-sm"
+                className="text-accent-ink hover:text-accent-ink/80 mt-1 block text-sm"
               >
                 {site.email}
               </a>
@@ -46,10 +46,10 @@ export default function ContactPage() {
               title={`Mapa de ${site.address}`}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              className="rounded-card border-altec-cream/10 h-64 w-full border"
+              className="rounded-card border-line h-64 w-full border"
             />
 
-            <p className="text-altec-cream/65 border-altec-cream/10 border-t pt-6 text-xs leading-relaxed">
+            <p className="text-muted border-line border-t pt-6 text-xs leading-relaxed">
               {site.legalName}. Toda la información de este sitio es confidencial y propiedad del
               grupo.
             </p>

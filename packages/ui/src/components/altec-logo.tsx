@@ -1,23 +1,78 @@
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import { cn } from "../cn";
 import logoDark from "../assets/altec-logo-dark.png";
 import logoLight from "../assets/altec-logo-light.png";
 import voDark from "../assets/altec-vo-dark.png";
 import voLight from "../assets/altec-vo-light.png";
 
-type Tone = "dark" | "light";
+type Tone = "dark" | "light" | "auto";
+
+/**
+ * Par de imagenes que se alternan segun el contexto de superficie.
+ *
+ * Con `tone="auto"` (lo normal) se montan las dos y el CSS muestra la que toca
+ * via `--logo-dark` / `--logo-light`. Eso resuelve a la vez el modo claro y las
+ * secciones que alternan de color, sin JavaScript y sin parpadeo al cargar.
+ */
+function ThemedLogo({
+  dark,
+  light,
+  tone,
+  className,
+  alt,
+  priority,
+}: {
+  dark: StaticImageData;
+  light: StaticImageData;
+  tone: Tone;
+  className?: string;
+  alt: string;
+  priority: boolean;
+}) {
+  const classes = cn("w-auto", className);
+  const hidden = alt === "" ? true : undefined;
+
+  if (tone !== "auto") {
+    return (
+      <Image
+        src={tone === "dark" ? dark : light}
+        alt={alt}
+        priority={priority}
+        aria-hidden={hidden}
+        className={classes}
+      />
+    );
+  }
+
+  return (
+    <>
+      <Image
+        src={dark}
+        alt={alt}
+        priority={priority}
+        aria-hidden={hidden}
+        className={classes}
+        style={{ display: "var(--logo-dark, block)" }}
+      />
+      <Image
+        src={light}
+        alt=""
+        priority={priority}
+        aria-hidden
+        className={classes}
+        style={{ display: "var(--logo-light, none)" }}
+      />
+    </>
+  );
+}
 
 /**
  * Logotipo oficial de ALTEC (docs/WEB.md §2.3).
- * `tone="dark"` es la version para fondo oscuro (texto cream);
- * `tone="light"` la de fondo claro (texto negro).
- *
- * El tamano se controla por altura: `className="h-7 w-auto"`. Los archivos
- * vienen recortados al contenido, asi que la altura que pidas es la altura
- * real del logotipo.
+ * El tamano se controla por altura: `className="h-7"`. Los archivos vienen
+ * recortados al contenido, asi que la altura pedida es la altura real.
  */
 export function AltecLogo({
-  tone = "dark",
+  tone = "auto",
   className,
   alt = "ALTEC Group",
   priority = false,
@@ -28,12 +83,13 @@ export function AltecLogo({
   priority?: boolean;
 }) {
   return (
-    <Image
-      src={tone === "dark" ? logoDark : logoLight}
+    <ThemedLogo
+      dark={logoDark}
+      light={logoLight}
+      tone={tone}
+      {...(className ? { className } : {})}
       alt={alt}
       priority={priority}
-      aria-hidden={alt === "" ? true : undefined}
-      className={cn("w-auto", className)}
     />
   );
 }
@@ -43,7 +99,7 @@ export function AltecLogo({
  * Reservada para ALTEC VO y productos de IA.
  */
 export function AltecVOLogo({
-  tone = "dark",
+  tone = "auto",
   className,
   alt = "ALTEC VO",
   priority = false,
@@ -54,28 +110,23 @@ export function AltecVOLogo({
   priority?: boolean;
 }) {
   return (
-    <Image
-      src={tone === "dark" ? voDark : voLight}
+    <ThemedLogo
+      dark={voDark}
+      light={voLight}
+      tone={tone}
+      {...(className ? { className } : {})}
       alt={alt}
       priority={priority}
-      className={cn("w-auto", className)}
     />
   );
 }
 
-/**
- * Bloque de logo con la razon social debajo (docs/WEB.md §2.3).
- */
-export function AltecLockup({ tone = "dark", className }: { tone?: Tone; className?: string }) {
+/** Bloque de logo con la razon social debajo (docs/WEB.md §2.3). */
+export function AltecLockup({ className }: { className?: string }) {
   return (
     <span className={cn("inline-flex flex-col items-start gap-2", className)}>
-      <AltecLogo tone={tone} className="h-7" />
-      <span
-        className={cn(
-          "text-[0.6rem] tracking-[0.18em] uppercase",
-          tone === "dark" ? "text-altec-cream/65" : "text-altec-black/60",
-        )}
-      >
+      <AltecLogo className="h-7" />
+      <span className="text-muted text-[0.6rem] tracking-[0.18em] uppercase">
         ALTEC Group SAPI de CV
       </span>
     </span>

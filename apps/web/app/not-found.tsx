@@ -6,13 +6,13 @@ export default function NotFound() {
       <Container className="flex flex-col items-start gap-6">
         <AltecMark className="h-8" />
 
-        <p className="text-altec-cream/65 font-mono text-sm">Error 404</p>
+        <p className="text-muted font-mono text-sm">Error 404</p>
 
-        <h1 className="font-display text-altec-cream text-3xl leading-tight font-extrabold italic md:text-5xl">
+        <h1 className="font-display text-ink text-3xl leading-tight font-extrabold italic md:text-5xl">
           Esta página no existe.
         </h1>
 
-        <p className="text-altec-cream/65 max-w-lg">
+        <p className="text-muted max-w-lg">
           Puede que la hayamos movido, o que todavía no la publiquemos. El sitio se está
           construyendo por fases.
         </p>

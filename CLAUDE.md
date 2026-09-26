@@ -61,7 +61,11 @@ No se introduce otro framework, otro lenguaje ni HTML suelto. Si algo parece req
 | `--altec-white` | `#FFFFFF` |
 
 - Los colores se definen **una sola vez** en `packages/ui` (variables CSS + preset de Tailwind). Ninguna app escribe hex de marca a mano.
-- Modo oscuro por defecto. Sin gradientes, excepto la variante **Altec.AI** (gradiente azul a verde), reservada para ALTEC VO y productos de IA.
+- Modo oscuro por defecto, con **modo claro** disponible desde el interruptor del navbar. La elección se guarda en el navegador.
+- El color NO se escribe por componente. Cada sección declara un contexto de superficie (`surface-base`, `surface-alt` o `surface-invert`, este último para portadas con imagen) y los componentes usan papeles: `bg-surface`, `text-ink`, `text-muted`, `border-line`, `bg-card`, `text-accent-ink`, `text-attention`. Un componente se escribe una vez y funciona en los dos modos y sobre las dos superficies.
+- Los tokens semánticos llevan su color literal en cada contexto. **No pueden apuntar a otra variable**: una variable que referencia a otra se resuelve donde se declara, y el valor ya resuelto es el que heredan los hijos.
+- El verde y el ámbar de marca no son legibles sobre fondo claro (1.06:1 y 1.83:1). Para texto existen `--color-accent-ink` y `--color-attention`, que se oscurecen en claro hasta pasar AA. Como relleno con texto negro encima, los de marca se usan igual en ambos modos.
+- Sin gradientes, excepto la variante **Altec.AI** (gradiente azul a verde), reservada para ALTEC VO y productos de IA.
 - **La identidad de marca aplica al dashboard, no al interior de la escena 3D.** La oficina de ALTEC VO usa el tema `studio` (el del prototipo) por defecto. Su color, sus medidas y sus ritmos viven en `packages/office3d/src/themes` y son configurables: quien quiera otra apariencia escribe otro tema, sin tocar un componente. El tema `altec` existe como alternativa vestida con la marca.
 - Tipografía: **Open Sans**, la fuente del logotipo. Títulos en Extrabold **itálico**, texto en regular, y JetBrains Mono para datos. Se declara en un solo lugar (`packages/ui/src/fonts.ts`).
 - El logotipo es recto y los títulos son itálicos: es una decisión de diseño tomada a conciencia (sep 2026), no un descuido. La itálica da personalidad sin competir con la marca.

@@ -5,28 +5,45 @@
  */
 
 @theme {
-  /* --- Paleta de marca (docs/WEB.md §2.1) --- */
+  /* --- Paleta de marca (docs/WEB.md §2.1) ---
+     Son los colores fijos. No cambian entre modo oscuro y claro: lo que cambia
+     es cual hace de fondo y cual de texto. */
   --color-altec-black: #000000;
   --color-altec-cream: #fff0e4;
   --color-altec-green: #c1ff72;
   --color-altec-dark-gray: #1a1a1a;
   /* OJO: sobre negro da 3.9:1, por debajo del 4.5:1 que exige AA. Sirve para
      bordes, iconos y texto grande, no para texto corrido sobre fondo oscuro.
-     Para texto secundario en oscuro usa `text-altec-cream/65` (7.8:1). */
+     Para texto secundario usa `text-muted`, que ya se adapta al modo. */
   --color-altec-mid-gray: #6b6b6b;
   --color-altec-white: #ffffff;
 
   /* --- Estados de agente en ALTEC VO (docs/ALTEC-VO.md §9.2) ---
-     El ambar es de uso exclusivo para "espera tu decision". No usarlo para nada mas. */
+     El ambar es de uso exclusivo para "espera tu decision". */
   --color-vo-working: #c1ff72;
   --color-vo-meeting: #7fa8ff;
   --color-vo-collab: #c39bff;
   --color-vo-awaiting: #f5a524;
   --color-vo-idle: #6b6b6b;
 
-  /* --- Tipografia (docs/WEB.md §2.2) ---
-     Open Sans es la fuente del logo, asi que sirve para titulos y texto.
-     Los titulos usan Extrabold italico, que es el tratamiento del logotipo. */
+  /* --- Capa semantica ---
+     Estos NO son colores: son papeles. Aqui llevan su valor de modo oscuro,
+     que es el predeterminado; cada contexto de superficie los redefine.
+
+     OJO: tienen que llevar el color literal, no `var(--otra-cosa)`. Una
+     variable que referencia a otra se resuelve en el elemento donde se
+     DECLARA, y el valor ya resuelto es el que heredan los hijos: la
+     indireccion rompe los contextos. */
+  --color-surface: #000000;
+  --color-ink: #fff0e4;
+  --color-muted: rgb(255 240 228 / 0.66);
+  --color-line: rgb(255 240 228 / 0.12);
+  --color-line-strong: rgb(255 240 228 / 0.28);
+  --color-card: #1a1a1a;
+  --color-accent-ink: #c1ff72;
+  --color-on-accent: #000000;
+
+  /* --- Tipografia (docs/WEB.md §2.2) --- */
   --font-display: var(--font-open-sans), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-open-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
@@ -36,8 +53,8 @@
   --radius-pill: 9999px;
 
   /* --- Breakpoints (docs/WEB.md §6.3) ---
-     Se reinician para dejar solo los cuatro del blueprint: la base es movil (320),
-     y de ahi md=768, lg=1024, wide=1440. No hay sm ni xl a proposito. */
+     Solo los cuatro del blueprint: la base es movil (320), y de ahi md=768,
+     lg=1024, wide=1440. No hay sm ni xl a proposito. */
   --breakpoint-*: initial;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
@@ -45,8 +62,8 @@
 }
 
 /*
- * Alias con los nombres de token que nombra CLAUDE.md, para poder usarlos
- * en CSS plano y en la escena 3D sin pasar por utilidades de Tailwind.
+ * Alias con los nombres de token que nombra CLAUDE.md, para usarlos en CSS
+ * plano y en la escena 3D sin pasar por utilidades de Tailwind.
  */
 :root {
   --altec-black: var(--color-altec-black);
@@ -55,22 +72,118 @@
   --altec-dark-gray: var(--color-altec-dark-gray);
   --altec-mid-gray: var(--color-altec-mid-gray);
   --altec-white: var(--color-altec-white);
+}
 
-  /* Modo oscuro es el predeterminado (docs/WEB.md §2.4) */
+/* ---------------------------------------------------------------------------
+ * Contextos de superficie
+ *
+ * Ademas del color, cada contexto decide que version del logotipo se ve:
+ * `--logo-dark` y `--logo-light` valen `block` o `none`. Asi el logo se
+ * adapta sin JavaScript y sin parpadeo, tanto al modo como a la superficie.
+ *
+ * `surface-base` y `surface-alt` son las dos superficies que se alternan a lo
+ * largo de una pagina (docs/WEB.md §2.4). En oscuro alternan negro y cream; en
+ * claro, cream y blanco.
+ * ------------------------------------------------------------------------ */
+
+:root,
+.surface-base {
+  --color-surface: #000000;
+  --color-ink: #fff0e4;
+  --color-muted: rgb(255 240 228 / 0.66);
+  --color-line: rgb(255 240 228 / 0.12);
+  --color-line-strong: rgb(255 240 228 / 0.28);
+  --color-card: #1a1a1a;
+  --color-accent-ink: #c1ff72;
+  --color-attention: #f5a524;
+  --color-on-accent: #000000;
+  --logo-dark: block;
+  --logo-light: none;
   color-scheme: dark;
+}
+
+.surface-alt {
+  --color-surface: #fff0e4;
+  --color-ink: #000000;
+  --color-muted: rgb(0 0 0 / 0.66);
+  --color-line: rgb(0 0 0 / 0.14);
+  --color-line-strong: rgb(0 0 0 / 0.3);
+  --color-card: rgb(255 255 255 / 0.62);
+  --color-accent-ink: #577333;
+  /* El ambar de marca sobre claro da 1.8:1. Esta version da 4.7:1. */
+  --color-attention: #936316;
+  --color-on-accent: #000000;
+  --logo-dark: none;
+  --logo-light: block;
+  color-scheme: light;
+}
+
+/*
+ * Contexto que NO sigue al modo: siempre oscuro. Es para portadas con imagen,
+ * donde el texto se apoya en la fotografia y no en la superficie de la pagina.
+ */
+.surface-invert,
+[data-theme="light"] .surface-invert {
+  --color-surface: #000000;
+  --color-ink: #fff0e4;
+  --color-muted: rgb(255 240 228 / 0.72);
+  --color-line: rgb(255 240 228 / 0.14);
+  --color-line-strong: rgb(255 240 228 / 0.3);
+  --color-card: #1a1a1a;
+  --color-accent-ink: #c1ff72;
+  --color-attention: #f5a524;
+  --color-on-accent: #000000;
+  --logo-dark: block;
+  --logo-light: none;
+  color-scheme: dark;
+}
+
+/* --- Modo claro: se invierten las dos superficies --- */
+
+:root[data-theme="light"],
+[data-theme="light"] .surface-base {
+  --color-surface: #fff0e4;
+  --color-ink: #000000;
+  --color-muted: rgb(0 0 0 / 0.66);
+  --color-line: rgb(0 0 0 / 0.14);
+  --color-line-strong: rgb(0 0 0 / 0.3);
+  --color-card: rgb(255 255 255 / 0.72);
+  --color-accent-ink: #577333;
+  /* El ambar de marca sobre claro da 1.8:1. Esta version da 4.7:1. */
+  --color-attention: #936316;
+  --color-on-accent: #000000;
+  --logo-dark: none;
+  --logo-light: block;
+  color-scheme: light;
+}
+
+[data-theme="light"] .surface-alt {
+  --color-surface: #ffffff;
+  --color-ink: #000000;
+  --color-muted: rgb(0 0 0 / 0.64);
+  --color-line: rgb(0 0 0 / 0.12);
+  --color-line-strong: rgb(0 0 0 / 0.26);
+  --color-card: #fff0e4;
+  --color-accent-ink: #577333;
+  /* El ambar de marca sobre claro da 1.8:1. Esta version da 4.7:1. */
+  --color-attention: #936316;
+  --color-on-accent: #000000;
+  --logo-dark: none;
+  --logo-light: block;
+  color-scheme: light;
 }
 
 @layer base {
   body {
-    background-color: var(--color-altec-black);
-    color: var(--color-altec-cream);
+    background-color: var(--color-surface);
+    color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
 
   /* Accesibilidad: foco visible en todo el sitio (CLAUDE.md) */
   :focus-visible {
-    outline: 2px solid var(--color-altec-green);
+    outline: 2px solid var(--color-accent-ink);
     outline-offset: 3px;
     border-radius: 2px;
   }
