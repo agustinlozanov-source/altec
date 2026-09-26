@@ -13,6 +13,7 @@
     "@altec/agents": "workspace:*",
     "@altec/events": "workspace:*",
     "@altec/office3d": "workspace:*",
+    "@anthropic-ai/sdk": "^0.128.0",
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.8.0",
     "next": "^16.3.6",
