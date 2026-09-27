@@ -1,4 +1,4 @@
-import { AltecVOLogo, Button, Container, Section } from "@altec/ui";
+import { AltecVOLogo, Button, Container, Section, SonarGrid } from "@altec/ui";
 import { AltCycle } from "@/components/alt-cycle";
 import { CompanyCard } from "@/components/company-card";
 import { Reveal } from "@/components/reveal";
@@ -23,8 +23,33 @@ export default function HomePage() {
   return (
     <>
       {/* --- Portada --- */}
-      <section className="surface-base bg-surface flex min-h-[85svh] items-center py-24 md:py-32">
-        <Container>
+      <SonarGrid
+        as="section"
+        className="surface-base bg-surface flex min-h-[85svh] items-center py-24 md:py-32"
+        spacing={30}
+        dotRadius={1.3}
+        baseOpacity={0.16}
+        pingEvery={3.6}
+        speed={240}
+        ringWidth={110}
+        amplitude={2.4}
+        pingArea={[0.55, 0.15, 0.95, 0.85]}
+      >
+        {/* Velo radial detrás del texto: las ondas pasan por debajo sin
+            competir con el titular. */}
+        <div
+          aria-hidden="true"
+          className={[
+            "pointer-events-none absolute inset-0 -z-10",
+            // En móvil el texto ocupa casi todo el ancho, así que el velo cubre
+            // casi todo. En escritorio se corre a la izquierda y deja respirar
+            // el campo de puntos a la derecha.
+            "bg-[radial-gradient(ellipse_95%_60%_at_40%_50%,var(--color-surface)_25%,transparent_100%)]",
+            "md:bg-[radial-gradient(ellipse_62%_58%_at_22%_50%,var(--color-surface)_0%,transparent_100%)]",
+          ].join(" ")}
+        />
+
+        <Container className="relative">
           <p className="text-accent-ink font-mono text-xs tracking-[0.2em] uppercase">
             ALTEC Group
           </p>
@@ -45,7 +70,7 @@ export default function HomePage() {
             </Button>
           </div>
         </Container>
-      </section>
+      </SonarGrid>
 
       {/* --- Diferenciador --- */}
       <Section tone="alt" id="categoria">

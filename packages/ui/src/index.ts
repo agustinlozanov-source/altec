@@ -12,3 +12,5 @@ export type { CompanyKey } from "./components/company-logo";
 export { Container } from "./components/container";
 export { Section } from "./components/section";
 export { Button } from "./components/button";
+export { SonarGrid } from "./components/sonar-grid";
+export type { SonarGridProps } from "./components/sonar-grid";
