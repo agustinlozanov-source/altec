@@ -1,32 +1,19 @@
-import { DM_Serif_Text, Inter, JetBrains_Mono } from "next/font/google";
+import { Barlow, JetBrains_Mono } from "next/font/google";
 
 /**
- * Tipografia del grupo, declarada en un solo lugar (docs/WEB.md §2.2).
+ * Tipografia del sitio (docs/WEB.md §2.2).
  *
- * Inter sostiene la interfaz: titulos, texto y navegacion. Es geometrica y
- * neutra, y aguanta bien los pesos altos que piden los titulares.
+ * Barlow sostiene todo: titulares enormes en mayusculas, interfaz y texto. Es
+ * una grotesca de formas bajas y anchas, que es lo que permite subir un titular
+ * a 150px sin que se deshaga.
  *
- * DM Serif Text se reserva para los enunciados de portada y vision. Una serif
- * grande dice "publicamos"; una sans dice "vendemos".
- *
- * JetBrains Mono queda para datos, etiquetas y cifras.
- *
- * Open Sans, que es la fuente del LOGOTIPO, ya no se usa en la web: el
- * logotipo viaja como imagen y la interfaz no tiene por que heredar su tipo
- * (decision de sep 2026).
+ * JetBrains Mono queda para datos, cifras y etiquetas.
  */
 
-export const inter = Inter({
+export const barlow = Barlow({
   subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-export const editorialSerif = DM_Serif_Text({
-  subsets: ["latin"],
-  variable: "--font-editorial-serif",
-  weight: "400",
-  style: ["normal", "italic"],
+  variable: "--font-barlow",
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -37,8 +24,4 @@ export const jetbrainsMono = JetBrains_Mono({
 });
 
 /** Clases de las variables de fuente, para poner en el <html> de cada app. */
-export const fontVariables = [
-  inter.variable,
-  editorialSerif.variable,
-  jetbrainsMono.variable,
-].join(" ");
+export const fontVariables = [barlow.variable, jetbrainsMono.variable].join(" ");

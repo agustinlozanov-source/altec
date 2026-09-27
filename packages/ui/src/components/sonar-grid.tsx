@@ -282,6 +282,13 @@ export function SonarGrid({
       { threshold: 0 },
     );
 
+    // Si cambia el tema, el color del canvas cambia: hay que releerlo.
+    const mo = new MutationObserver(() => refreshRef.current());
+    mo.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class", "style", "data-theme"],
+    });
+
     readColor();
     resize();
     ro.observe(host);
@@ -294,6 +301,7 @@ export function SonarGrid({
     return () => {
       ro.disconnect();
       io.disconnect();
+      mo.disconnect();
       host.removeEventListener("pointerdown", onDown);
       document.removeEventListener("visibilitychange", onVisibility);
       reduceMotion.removeEventListener("change", wake);

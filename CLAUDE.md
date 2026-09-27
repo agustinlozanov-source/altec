@@ -61,14 +61,15 @@ No se introduce otro framework, otro lenguaje ni HTML suelto. Si algo parece req
 | `--altec-white` | `#FFFFFF` |
 
 - Los colores se definen **una sola vez** en `packages/ui` (variables CSS + preset de Tailwind). Ninguna app escribe hex de marca a mano.
-- **Modo oscuro siempre. No hay interruptor de modo claro** (decisión de sep 2026, alineada con las firmas de referencia): el ritmo visual lo controla el diseño alternando secciones, no el visitante.
-- El color NO se escribe por componente. Los contextos son `surface-base` (negro), `surface-alt` (cream) y `surface-invert` (portadas con imagen). Dos secciones del mismo tono nunca van seguidas.
+- **Modo oscuro por defecto, con modo claro disponible** desde el interruptor flotante. La elección se guarda en el navegador.
 -  Cada sección declara un contexto de superficie (`surface-base`, `surface-alt` o `surface-invert`, este último para portadas con imagen) y los componentes usan papeles: `bg-surface`, `text-ink`, `text-muted`, `border-line`, `bg-card`, `text-accent-ink`, `text-attention`. Un componente se escribe una vez y funciona en los dos modos y sobre las dos superficies.
+- El color NO se escribe por componente. Cada sección declara un contexto de superficie (`surface-base`, `surface-alt`, o `surface-invert` para portadas con imagen) y los componentes usan papeles: `bg-surface`, `text-ink`, `text-muted`, `border-line`, `bg-card`, `text-accent-ink`.
+- **Sin cream en las superficies.** En oscuro alternan `#0e0f11` y `#18191b`; en claro, blanco y `#f2f3ef`. El cream solo sobrevive dentro del propio logotipo.
 - Los tokens semánticos llevan su color literal en cada contexto. **No pueden apuntar a otra variable**: una variable que referencia a otra se resuelve donde se declara, y el valor ya resuelto es el que heredan los hijos.
 - El verde y el ámbar de marca no son legibles sobre fondo claro (1.06:1 y 1.83:1). Para texto existen `--color-accent-ink` y `--color-attention`, que se oscurecen en claro hasta pasar AA. Como relleno con texto negro encima, los de marca se usan igual en ambos modos.
 - Sin gradientes, excepto la variante **Altec.AI** (gradiente azul a verde), reservada para ALTEC VO y productos de IA.
 - **La identidad de marca aplica al dashboard, no al interior de la escena 3D.** La oficina de ALTEC VO usa el tema `studio` (el del prototipo) por defecto. Su color, sus medidas y sus ritmos viven en `packages/office3d/src/themes` y son configurables: quien quiera otra apariencia escribe otro tema, sin tocar un componente. El tema `altec` existe como alternativa vestida con la marca.
-- Tipografía: **Inter** para interfaz y titulares, **Instrument Serif** solo para enunciados de portada y visión, **JetBrains Mono** para datos. Se declara en un solo lugar (`packages/ui/src/fonts.ts`). Open Sans es la fuente del logotipo, pero el logotipo viaja como imagen: la web no hereda su tipo.
+- Tipografía: **Barlow** en todo —titulares enormes en mayúsculas, interfaz y texto— y **JetBrains Mono** para datos y etiquetas. Se declara en un solo lugar (`packages/ui/src/fonts.ts`). Open Sans es la fuente del logotipo, pero el logotipo viaja como imagen: la web no hereda su tipo.
 
 
 ## Agentes: reales contra puestos de relleno

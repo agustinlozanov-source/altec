@@ -20,6 +20,12 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image" },
 };
 
+/**
+ * Aplica el modo guardado antes de pintar. Sin esto la página arranca en
+ * oscuro y salta a claro, y el salto se ve.
+ */
+const themeScript = `(function(){try{var m=localStorage.getItem("altec-theme");if(m==="light")document.documentElement.dataset.theme="light";}catch(e){}})();`;
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const header = await headers();
   const raw = header.get("x-altec-locale") ?? defaultLocale;
@@ -27,7 +33,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang={localeHtmlLang[locale]} className={fontVariables}>
-      <body>{children}</body>
+      <body>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {children}
+      </body>
     </html>
   );
 }

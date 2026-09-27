@@ -28,6 +28,8 @@ export const en = {
         "The business group that integrates consulting, education and technology to scale SMEs across Latin America. Five companies, one holding, a new category.",
     },
     eyebrow: "ALTEC Group",
+    /** Dos líneas para el display gigante de portada. */
+    displayLines: ["Advisory Learning", "Technology"],
     title: "Consulting, education and technology as a single system.",
     subtitle:
       "The business group that integrates the three industries that scale SMEs across Latin America.",

@@ -3,12 +3,12 @@ import { cn } from "../cn";
 import { Container } from "./container";
 
 /**
- * Seccion de pagina.
+ * Sección de página.
  *
- * `tone` NO elige un color: elige cual de las dos superficies del sistema usa
- * la seccion. En modo oscuro alternan negro y cream; en claro, cream y blanco
- * (docs/WEB.md §2.4). Lo que va dentro se escribe con `text-ink`, `text-muted`
- * y `border-line`, y se adapta solo.
+ * `tone` elige cuál de las dos superficies usa. Alternan dos oscuros muy
+ * cercanos, lo bastante distintos para separar secciones sin líneas.
+ *
+ * El aire vertical es parte del look: 80px en móvil, 120 en escritorio.
  */
 export function Section({
   children,
@@ -18,18 +18,16 @@ export function Section({
   bleed = false,
 }: {
   children: ReactNode;
-  /** `base` es la superficie principal; `alt` la que alterna con ella. */
   tone?: "base" | "alt";
   id?: string;
   className?: string;
-  /** Sin Container, para secciones que manejan su propio ancho. */
   bleed?: boolean;
 }) {
   return (
     <section
       id={id}
       className={cn(
-        "bg-surface text-ink scroll-mt-20 py-20 md:py-28 lg:py-32",
+        "bg-surface text-ink scroll-mt-24 py-20 md:py-section",
         tone === "alt" ? "surface-alt" : "surface-base",
         className,
       )}

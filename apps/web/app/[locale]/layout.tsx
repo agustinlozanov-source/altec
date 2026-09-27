@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { getDictionary, isLocale, locales, type Locale } from "@/lib/i18n";
 
 /** Se generan las dos versiones en el build; no hay idiomas dinámicos. */
@@ -31,6 +32,7 @@ export default async function LocaleLayout({
       <SiteHeader locale={locale as Locale} dictionary={dictionary} />
       <main id="contenido">{children}</main>
       <SiteFooter locale={locale as Locale} dictionary={dictionary} />
+      <ThemeToggle />
     </>
   );
 }

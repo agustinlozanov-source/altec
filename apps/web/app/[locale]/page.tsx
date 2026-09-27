@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
-import { AltecVOLogo, Button, Container, Section, SonarGrid } from "@altec/ui";
+import {
+  AltecVOLogo,
+  ArrowButton,
+  CardButton,
+  CompanyLogo,
+  Container,
+  GradientHeading,
+  PillLabel,
+  Section,
+  SonarGrid,
+} from "@altec/ui";
 import { AltCycle } from "@/components/alt-cycle";
-import { CompanyCard } from "@/components/company-card";
 import { Reveal } from "@/components/reveal";
 import { StatCounter } from "@/components/stat-counter";
 import { companies } from "@/lib/companies";
 import { getDictionary, path, type Locale } from "@/lib/i18n";
-import { site } from "@/lib/site";
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -33,48 +41,53 @@ export default async function HomePage({ params }: Props) {
     { value: 5, label: t.home.stats.companies },
   ];
 
+  const [line1, line2] = t.home.displayLines;
+
   return (
     <>
-      {/* --- Portada --- */}
+      {/* --- Portada: display gigante, segunda línea desplazada --- */}
       <SonarGrid
         as="section"
-        className="surface-base bg-surface flex min-h-[85svh] items-center py-24 md:py-32"
-        spacing={30}
+        className="surface-base bg-surface flex min-h-svh items-center pt-32 pb-24 md:pt-40"
+        spacing={32}
         dotRadius={1.3}
-        baseOpacity={0.16}
+        baseOpacity={0.12}
+        /* Decoración, no texto: se queda en el verde de marca también en claro,
+           donde el acento de texto baja a una versión oscurecida. */
+        color="var(--color-altec-green)"
         pingEvery={3.6}
         speed={240}
         ringWidth={110}
         amplitude={2.4}
-        pingArea={[0.55, 0.15, 0.95, 0.85]}
+        pingArea={[0.5, 0.15, 0.95, 0.85]}
       >
         <div
           aria-hidden="true"
-          className={[
-            "pointer-events-none absolute inset-0 -z-10",
-            "bg-[radial-gradient(ellipse_95%_60%_at_40%_50%,var(--color-surface)_25%,transparent_100%)]",
-            "md:bg-[radial-gradient(ellipse_62%_58%_at_22%_50%,var(--color-surface)_0%,transparent_100%)]",
-          ].join(" ")}
+          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_70%_at_30%_45%,var(--color-surface)_15%,transparent_100%)]"
         />
 
         <Container className="relative">
-          <p className="text-accent-ink font-mono text-xs tracking-[0.2em] uppercase">
-            {t.home.eyebrow}
-          </p>
+          <div className="flex items-center gap-4">
+            <span aria-hidden="true" className="bg-ink h-px w-12 opacity-40" />
+            <p className="text-muted font-mono text-xs tracking-[0.25em] uppercase">
+              {t.home.eyebrow}
+            </p>
+          </div>
 
-          <h1 className="font-editorial text-ink mt-6 max-w-[16ch] text-5xl leading-[1.03] tracking-[-0.02em] md:text-7xl wide:text-8xl">
-            {t.home.title}
+          <h1 className="font-display text-ink mt-8 text-[clamp(3rem,11vw,9.375rem)] leading-[0.95] font-semibold tracking-[0.02em] uppercase">
+            <span className="block">{line1}</span>
+            <span className="block md:pl-[18%]">{line2}</span>
           </h1>
 
-          <p className="text-muted max-w-text-sm mt-8 text-base leading-relaxed md:text-lg">
-            {t.home.subtitle}
-          </p>
+          <div className="border-line mt-16 grid gap-10 border-t pt-10 lg:grid-cols-[1.1fr_1fr]">
+            <p className="text-ink max-w-lg text-xl leading-snug font-semibold md:text-2xl">
+              {t.home.title}
+            </p>
 
-          <div className="mt-10 flex flex-col gap-3 md:flex-row">
-            <Button href="#companies">{t.home.ctaPrimary}</Button>
-            <Button href={site.investorPortalUrl} variant="secondary">
-              {t.home.ctaSecondary}
-            </Button>
+            <div className="flex flex-col items-start gap-8">
+              <p className="text-muted max-w-md text-base leading-relaxed">{t.home.subtitle}</p>
+              <ArrowButton href="#companies">{t.home.ctaPrimary}</ArrowButton>
+            </div>
           </div>
         </Container>
       </SonarGrid>
@@ -82,83 +95,97 @@ export default async function HomePage({ params }: Props) {
       {/* --- Diferenciador --- */}
       <Section tone="alt" id="category">
         <Reveal>
-          <h2 className="font-display text-ink max-w-[18ch] text-3xl leading-tight font-extrabold md:text-5xl">
+          <PillLabel>{t.home.companies.eyebrow}</PillLabel>
+          <GradientHeading className="mt-6 max-w-[14ch]">
             {t.home.differentiator.title}
-          </h2>
-
-          <p className="text-muted max-w-text mt-6 text-base md:text-lg">
+          </GradientHeading>
+          <p className="text-muted max-w-text mt-8 text-[17px] leading-[1.7]">
             {t.home.differentiator.body}
           </p>
         </Reveal>
 
-        <AltCycle dictionary={t} className="mt-14" />
+        <AltCycle dictionary={t} className="mt-16" />
       </Section>
 
-      {/* --- Empresas --- */}
+      {/* --- Empresas como tarjetas de servicio --- */}
       <Section tone="base" id="companies">
-        <Reveal>
-          <p className="text-accent-ink font-mono text-xs tracking-[0.2em] uppercase">
-            {t.home.companies.eyebrow}
-          </p>
-          <h2 className="font-display text-ink mt-4 text-3xl leading-tight font-extrabold md:text-5xl">
+        <Reveal className="flex flex-col items-center text-center">
+          <PillLabel>{t.home.companies.eyebrow}</PillLabel>
+          <h2 className="font-display text-ink mt-6 text-[clamp(2rem,4vw,3.5rem)] leading-[1.15] font-semibold">
             {t.home.companies.title}
           </h2>
-          <p className="text-muted max-w-text mt-4 text-base">{t.home.companies.body}</p>
+          <p className="text-muted mt-5 max-w-xl text-[17px] leading-[1.7]">
+            {t.home.companies.body}
+          </p>
         </Reveal>
 
-        <div className="mt-14 grid gap-4 md:grid-cols-2">
+        <div className="mt-16 grid gap-[30px] md:grid-cols-2">
           {companies.map((company, index) => (
-            <CompanyCard
+            <Reveal
+              as="article"
               key={company.key}
-              company={company}
-              industry={t.companies[company.key].industry}
-              metric={t.companies[company.key].metric}
-              visitLabel={t.home.companies.visit}
               delay={index * 70}
-            />
+              className="rounded-card border-line flex flex-col border bg-[linear-gradient(180deg,var(--color-card)_0%,color-mix(in_srgb,var(--color-card)_70%,white_6%)_100%)] p-10 transition-transform duration-300 hover:-translate-y-1.5 md:p-12"
+            >
+              <CompanyLogo company={company.key} className="h-8 md:h-9" />
+
+              <h3 className="text-ink mt-10 text-[27px] leading-tight font-semibold">
+                {t.companies[company.key].industry}
+              </h3>
+
+              <p className="text-muted mt-4 text-[17px] leading-[1.7]">
+                {t.companies[company.key].metric}
+              </p>
+
+              <div className="mt-10">
+                <CardButton href={company.url} target="_blank" rel="noreferrer noopener">
+                  {t.home.companies.visit}
+                </CardButton>
+              </div>
+            </Reveal>
           ))}
         </div>
       </Section>
 
       {/* --- ALTEC VO --- */}
       <Section tone="alt" id="altec-vo">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
+        <div className="grid items-center gap-16 lg:grid-cols-2">
           <Reveal>
-            <AltecVOLogo className="h-8 md:h-10" />
+            <AltecVOLogo className="h-9 md:h-11" />
 
-            <h2 className="font-display text-ink mt-6 text-3xl leading-tight font-extrabold md:text-4xl">
+            <h2 className="text-ink mt-8 text-[clamp(1.75rem,3.5vw,2.75rem)] leading-[1.15] font-semibold">
               {t.home.virtualOffice.title}
             </h2>
 
-            <p className="text-muted mt-5 text-base leading-relaxed">{t.home.virtualOffice.body}</p>
+            <p className="text-muted mt-6 text-[17px] leading-[1.7]">{t.home.virtualOffice.body}</p>
 
-            <div className="mt-8">
-              <Button href={path(locale, "virtualOffice")} variant="secondary">
+            <div className="mt-10">
+              <ArrowButton href={path(locale, "virtualOffice")}>
                 {t.home.virtualOffice.cta}
-              </Button>
+              </ArrowButton>
             </div>
           </Reveal>
 
           <Reveal delay={90}>
-            <div className="border-line rounded-card bg-card overflow-hidden border">
-              <div className="border-line flex items-center gap-2 border-b px-4 py-3">
-                <span className="bg-vo-working h-2 w-2 rounded-full" />
-                <span className="text-muted font-mono text-[11px]">
+            <div className="rounded-card border-line overflow-hidden border">
+              <div className="border-line flex items-center gap-2.5 border-b px-6 py-4">
+                <span className="bg-altec-green h-2 w-2 rounded-full" />
+                <span className="text-muted font-mono text-[11px] tracking-wide uppercase">
                   {t.home.virtualOffice.liveLabel}
                 </span>
               </div>
-              <dl className="grid grid-cols-2 gap-px">
+              <dl className="grid grid-cols-2">
                 {[
                   ["10", t.home.virtualOffice.stats.rooms],
                   ["12", t.home.virtualOffice.stats.agents],
                   ["80/20", t.home.virtualOffice.stats.ratio],
                   ["1", t.home.virtualOffice.stats.inbox],
                 ].map(([value, label]) => (
-                  <div key={label} className="bg-surface px-5 py-6">
-                    <dt className="font-display text-accent-ink text-2xl font-extrabold">
+                  <div key={label} className="border-line border-r border-b p-8 last:border-r-0">
+                    <dt className="font-display text-accent-ink text-4xl leading-none font-bold">
                       {value}
                     </dt>
-                    <dd className="text-muted mt-1 text-xs">{label}</dd>
+                    <dd className="text-muted mt-2 text-sm">{label}</dd>
                   </div>
                 ))}
               </dl>
@@ -169,16 +196,12 @@ export default async function HomePage({ params }: Props) {
 
       {/* --- Números --- */}
       <Section tone="base" id="numbers">
-        <Reveal>
-          <p className="text-accent-ink font-mono text-xs tracking-[0.2em] uppercase">
-            {t.home.stats.eyebrow}
-          </p>
-          <h2 className="font-display text-ink mt-4 text-3xl leading-tight font-extrabold md:text-5xl">
-            {t.home.stats.title}
-          </h2>
+        <Reveal className="flex flex-col items-center text-center">
+          <PillLabel>{t.home.stats.eyebrow}</PillLabel>
+          <GradientHeading className="mt-6">{t.home.stats.title}</GradientHeading>
         </Reveal>
 
-        <div className="mt-14 grid grid-cols-2 gap-10 lg:grid-cols-3">
+        <div className="mt-16 grid grid-cols-2 gap-x-8 gap-y-14 lg:grid-cols-3">
           {stats.map((stat, index) => (
             <Reveal key={stat.label} delay={index * 60}>
               <StatCounter
@@ -195,11 +218,8 @@ export default async function HomePage({ params }: Props) {
       {/* --- Visión --- */}
       <Section tone="alt" id="vision">
         <Reveal className="mx-auto max-w-4xl text-center">
-          <p className="text-accent-ink font-mono text-xs tracking-[0.2em] uppercase">
-            {t.home.vision.eyebrow}
-          </p>
-
-          <p className="font-editorial text-ink mt-8 text-3xl leading-[1.15] tracking-[-0.01em] md:text-5xl">
+          <PillLabel>{t.home.vision.eyebrow}</PillLabel>
+          <p className="text-ink mt-8 text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.3] font-semibold">
             {t.home.vision.body}
           </p>
         </Reveal>

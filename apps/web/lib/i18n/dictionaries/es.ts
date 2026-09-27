@@ -23,6 +23,7 @@ export const es: Dictionary = {
         "Grupo empresarial que integra consultoría, educación y tecnología para escalar PyMEs en Latinoamérica. Cinco empresas, un holding, una categoría nueva.",
     },
     eyebrow: "ALTEC Group",
+    displayLines: ["Advisory Learning", "Technology"],
     title: "Consultoría, educación y tecnología como un solo sistema.",
     subtitle:
       "El grupo empresarial que integra las tres industrias que escalan PyMEs en Latinoamérica.",

@@ -72,12 +72,12 @@ export function StatCounter({
 
   return (
     <div ref={ref} className="flex flex-col gap-1">
-      <span className="font-display text-accent-ink text-4xl leading-none font-extrabold tabular-nums md:text-5xl wide:text-6xl">
+      <span className="font-display text-ink text-[clamp(2.75rem,6vw,5rem)] leading-none font-bold tabular-nums">
         {prefix}
         {shown.toLocaleString(locale === "es" ? "es-MX" : "en-US")}
         {suffix}
       </span>
-      <span className="text-muted text-sm">{label}</span>
+      <span className="text-muted mt-2 text-[15px]">{label}</span>
     </div>
   );
 }

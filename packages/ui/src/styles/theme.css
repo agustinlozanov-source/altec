@@ -44,15 +44,10 @@
   --color-on-accent: #000000;
 
   /* --- Tipografia (docs/WEB.md §2.2) --- */
-  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  /* Serif editorial, solo para enunciados de portada. */
-  --font-editorial: var(--font-editorial-serif), Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
-  /* --- Radios (docs/WEB.md §2.4: 8-12px en cards) --- */
-  --radius-card: 0.625rem;
-  --radius-pill: 9999px;
 
   /* --- Anchos de lectura ---
      Un parrafo a todo lo ancho no se lee. Estos topes son los que usan las
@@ -91,19 +86,25 @@
  * adapta sin JavaScript y sin parpadeo, tanto al modo como a la superficie.
  *
  * `surface-base` y `surface-alt` son las dos superficies que se alternan a lo
- * largo de una pagina (docs/WEB.md §2.4): negro y cream. El ritmo lo decide el
- * diseno, no el visitante — no hay interruptor de modo claro, igual que en las
- * firmas de referencia. Dos secciones del mismo tono nunca van seguidas.
+ * largo de una pagina. Separan secciones sin necesidad de lineas.
+ *
+ * En oscuro son dos casi negros muy cercanos (#0e0f11 y #18191b). En claro,
+ * blanco y un gris apenas verdoso (#f2f3ef). No hay cream en ninguna de las
+ * dos: el unico sitio donde sobrevive es dentro del propio logotipo.
+ *
+ * El acento es el verde de marca. Sobre claro no se lee como texto (1.2:1), asi
+ * que ahi `--color-accent-ink` baja a una version oscurecida que da 5.4:1. Como
+ * relleno con texto negro encima se usa igual en los dos modos: 17.8:1.
  * ------------------------------------------------------------------------ */
 
 :root,
 .surface-base {
-  --color-surface: #000000;
-  --color-ink: #fff0e4;
-  --color-muted: rgb(255 240 228 / 0.66);
-  --color-line: rgb(255 240 228 / 0.12);
-  --color-line-strong: rgb(255 240 228 / 0.28);
-  --color-card: #1a1a1a;
+  --color-surface: #0e0f11;
+  --color-ink: #ffffff;
+  --color-muted: #cccccc;
+  --color-line: rgb(255 255 255 / 0.1);
+  --color-line-strong: rgb(255 255 255 / 0.3);
+  --color-card: #1e1f22;
   --color-accent-ink: #c1ff72;
   --color-attention: #f5a524;
   --color-on-accent: #000000;
@@ -113,31 +114,27 @@
 }
 
 .surface-alt {
-  --color-surface: #fff0e4;
-  --color-ink: #000000;
-  --color-muted: rgb(0 0 0 / 0.66);
-  --color-line: rgb(0 0 0 / 0.14);
-  --color-line-strong: rgb(0 0 0 / 0.3);
-  --color-card: rgb(255 255 255 / 0.62);
-  --color-accent-ink: #577333;
-  /* El ambar de marca sobre claro da 1.8:1. Esta version da 4.7:1. */
-  --color-attention: #936316;
+  --color-surface: #18191b;
+  --color-ink: #ffffff;
+  --color-muted: #cccccc;
+  --color-line: rgb(255 255 255 / 0.1);
+  --color-line-strong: rgb(255 255 255 / 0.3);
+  --color-card: #26282c;
+  --color-accent-ink: #c1ff72;
+  --color-attention: #f5a524;
   --color-on-accent: #000000;
-  --logo-dark: none;
-  --logo-light: block;
-  color-scheme: light;
+  --logo-dark: block;
+  --logo-light: none;
+  color-scheme: dark;
 }
 
-/*
- * Contexto que NO sigue al modo: siempre oscuro. Es para portadas con imagen,
- * donde el texto se apoya en la fotografia y no en la superficie de la pagina.
- */
-.surface-invert {
+.surface-invert,
+[data-theme="light"] .surface-invert {
   --color-surface: #000000;
-  --color-ink: #fff0e4;
-  --color-muted: rgb(255 240 228 / 0.72);
-  --color-line: rgb(255 240 228 / 0.14);
-  --color-line-strong: rgb(255 240 228 / 0.3);
+  --color-ink: #ffffff;
+  --color-muted: #cccccc;
+  --color-line: rgb(255 255 255 / 0.12);
+  --color-line-strong: rgb(255 255 255 / 0.3);
   --color-card: #1a1a1a;
   --color-accent-ink: #c1ff72;
   --color-attention: #f5a524;
@@ -145,6 +142,37 @@
   --logo-dark: block;
   --logo-light: none;
   color-scheme: dark;
+}
+
+:root[data-theme="light"],
+[data-theme="light"] .surface-base {
+  --color-surface: #ffffff;
+  --color-ink: #04000b;
+  --color-muted: #666666;
+  --color-line: rgb(4 0 11 / 0.1);
+  --color-line-strong: rgb(4 0 11 / 0.22);
+  --color-card: #f2f3ef;
+  --color-accent-ink: #577333;
+  --color-attention: #f5a524;
+  --color-on-accent: #000000;
+  --logo-dark: none;
+  --logo-light: block;
+  color-scheme: light;
+}
+
+[data-theme="light"] .surface-alt {
+  --color-surface: #f2f3ef;
+  --color-ink: #04000b;
+  --color-muted: #666666;
+  --color-line: rgb(4 0 11 / 0.1);
+  --color-line-strong: rgb(4 0 11 / 0.22);
+  --color-card: #ffffff;
+  --color-accent-ink: #577333;
+  --color-attention: #f5a524;
+  --color-on-accent: #000000;
+  --logo-dark: none;
+  --logo-light: block;
+  color-scheme: light;
 }
 
 @layer base {
