@@ -46,7 +46,7 @@
   /* --- Tipografia (docs/WEB.md §2.2) --- */
   --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   /* Serif editorial, solo para enunciados de portada. */
-  --font-editorial: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
+  --font-editorial: var(--font-editorial-serif), Georgia, "Times New Roman", serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 

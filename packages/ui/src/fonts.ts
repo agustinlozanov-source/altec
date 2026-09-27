@@ -1,4 +1,4 @@
-import { Instrument_Serif, Inter, JetBrains_Mono } from "next/font/google";
+import { DM_Serif_Text, Inter, JetBrains_Mono } from "next/font/google";
 
 /**
  * Tipografia del grupo, declarada en un solo lugar (docs/WEB.md §2.2).
@@ -6,8 +6,8 @@ import { Instrument_Serif, Inter, JetBrains_Mono } from "next/font/google";
  * Inter sostiene la interfaz: titulos, texto y navegacion. Es geometrica y
  * neutra, y aguanta bien los pesos altos que piden los titulares.
  *
- * Instrument Serif se reserva para los enunciados de portada y vision. Una
- * serif grande dice "publicamos"; una sans dice "vendemos".
+ * DM Serif Text se reserva para los enunciados de portada y vision. Una serif
+ * grande dice "publicamos"; una sans dice "vendemos".
  *
  * JetBrains Mono queda para datos, etiquetas y cifras.
  *
@@ -22,9 +22,9 @@ export const inter = Inter({
   display: "swap",
 });
 
-export const instrumentSerif = Instrument_Serif({
+export const editorialSerif = DM_Serif_Text({
   subsets: ["latin"],
-  variable: "--font-instrument-serif",
+  variable: "--font-editorial-serif",
   weight: "400",
   style: ["normal", "italic"],
   display: "swap",
@@ -39,6 +39,6 @@ export const jetbrainsMono = JetBrains_Mono({
 /** Clases de las variables de fuente, para poner en el <html> de cada app. */
 export const fontVariables = [
   inter.variable,
-  instrumentSerif.variable,
+  editorialSerif.variable,
   jetbrainsMono.variable,
 ].join(" ");
