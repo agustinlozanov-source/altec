@@ -22,7 +22,9 @@ const sizes: Record<Size, string> = {
 
 const variants: Record<Variant, string> = {
   // El verde de marca sobre negro: el unico CTA de acento del sitio.
-  primary: "bg-altec-green text-ink hover:bg-altec-green/85",
+  // El texto sobre el verde va SIEMPRE en negro: `text-ink` sigue al modo y
+  // sobre verde daria cream, que no se lee (1.1:1).
+  primary: "bg-altec-green text-on-accent hover:bg-altec-green/85",
   secondary:
     "border border-line-strong text-ink hover:border-line-strong hover:bg-ink/8",
   ghost: "text-ink hover:text-accent-ink",

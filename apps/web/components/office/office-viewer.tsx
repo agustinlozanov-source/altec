@@ -118,7 +118,7 @@ export function OfficeViewer() {
                 className={cn(
                   "px-2.5 py-1.5 font-mono text-[10px]",
                   sim.speed === s
-                    ? "bg-altec-green text-ink"
+                    ? "bg-altec-green text-on-accent"
                     : "text-muted hover:text-ink",
                 )}
               >
@@ -226,7 +226,7 @@ export function OfficeViewer() {
             <button
               type="button"
               onClick={() => setTab("inbox")}
-              className="bg-vo-awaiting text-ink rounded-pill absolute bottom-14 left-3 px-3.5 py-2 text-xs font-semibold shadow-lg"
+              className="bg-vo-awaiting text-on-accent rounded-pill absolute bottom-14 left-3 px-3.5 py-2 text-xs font-semibold shadow-lg"
             >
               {pending} {pending === 1 ? "decisión espera" : "decisiones esperan"} · Revisar
             </button>
@@ -269,7 +269,7 @@ export function OfficeViewer() {
               >
                 {label}
                 {id === "inbox" && pending > 0 ? (
-                  <span className="bg-vo-awaiting text-ink rounded-full px-1.5 text-[10px] font-semibold">
+                  <span className="bg-vo-awaiting text-on-accent rounded-full px-1.5 text-[10px] font-semibold">
                     {pending}
                   </span>
                 ) : null}

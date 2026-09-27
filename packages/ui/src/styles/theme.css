@@ -45,12 +45,21 @@
 
   /* --- Tipografia (docs/WEB.md §2.2) --- */
   --font-display: var(--font-open-sans), ui-sans-serif, system-ui, sans-serif;
+  /* Serif editorial, solo para enunciados de portada. */
+  --font-editorial: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
   --font-sans: var(--font-open-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
   /* --- Radios (docs/WEB.md §2.4: 8-12px en cards) --- */
   --radius-card: 0.625rem;
   --radius-pill: 9999px;
+
+  /* --- Anchos de lectura ---
+     Un parrafo a todo lo ancho no se lee. Estos topes son los que usan las
+     firmas que si se leen. */
+  --container-content: 1200px;
+  --container-text: 45rem;
+  --container-text-sm: 34rem;
 
   /* --- Breakpoints (docs/WEB.md §6.3) ---
      Solo los cuatro del blueprint: la base es movil (320), y de ahi md=768,

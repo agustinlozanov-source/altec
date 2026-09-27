@@ -17,7 +17,7 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="bg-surface/80 border-line sticky top-0 z-40 border-b backdrop-blur-md">
+    <header className="surface-base bg-surface/85 border-line sticky top-0 z-40 border-b backdrop-blur-md">
       <Container className="flex h-16 items-center justify-between gap-4">
         <Link href="/" aria-label="ALTEC Group, ir al inicio" className="shrink-0">
           <AltecLogo className="h-6 md:h-7" alt="" priority />

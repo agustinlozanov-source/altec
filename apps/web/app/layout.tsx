@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <a
           href="#contenido"
-          className="bg-altec-green text-ink sr-only rounded-b px-4 py-2 text-sm font-semibold focus:not-sr-only focus:absolute focus:top-0 focus:left-4 focus:z-50"
+          className="bg-altec-green text-on-accent sr-only rounded-b px-4 py-2 text-sm font-semibold focus:not-sr-only focus:absolute focus:top-0 focus:left-4 focus:z-50"
         >
           Saltar al contenido
         </a>
