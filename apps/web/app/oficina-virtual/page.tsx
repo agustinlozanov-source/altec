@@ -31,7 +31,7 @@ export default function VirtualOfficePage() {
         <AltecVOHero />
 
         <Container className="relative">
-          <h1 className="font-display text-ink max-w-3xl text-4xl leading-[1.05] font-extrabold italic md:text-6xl wide:text-7xl">
+          <h1 className="font-display text-ink max-w-3xl text-4xl leading-[1.05] font-extrabold md:text-6xl wide:text-7xl">
             Una firma que puedes ver trabajar.
           </h1>
           <p className="text-muted mt-6 max-w-2xl text-base md:text-lg">
@@ -58,7 +58,7 @@ export default function VirtualOfficePage() {
       </Section>
 
       <Section tone="alt">
-        <h2 className="font-display text-ink text-2xl font-extrabold italic md:text-4xl">
+        <h2 className="font-display text-ink text-2xl font-extrabold md:text-4xl">
           Por qué una oficina y no un tablero
         </h2>
         <p className="text-muted mt-4 max-w-2xl">
@@ -75,7 +75,7 @@ export default function VirtualOfficePage() {
               <span aria-hidden="true" className="text-ink/25 font-mono text-sm">
                 {`0${index + 1}`}
               </span>
-              <h3 className="font-display text-ink mt-3 text-lg font-extrabold italic">
+              <h3 className="font-display text-ink mt-3 text-lg font-extrabold">
                 {item.title}
               </h3>
               <p className="text-muted mt-3 text-sm leading-relaxed">{item.text}</p>

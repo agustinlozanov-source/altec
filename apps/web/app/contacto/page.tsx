@@ -16,7 +16,7 @@ export default function ContactPage() {
     <>
       <section className="bg-surface pt-20 pb-12 md:pt-28">
         <Container>
-          <h1 className="font-display text-ink max-w-3xl text-4xl leading-[1.1] font-extrabold italic md:text-6xl">
+          <h1 className="font-display text-ink max-w-3xl text-4xl leading-[1.1] font-extrabold md:text-6xl">
             Hablemos.
           </h1>
           <p className="text-muted mt-5 max-w-xl">

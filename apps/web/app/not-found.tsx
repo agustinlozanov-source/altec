@@ -8,7 +8,7 @@ export default function NotFound() {
 
         <p className="text-muted font-mono text-sm">Error 404</p>
 
-        <h1 className="font-display text-ink text-3xl leading-tight font-extrabold italic md:text-5xl">
+        <h1 className="font-display text-ink text-3xl leading-tight font-extrabold md:text-5xl">
           Esta página no existe.
         </h1>
 

@@ -44,10 +44,10 @@
   --color-on-accent: #000000;
 
   /* --- Tipografia (docs/WEB.md §2.2) --- */
-  --font-display: var(--font-open-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   /* Serif editorial, solo para enunciados de portada. */
   --font-editorial: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-open-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
   /* --- Radios (docs/WEB.md §2.4: 8-12px en cards) --- */
@@ -91,8 +91,9 @@
  * adapta sin JavaScript y sin parpadeo, tanto al modo como a la superficie.
  *
  * `surface-base` y `surface-alt` son las dos superficies que se alternan a lo
- * largo de una pagina (docs/WEB.md §2.4). En oscuro alternan negro y cream; en
- * claro, cream y blanco.
+ * largo de una pagina (docs/WEB.md §2.4): negro y cream. El ritmo lo decide el
+ * diseno, no el visitante — no hay interruptor de modo claro, igual que en las
+ * firmas de referencia. Dos secciones del mismo tono nunca van seguidas.
  * ------------------------------------------------------------------------ */
 
 :root,
@@ -131,8 +132,7 @@
  * Contexto que NO sigue al modo: siempre oscuro. Es para portadas con imagen,
  * donde el texto se apoya en la fotografia y no en la superficie de la pagina.
  */
-.surface-invert,
-[data-theme="light"] .surface-invert {
+.surface-invert {
   --color-surface: #000000;
   --color-ink: #fff0e4;
   --color-muted: rgb(255 240 228 / 0.72);
@@ -145,41 +145,6 @@
   --logo-dark: block;
   --logo-light: none;
   color-scheme: dark;
-}
-
-/* --- Modo claro: se invierten las dos superficies --- */
-
-:root[data-theme="light"],
-[data-theme="light"] .surface-base {
-  --color-surface: #fff0e4;
-  --color-ink: #000000;
-  --color-muted: rgb(0 0 0 / 0.66);
-  --color-line: rgb(0 0 0 / 0.14);
-  --color-line-strong: rgb(0 0 0 / 0.3);
-  --color-card: rgb(255 255 255 / 0.72);
-  --color-accent-ink: #577333;
-  /* El ambar de marca sobre claro da 1.8:1. Esta version da 4.7:1. */
-  --color-attention: #936316;
-  --color-on-accent: #000000;
-  --logo-dark: none;
-  --logo-light: block;
-  color-scheme: light;
-}
-
-[data-theme="light"] .surface-alt {
-  --color-surface: #ffffff;
-  --color-ink: #000000;
-  --color-muted: rgb(0 0 0 / 0.64);
-  --color-line: rgb(0 0 0 / 0.12);
-  --color-line-strong: rgb(0 0 0 / 0.26);
-  --color-card: #fff0e4;
-  --color-accent-ink: #577333;
-  /* El ambar de marca sobre claro da 1.8:1. Esta version da 4.7:1. */
-  --color-attention: #936316;
-  --color-on-accent: #000000;
-  --logo-dark: none;
-  --logo-light: block;
-  color-scheme: light;
 }
 
 @layer base {

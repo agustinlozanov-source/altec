@@ -50,7 +50,7 @@ export function ContactForm() {
         role="status"
         className="border-altec-green/40 bg-altec-green/5 rounded-card border p-8 text-center"
       >
-        <p className="font-display text-ink text-xl font-extrabold italic">
+        <p className="font-display text-ink text-xl font-extrabold">
           Mensaje enviado.
         </p>
         <p className="text-muted mt-2 text-sm">

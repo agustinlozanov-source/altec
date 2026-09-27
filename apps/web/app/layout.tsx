@@ -28,17 +28,10 @@ export const metadata: Metadata = {
   },
 };
 
-/**
- * Aplica el modo guardado antes de pintar. Sin esto, la pagina arranca en
- * oscuro y salta a claro, y el salto se ve.
- */
-const themeScript = `(function(){try{var m=localStorage.getItem("altec-theme");if(m==="light")document.documentElement.dataset.theme="light";}catch(e){}})();`;
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es-MX" className={fontVariables}>
       <body>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <a
           href="#contenido"
           className="bg-altec-green text-on-accent sr-only rounded-b px-4 py-2 text-sm font-semibold focus:not-sr-only focus:absolute focus:top-0 focus:left-4 focus:z-50"

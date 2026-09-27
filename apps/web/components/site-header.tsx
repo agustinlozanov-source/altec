@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { AltecLogo, Button, cn, Container } from "@altec/ui";
 import { nav, phaseOneRoutes, site } from "@/lib/site";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 /**
  * Navbar fija, fondo negro semitransparente con backdrop-blur (docs/WEB.md §3).
@@ -57,8 +56,6 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <ThemeToggle />
-
           <Button href={site.investorPortalUrl} size="sm">
             Portal Inversionista
           </Button>

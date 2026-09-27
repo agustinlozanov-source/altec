@@ -131,7 +131,7 @@ export function CamilaConsole() {
         {/* --- avatar --- */}
         <div className="bg-card relative flex aspect-video items-center justify-center">
           <div className="px-6 text-center">
-            <p className="font-display text-ink text-2xl font-extrabold italic">Camila Fuentes</p>
+            <p className="font-display text-ink text-2xl font-extrabold">Camila Fuentes</p>
             <p className="text-muted mt-1 text-xs">Senior Partner AI · ALTEC Virtual Office</p>
             <p className="text-muted mt-4 font-mono text-[11px]">
               {avatarReady ? "Avatar conectado" : "Avatar sin conectar"}

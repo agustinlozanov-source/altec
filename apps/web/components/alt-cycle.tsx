@@ -19,11 +19,11 @@ export function AltCycle({ className }: { className?: string }) {
             <div className="border-line bg-card rounded-card w-full border p-6 lg:flex-1">
               <span
                 aria-hidden="true"
-                className="font-display text-ink/20 block text-4xl leading-none font-extrabold italic"
+                className="font-display text-ink/20 block text-4xl leading-none font-extrabold"
               >
                 {stage.letter}
               </span>
-              <h3 className="font-display text-ink mt-3 text-xl font-extrabold italic">
+              <h3 className="font-display text-ink mt-3 text-xl font-extrabold">
                 {stage.name}
               </h3>
               <p className="text-muted mt-2 text-sm">{stage.detail}</p>

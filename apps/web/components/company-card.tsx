@@ -14,7 +14,7 @@ export function CompanyCard({ company, delay = 0 }: { company: Company; delay?: 
       className="border-line bg-card rounded-card hover:border-accent-ink group flex flex-col gap-4 border p-6 transition-colors hover:shadow-[0_8px_32px_rgb(0_0_0/0.08)] md:p-8"
     >
       <div className="rounded-pill bg-surface border-line inline-flex w-fit items-center border px-5 py-2.5">
-        <span className="font-display text-ink text-base font-extrabold italic">
+        <span className="font-display text-ink text-base font-extrabold">
           {company.name}
         </span>
       </div>

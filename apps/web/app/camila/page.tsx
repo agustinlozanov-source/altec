@@ -40,7 +40,7 @@ export default async function CamilaPage() {
         <Container>
           <AltecVOLogo className="h-8 md:h-10" priority />
 
-          <h1 className="font-display text-ink mt-6 max-w-3xl text-4xl leading-[1.05] font-extrabold italic md:text-6xl">
+          <h1 className="font-display text-ink mt-6 max-w-3xl text-4xl leading-[1.05] font-extrabold md:text-6xl">
             Camila Fuentes.
           </h1>
           <p className="text-accent-ink mt-3 font-mono text-xs tracking-[0.2em] uppercase">
@@ -58,7 +58,7 @@ export default async function CamilaPage() {
       </Section>
 
       <Section tone="alt">
-        <h2 className="font-display text-ink text-2xl font-extrabold italic md:text-4xl">
+        <h2 className="font-display text-ink text-2xl font-extrabold md:text-4xl">
           Qué hace Camila
         </h2>
 
@@ -68,7 +68,7 @@ export default async function CamilaPage() {
               <span aria-hidden="true" className="text-muted font-mono text-sm">
                 {`0${index + 1}`}
               </span>
-              <h3 className="font-display text-ink mt-3 text-lg font-extrabold italic">
+              <h3 className="font-display text-ink mt-3 text-lg font-extrabold">
                 {item.title}
               </h3>
               <p className="text-muted mt-3 text-sm leading-relaxed">{item.text}</p>

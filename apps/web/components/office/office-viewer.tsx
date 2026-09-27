@@ -306,7 +306,7 @@ export function OfficeViewer() {
                     ← Volver al equipo
                   </button>
 
-                  <h3 className="font-display text-ink mt-4 text-lg font-extrabold italic">
+                  <h3 className="font-display text-ink mt-4 text-lg font-extrabold">
                     {selectedDefinition.displayName}
                   </h3>
                   <p className="text-accent-ink font-mono text-[11px]">{selectedDefinition.role}</p>

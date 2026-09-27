@@ -92,7 +92,7 @@ export function KanbanBoard({ sim }: { sim: Simulation }) {
       Math.min(8, Math.floor(sim.automatedTasks / 40) + 2),
     ];
 
-    ctx.font = '600 30px "Open Sans", system-ui, sans-serif';
+    ctx.font = '600 30px "Inter", system-ui, sans-serif';
     ctx.textBaseline = "top";
 
     names.forEach((name, i) => {

@@ -242,7 +242,7 @@ export function MeetingBoard({ title }: { title?: string }) {
       ctx.fillStyle = text ? t.board.activeBackground : t.board.idleBackground;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = text ? t.board.activeText : t.board.idleText;
-      ctx.font = '600 58px "Open Sans", system-ui, sans-serif';
+      ctx.font = '600 58px "Inter", system-ui, sans-serif';
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(text || "Sala disponible", canvas.width / 2, canvas.height / 2, canvas.width - 60);

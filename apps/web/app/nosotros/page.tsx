@@ -22,7 +22,7 @@ export default function AboutPage() {
     <>
       <section className="bg-surface pt-20 pb-12 md:pt-28">
         <Container>
-          <h1 className="font-display text-ink max-w-3xl text-4xl leading-[1.1] font-extrabold italic md:text-6xl">
+          <h1 className="font-display text-ink max-w-3xl text-4xl leading-[1.1] font-extrabold md:text-6xl">
             Cinco empresas, una tesis.
           </h1>
         </Container>
@@ -30,7 +30,7 @@ export default function AboutPage() {
 
       {/* --- La historia (docs/WEB.md §4.2) --- */}
       <Section tone="base" id="historia" className="pt-8">
-        <h2 className="font-display text-ink text-2xl font-extrabold italic md:text-4xl">
+        <h2 className="font-display text-ink text-2xl font-extrabold md:text-4xl">
           La historia
         </h2>
 
@@ -50,7 +50,7 @@ export default function AboutPage() {
 
       {/* --- Tesis del grupo (docs/WEB.md §4.2) --- */}
       <Section tone="alt" id="tesis">
-        <h2 className="font-display text-ink text-2xl font-extrabold italic md:text-4xl">
+        <h2 className="font-display text-ink text-2xl font-extrabold md:text-4xl">
           Tesis del grupo
         </h2>
 
@@ -59,7 +59,7 @@ export default function AboutPage() {
             Las PyMEs en Latinoamérica enfrentan tres problemas simultáneos: no saben vender bien
             (advisory), no actualizan sus competencias (learning) y no adoptan tecnología a tiempo
             (technology).{" "}
-            <span className="font-display font-extrabold italic">
+            <span className="font-display font-extrabold">
               Estos problemas no se resuelven uno a la vez. Se resuelven juntos.
             </span>
           </p>
@@ -73,7 +73,7 @@ export default function AboutPage() {
 
       {/* --- Equipo fundador (docs/WEB.md §4.2) --- */}
       <Section tone="base" id="equipo">
-        <h2 className="font-display text-ink text-2xl font-extrabold italic md:text-4xl">
+        <h2 className="font-display text-ink text-2xl font-extrabold md:text-4xl">
           Equipo fundador
         </h2>
 
@@ -85,13 +85,13 @@ export default function AboutPage() {
             >
               <div
                 aria-hidden="true"
-                className="border-line text-muted font-display flex h-14 w-14 shrink-0 items-center justify-center rounded-full border text-lg font-extrabold italic"
+                className="border-line text-muted font-display flex h-14 w-14 shrink-0 items-center justify-center rounded-full border text-lg font-extrabold"
               >
                 {initials(person.name)}
               </div>
 
               <div>
-                <h3 className="font-display text-ink text-lg font-extrabold italic">
+                <h3 className="font-display text-ink text-lg font-extrabold">
                   {person.name}
                 </h3>
                 <p className="text-accent-ink mt-0.5 font-mono text-xs">{person.role}</p>
@@ -104,7 +104,7 @@ export default function AboutPage() {
 
       {/* --- Gobierno corporativo (docs/WEB.md §4.2) --- */}
       <Section tone="alt" id="gobierno">
-        <h2 className="font-display text-ink text-2xl font-extrabold italic md:text-4xl">
+        <h2 className="font-display text-ink text-2xl font-extrabold md:text-4xl">
           Gobierno corporativo
         </h2>
 
@@ -121,7 +121,7 @@ export default function AboutPage() {
               <span aria-hidden="true" className="text-ink/25 font-mono text-sm">
                 {`0${index + 1}`}
               </span>
-              <h3 className="font-display text-ink mt-3 text-xl font-extrabold italic">
+              <h3 className="font-display text-ink mt-3 text-xl font-extrabold">
                 {pillar.name}
               </h3>
               <p className="text-muted mt-1 text-xs tracking-wide uppercase">

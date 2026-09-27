@@ -50,7 +50,7 @@ export default function HomePage() {
       {/* --- Diferenciador --- */}
       <Section tone="alt" id="categoria">
         <Reveal>
-          <h2 className="font-display text-ink max-w-[18ch] text-3xl leading-tight font-extrabold italic md:text-5xl">
+          <h2 className="font-display text-ink max-w-[18ch] text-3xl leading-tight font-extrabold md:text-5xl">
             No somos una categoría existente.
           </h2>
 
@@ -69,7 +69,7 @@ export default function HomePage() {
           <p className="text-accent-ink font-mono text-xs tracking-[0.2em] uppercase">
             Nuestras empresas
           </p>
-          <h2 className="font-display text-ink mt-4 text-3xl leading-tight font-extrabold italic md:text-5xl">
+          <h2 className="font-display text-ink mt-4 text-3xl leading-tight font-extrabold md:text-5xl">
             Cinco compañías. Un ecosistema.
           </h2>
           <p className="text-muted max-w-text mt-4 text-base">
@@ -90,7 +90,7 @@ export default function HomePage() {
           <Reveal>
             <AltecVOLogo className="h-8 md:h-10" />
 
-            <h2 className="font-display text-ink mt-6 text-3xl leading-tight font-extrabold italic md:text-4xl">
+            <h2 className="font-display text-ink mt-6 text-3xl leading-tight font-extrabold md:text-4xl">
               Una firma que puedes ver trabajar.
             </h2>
 
@@ -124,7 +124,7 @@ export default function HomePage() {
                   ["1", "bandeja de decisiones"],
                 ].map(([value, label]) => (
                   <div key={label} className="bg-surface px-5 py-6">
-                    <dt className="font-display text-accent-ink text-2xl font-extrabold italic">
+                    <dt className="font-display text-accent-ink text-2xl font-extrabold">
                       {value}
                     </dt>
                     <dd className="text-muted mt-1 text-xs">{label}</dd>
@@ -142,7 +142,7 @@ export default function HomePage() {
           <p className="text-accent-ink font-mono text-xs tracking-[0.2em] uppercase">
             Tracción
           </p>
-          <h2 className="font-display text-ink mt-4 text-3xl leading-tight font-extrabold italic md:text-5xl">
+          <h2 className="font-display text-ink mt-4 text-3xl leading-tight font-extrabold md:text-5xl">
             Números del grupo
           </h2>
         </Reveal>
