@@ -42,7 +42,7 @@ export function SiteHeader({ locale, dictionary }: { locale: Locale; dictionary:
   ];
 
   return (
-    <header className="surface-base bg-surface/85 border-line sticky top-0 z-40 border-b backdrop-blur-md">
+    <header className="surface-invert sticky top-0 z-40 border-b border-white/10 bg-black/90 backdrop-blur-md">
       <Container className="flex h-16 items-center justify-between gap-4">
         <Link href={path(locale, "home")} aria-label="ALTEC Group" className="shrink-0">
           <AltecLogo className="h-6 md:h-7" alt="" priority />
@@ -104,7 +104,7 @@ export function SiteHeader({ locale, dictionary }: { locale: Locale; dictionary:
         </div>
       </Container>
 
-      <div id="menu-movil" hidden={!open} className="border-line bg-surface border-t lg:hidden">
+      <div id="menu-movil" hidden={!open} className="border-t border-white/10 bg-black lg:hidden">
         <Container className="flex flex-col gap-1 py-4">
           {items.map((item) =>
             item.ready ? (

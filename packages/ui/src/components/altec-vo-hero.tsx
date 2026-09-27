@@ -21,10 +21,11 @@ export function AltecVOHero({ className }: { className?: string }) {
         sizes="100vw"
         className="object-cover object-[center_28%]"
       />
-      {/* velo vertical: deja ver la ilustracion arriba, asienta el texto abajo */}
-      <div className="from-altec-black via-altec-black/75 to-altec-black/25 absolute inset-0 bg-gradient-to-t" />
-      {/* refuerzo lateral, para que el titular no compita con las figuras */}
-      <div className="from-altec-black/85 absolute inset-0 bg-gradient-to-r to-transparent md:to-60%" />
+      {/* Velo vertical. Denso solo en la franja donde se apoya el texto; arriba
+          casi desaparece para que se vea el equipo. */}
+      <div className="from-altec-black/95 via-altec-black/40 absolute inset-0 bg-gradient-to-t to-transparent" />
+      {/* Refuerzo lateral, mas suave: el titular necesita fondo, las figuras no. */}
+      <div className="from-altec-black/70 absolute inset-0 bg-gradient-to-r to-transparent to-55%" />
     </div>
   );
 }
