@@ -15,6 +15,8 @@ export const metadata: Metadata = {
 /** El acceso se evalua en cada visita. */
 export const dynamic = "force-dynamic";
 
+type Props = { params: Promise<{ locale: string }> };
+
 const capabilities = [
   {
     title: "Presenta sola",
@@ -30,13 +32,13 @@ const capabilities = [
   },
 ];
 
-export default async function CamilaPage() {
+export default async function CamilaPage(_props: Props) {
   const configured = isConfigured();
   const allowed = configured && (await hasAccess());
 
   return (
     <>
-      <section className="bg-surface pt-24 pb-10 md:pt-32">
+      <section className="surface-base bg-surface pt-24 pb-10 md:pt-32">
         <Container>
           <AltecVOLogo className="h-8 md:h-10" priority />
 

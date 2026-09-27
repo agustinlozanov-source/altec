@@ -18,12 +18,15 @@ export function StatCounter({
   prefix = "",
   suffix = "",
   label,
+  locale = "en",
   durationMs = 1100,
 }: {
   value: number;
   prefix?: string;
   suffix?: string;
   label: string;
+  /** Para separar los miles como corresponde al idioma. */
+  locale?: string;
   durationMs?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -71,7 +74,7 @@ export function StatCounter({
     <div ref={ref} className="flex flex-col gap-1">
       <span className="font-display text-accent-ink text-4xl leading-none font-extrabold tabular-nums md:text-5xl wide:text-6xl">
         {prefix}
-        {shown.toLocaleString("es-MX")}
+        {shown.toLocaleString(locale === "es" ? "es-MX" : "en-US")}
         {suffix}
       </span>
       <span className="text-muted text-sm">{label}</span>

@@ -1,17 +1,26 @@
 import { cn } from "@altec/ui";
+import type { Dictionary } from "@/lib/i18n";
 
-/** El ciclo ALT (docs/WEB.md §4.1): Advisory -> Learning -> Technology -> Advisory. */
-const stages = [
-  { letter: "A", name: "Advisory", detail: "Consultoría estratégica, comercial y tecnológica." },
-  { letter: "L", name: "Learning", detail: "Educación ejecutiva, certificaciones y eventos." },
-  { letter: "T", name: "Technology", detail: "Plataformas SaaS, automatización y agentes de IA." },
-];
+/** El ciclo ALT (docs/WEB.md §4.1): Advisory → Learning → Technology → Advisory. */
+export function AltCycle({
+  dictionary,
+  className,
+}: {
+  dictionary: Dictionary;
+  className?: string;
+}) {
+  const { stages, cycleNote } = dictionary.home.differentiator;
 
-export function AltCycle({ className }: { className?: string }) {
+  const items = [
+    { letter: "A", name: "Advisory", detail: stages.advisory },
+    { letter: "L", name: "Learning", detail: stages.learning },
+    { letter: "T", name: "Technology", detail: stages.technology },
+  ];
+
   return (
     <div className={cn("flex flex-col gap-6", className)}>
-      <ol className="flex flex-col items-stretch gap-3 lg:flex-row lg:items-stretch">
-        {stages.map((stage, index) => (
+      <ol className="flex flex-col items-stretch gap-3 lg:flex-row">
+        {items.map((stage, index) => (
           <li
             key={stage.name}
             className="flex flex-col items-center gap-3 lg:flex-1 lg:flex-row lg:items-stretch"
@@ -19,17 +28,15 @@ export function AltCycle({ className }: { className?: string }) {
             <div className="border-line bg-card rounded-card w-full border p-6 lg:flex-1">
               <span
                 aria-hidden="true"
-                className="font-display text-ink/20 block text-4xl leading-none font-extrabold"
+                className="font-display text-muted block text-4xl leading-none font-extrabold opacity-40"
               >
                 {stage.letter}
               </span>
-              <h3 className="font-display text-ink mt-3 text-xl font-extrabold">
-                {stage.name}
-              </h3>
+              <h3 className="font-display text-ink mt-3 text-xl font-extrabold">{stage.name}</h3>
               <p className="text-muted mt-2 text-sm">{stage.detail}</p>
             </div>
 
-            {index < stages.length - 1 ? (
+            {index < items.length - 1 ? (
               <span
                 aria-hidden="true"
                 className="text-accent-ink flex shrink-0 rotate-90 items-center text-2xl lg:rotate-0"
@@ -45,7 +52,7 @@ export function AltCycle({ className }: { className?: string }) {
         <span aria-hidden="true" className="text-accent-ink">
           ↻
         </span>
-        Y el ciclo vuelve a empezar en Advisory.
+        {cycleNote}
       </p>
     </div>
   );

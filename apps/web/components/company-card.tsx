@@ -2,12 +2,20 @@ import { CompanyLogo } from "@altec/ui";
 import { Reveal } from "@/components/reveal";
 import type { Company } from "@/lib/companies";
 
-/**
- * Card de empresa (docs/WEB.md §4.1).
- * El logotipo real sustituye a la cápsula tipográfica que servía de
- * provisional; el nombre queda como texto accesible en la imagen.
- */
-export function CompanyCard({ company, delay = 0 }: { company: Company; delay?: number }) {
+/** Card de empresa (docs/WEB.md §4.1). */
+export function CompanyCard({
+  company,
+  industry,
+  metric,
+  visitLabel,
+  delay = 0,
+}: {
+  company: Company;
+  industry: string;
+  metric: string;
+  visitLabel: string;
+  delay?: number;
+}) {
   return (
     <Reveal
       as="article"
@@ -16,9 +24,9 @@ export function CompanyCard({ company, delay = 0 }: { company: Company; delay?: 
     >
       <CompanyLogo company={company.key} className="h-7 md:h-8" />
 
-      <p className="text-muted text-sm">{company.industry}</p>
+      <p className="text-muted text-sm">{industry}</p>
 
-      <p className="text-ink font-mono text-sm leading-relaxed">{company.metric}</p>
+      <p className="text-ink font-mono text-sm leading-relaxed">{metric}</p>
 
       <a
         href={company.url}
@@ -26,7 +34,7 @@ export function CompanyCard({ company, delay = 0 }: { company: Company; delay?: 
         rel="noreferrer noopener"
         className="text-ink group-hover:text-accent-ink mt-auto inline-flex items-center gap-2 text-sm font-semibold transition-colors"
       >
-        Visitar sitio
+        {visitLabel}
         <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">
           →
         </span>

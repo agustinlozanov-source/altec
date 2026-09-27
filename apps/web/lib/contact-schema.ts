@@ -1,29 +1,34 @@
 import { z } from "zod";
 
-/** Tipos de consulta del formulario (docs/WEB.md §4.5). */
-export const inquiryTypes = [
-  "Inversión",
-  "Consultoría",
-  "Alianza estratégica",
-  "Prensa",
-  "Otro",
-] as const;
+/**
+ * Validación del formulario (docs/WEB.md §4.5).
+ *
+ * El servidor devuelve CLAVES de error, no textos: quien conoce el idioma del
+ * visitante es el cliente, y así no hay que pasarle el diccionario a la acción.
+ */
+
+export const inquiryTypes = ["investment", "consulting", "partnership", "press", "other"] as const;
+export type InquiryType = (typeof inquiryTypes)[number];
 
 export const contactSchema = z.object({
-  name: z.string().trim().min(2, "Escribe tu nombre."),
-  company: z.string().trim().min(2, "Escribe el nombre de tu empresa."),
-  email: z.email("Revisa el correo electrónico."),
-  phone: z.string().trim().max(30, "El teléfono es demasiado largo.").optional().or(z.literal("")),
-  inquiryType: z.enum(inquiryTypes, { message: "Elige un tipo de consulta." }),
-  message: z.string().trim().min(10, "Cuéntanos un poco más (mínimo 10 caracteres)."),
-  // Campo trampa para bots: debe llegar vacio.
+  name: z.string().trim().min(2, "name"),
+  company: z.string().trim().min(2, "company"),
+  email: z.email("email"),
+  phone: z.string().trim().max(30, "phone").optional().or(z.literal("")),
+  inquiryType: z.enum(inquiryTypes, { message: "inquiryType" }),
+  message: z.string().trim().min(10, "message"),
+  /** Campo trampa para bots: debe llegar vacío. */
   website: z.string().max(0).optional().or(z.literal("")),
 });
 
 export type ContactInput = z.infer<typeof contactSchema>;
 
+export type ContactErrorKey = "review" | "send";
+
 export type ContactState = {
   status: "idle" | "success" | "error";
-  message?: string;
+  /** Clave del mensaje general, no el texto. */
+  errorKey?: ContactErrorKey;
+  /** Claves por campo: { name: "name", email: "email" }. */
   fieldErrors?: Partial<Record<keyof ContactInput, string>>;
 };

@@ -1,25 +1,38 @@
+import type { Metadata } from "next";
 import { AltecVOLogo, Button, Container, Section, SonarGrid } from "@altec/ui";
 import { AltCycle } from "@/components/alt-cycle";
 import { CompanyCard } from "@/components/company-card";
 import { Reveal } from "@/components/reveal";
 import { StatCounter } from "@/components/stat-counter";
 import { companies } from "@/lib/companies";
+import { getDictionary, path, type Locale } from "@/lib/i18n";
 import { site } from "@/lib/site";
 
-/**
- * Cifras del grupo (docs/WEB.md §4.1).
- * Solo las que sostienen una conversación con un inversionista.
- */
-const stats = [
-  { value: 12000, prefix: "+", label: "activos valuados" },
-  { value: 1300, prefix: "+", label: "automatizaciones creadas" },
-  { value: 60, prefix: "+", label: "agentes de IA construidos" },
-  { value: 40, prefix: "+", label: "sistemas entregados" },
-  { value: 32, label: "estados con presencia" },
-  { value: 5, label: "empresas integradas" },
-];
+type Props = { params: Promise<{ locale: Locale }> };
 
-export default function HomePage() {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = getDictionary(locale).home.meta;
+  return {
+    title: { absolute: t.title },
+    description: t.description,
+    openGraph: { title: t.title, description: t.description, locale },
+  };
+}
+
+export default async function HomePage({ params }: Props) {
+  const { locale } = await params;
+  const t = getDictionary(locale);
+
+  const stats = [
+    { value: 12000, prefix: "+", label: t.home.stats.assets },
+    { value: 1300, prefix: "+", label: t.home.stats.automations },
+    { value: 60, prefix: "+", label: t.home.stats.agents },
+    { value: 40, prefix: "+", label: t.home.stats.systems },
+    { value: 32, label: t.home.stats.states },
+    { value: 5, label: t.home.stats.companies },
+  ];
+
   return (
     <>
       {/* --- Portada --- */}
@@ -35,15 +48,10 @@ export default function HomePage() {
         amplitude={2.4}
         pingArea={[0.55, 0.15, 0.95, 0.85]}
       >
-        {/* Velo radial detrás del texto: las ondas pasan por debajo sin
-            competir con el titular. */}
         <div
           aria-hidden="true"
           className={[
             "pointer-events-none absolute inset-0 -z-10",
-            // En móvil el texto ocupa casi todo el ancho, así que el velo cubre
-            // casi todo. En escritorio se corre a la izquierda y deja respirar
-            // el campo de puntos a la derecha.
             "bg-[radial-gradient(ellipse_95%_60%_at_40%_50%,var(--color-surface)_25%,transparent_100%)]",
             "md:bg-[radial-gradient(ellipse_62%_58%_at_22%_50%,var(--color-surface)_0%,transparent_100%)]",
           ].join(" ")}
@@ -51,60 +59,63 @@ export default function HomePage() {
 
         <Container className="relative">
           <p className="text-accent-ink font-mono text-xs tracking-[0.2em] uppercase">
-            ALTEC Group
+            {t.home.eyebrow}
           </p>
 
           <h1 className="font-editorial text-ink mt-6 max-w-[16ch] text-5xl leading-[1.03] tracking-[-0.02em] md:text-7xl wide:text-8xl">
-            Consultoría, educación y tecnología como un solo sistema.
+            {t.home.title}
           </h1>
 
-          <p className="text-muted mt-8 max-w-text-sm text-base leading-relaxed md:text-lg">
-            El grupo empresarial que integra las tres industrias que escalan PyMEs en
-            Latinoamérica.
+          <p className="text-muted max-w-text-sm mt-8 text-base leading-relaxed md:text-lg">
+            {t.home.subtitle}
           </p>
 
           <div className="mt-10 flex flex-col gap-3 md:flex-row">
-            <Button href="#empresas">Conoce el grupo</Button>
+            <Button href="#companies">{t.home.ctaPrimary}</Button>
             <Button href={site.investorPortalUrl} variant="secondary">
-              Portal del Inversionista
+              {t.home.ctaSecondary}
             </Button>
           </div>
         </Container>
       </SonarGrid>
 
       {/* --- Diferenciador --- */}
-      <Section tone="alt" id="categoria">
+      <Section tone="alt" id="category">
         <Reveal>
           <h2 className="font-display text-ink max-w-[18ch] text-3xl leading-tight font-extrabold md:text-5xl">
-            No somos una categoría existente.
+            {t.home.differentiator.title}
           </h2>
 
           <p className="text-muted max-w-text mt-6 text-base md:text-lg">
-            ALTEC opera en la intersección de tres industrias que históricamente se venden por
-            separado. Nosotros las integramos en un ciclo donde cada una alimenta a las demás.
+            {t.home.differentiator.body}
           </p>
         </Reveal>
 
-        <AltCycle className="mt-14" />
+        <AltCycle dictionary={t} className="mt-14" />
       </Section>
 
       {/* --- Empresas --- */}
-      <Section tone="base" id="empresas">
+      <Section tone="base" id="companies">
         <Reveal>
           <p className="text-accent-ink font-mono text-xs tracking-[0.2em] uppercase">
-            Nuestras empresas
+            {t.home.companies.eyebrow}
           </p>
           <h2 className="font-display text-ink mt-4 text-3xl leading-tight font-extrabold md:text-5xl">
-            Cinco compañías. Un ecosistema.
+            {t.home.companies.title}
           </h2>
-          <p className="text-muted max-w-text mt-4 text-base">
-            Cada una mantiene su marca, su operación y su dominio. ALTEC las conecta.
-          </p>
+          <p className="text-muted max-w-text mt-4 text-base">{t.home.companies.body}</p>
         </Reveal>
 
         <div className="mt-14 grid gap-4 md:grid-cols-2">
           {companies.map((company, index) => (
-            <CompanyCard key={company.key} company={company} delay={index * 70} />
+            <CompanyCard
+              key={company.key}
+              company={company}
+              industry={t.companies[company.key].industry}
+              metric={t.companies[company.key].metric}
+              visitLabel={t.home.companies.visit}
+              delay={index * 70}
+            />
           ))}
         </div>
       </Section>
@@ -116,19 +127,14 @@ export default function HomePage() {
             <AltecVOLogo className="h-8 md:h-10" />
 
             <h2 className="font-display text-ink mt-6 text-3xl leading-tight font-extrabold md:text-4xl">
-              Una firma que puedes ver trabajar.
+              {t.home.virtualOffice.title}
             </h2>
 
-            <p className="text-muted mt-5 text-base leading-relaxed">
-              Cada rol de la consultoría es un agente con personalidad, método y contexto.
-              Trabajan, se reúnen, se pasan trabajo y, cuando algo requiere criterio humano, lo
-              traen a una persona. El ochenta por ciento de la operación pasa por agentes; el
-              veinte restante es donde tú creas valor.
-            </p>
+            <p className="text-muted mt-5 text-base leading-relaxed">{t.home.virtualOffice.body}</p>
 
             <div className="mt-8">
-              <Button href="/oficina-virtual" variant="secondary">
-                Conocer ALTEC VO
+              <Button href={path(locale, "virtualOffice")} variant="secondary">
+                {t.home.virtualOffice.cta}
               </Button>
             </div>
           </Reveal>
@@ -138,15 +144,15 @@ export default function HomePage() {
               <div className="border-line flex items-center gap-2 border-b px-4 py-3">
                 <span className="bg-vo-working h-2 w-2 rounded-full" />
                 <span className="text-muted font-mono text-[11px]">
-                  Oficina en vivo · 12 agentes
+                  {t.home.virtualOffice.liveLabel}
                 </span>
               </div>
               <dl className="grid grid-cols-2 gap-px">
                 {[
-                  ["10", "salas"],
-                  ["12", "agentes"],
-                  ["80/20", "agentes / humano"],
-                  ["1", "bandeja de decisiones"],
+                  ["10", t.home.virtualOffice.stats.rooms],
+                  ["12", t.home.virtualOffice.stats.agents],
+                  ["80/20", t.home.virtualOffice.stats.ratio],
+                  ["1", t.home.virtualOffice.stats.inbox],
                 ].map(([value, label]) => (
                   <div key={label} className="bg-surface px-5 py-6">
                     <dt className="font-display text-accent-ink text-2xl font-extrabold">
@@ -162,20 +168,25 @@ export default function HomePage() {
       </Section>
 
       {/* --- Números --- */}
-      <Section tone="base" id="numeros">
+      <Section tone="base" id="numbers">
         <Reveal>
           <p className="text-accent-ink font-mono text-xs tracking-[0.2em] uppercase">
-            Tracción
+            {t.home.stats.eyebrow}
           </p>
           <h2 className="font-display text-ink mt-4 text-3xl leading-tight font-extrabold md:text-5xl">
-            Números del grupo
+            {t.home.stats.title}
           </h2>
         </Reveal>
 
         <div className="mt-14 grid grid-cols-2 gap-10 lg:grid-cols-3">
           {stats.map((stat, index) => (
             <Reveal key={stat.label} delay={index * 60}>
-              <StatCounter value={stat.value} prefix={stat.prefix} label={stat.label} />
+              <StatCounter
+                value={stat.value}
+                prefix={stat.prefix}
+                label={stat.label}
+                locale={locale}
+              />
             </Reveal>
           ))}
         </div>
@@ -185,13 +196,11 @@ export default function HomePage() {
       <Section tone="alt" id="vision">
         <Reveal className="mx-auto max-w-4xl text-center">
           <p className="text-accent-ink font-mono text-xs tracking-[0.2em] uppercase">
-            Visión a 10 años
+            {t.home.vision.eyebrow}
           </p>
 
           <p className="font-editorial text-ink mt-8 text-3xl leading-[1.15] tracking-[-0.01em] md:text-5xl">
-            Para 2035, ALTEC será el grupo de referencia en la categoría ALT en Latinoamérica,
-            con presencia en cinco países, una red de más de quinientos consultores certificados
-            y un portafolio que genere más de quinientos millones de pesos anuales.
+            {t.home.vision.body}
           </p>
         </Reveal>
       </Section>
