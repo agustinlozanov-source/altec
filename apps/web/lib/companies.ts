@@ -1,6 +1,9 @@
+import type { CompanyKey } from "@altec/ui";
+
 /** Las cinco empresas del grupo (docs/WEB.md §4.1 y §4.3). */
 export type Company = {
-  key: string;
+  /** Tiene que existir en CompanyLogo: si no, no compila. */
+  key: CompanyKey;
   name: string;
   industry: string;
   metric: string;
