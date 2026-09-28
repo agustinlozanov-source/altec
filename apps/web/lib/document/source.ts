@@ -1,21 +1,26 @@
 import "server-only";
 
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { cache } from "react";
+import { CONTENT } from "@altec/db";
+import { loadContent } from "@/lib/access";
 import { parseDocument, type ParsedDoc } from "./markdown";
 
 /**
  * El Documento Maestro.
  *
- * Vive en `apps/web/content` y no en `public`: es confidencial y no se sirve
- * como archivo estatico. `import "server-only"` lo hace fallar en compilacion
- * si algun dia un componente de cliente lo importa por accidente.
+ * Ya no se lee de un archivo del repositorio: vive en Supabase, en la tabla
+ * `documents`, y solo lo devuelve la base de datos a quien tiene el ambito
+ * `document`. Con el archivo, cualquiera con acceso al codigo lo tenia entero;
+ * asi, el permiso lo aplica Postgres.
  *
- * `cache` lo deja en una sola lectura y un solo parseo por peticion, aunque
- * lo pidan el indice, el cuerpo y los metadatos por separado.
+ * El markdown sigue siendo markdown y el parser sigue siendo el mismo: lo
+ * unico que cambio es de donde sale el texto. Corregir una cifra ya no exige
+ * un despliegue — se edita la fila.
+ *
+ * `cache` lo deja en una sola consulta por peticion, aunque lo pidan el
+ * indice, el cuerpo y los metadatos por separado.
  */
-export const loadDocument = cache(async (): Promise<ParsedDoc> => {
-  const file = path.join(process.cwd(), "content", "documento-maestro.md");
-  return parseDocument(await readFile(file, "utf8"));
+export const loadDocument = cache(async (): Promise<ParsedDoc | null> => {
+  const body = await loadContent(CONTENT.masterDocument);
+  return body ? parseDocument(body) : null;
 });

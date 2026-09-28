@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowUp, ChevronRight, Menu, Printer, X } from "lucide-react";
+import { ArrowUp, ChevronRight, LogOut, Menu, Printer, X } from "lucide-react";
 import { AltecLogo } from "@altec/ui";
 import { DocThemeToggle } from "./doc-theme-toggle";
 
@@ -32,10 +32,13 @@ const HEADER_OFFSET = 96;
 export function DocShell({
   outline,
   title,
+  email,
   children,
 }: {
   outline: OutlineChapter[];
   title: string;
+  /** Quien lo esta leyendo. Va en la cabecera y permite cerrar sesion. */
+  email: string;
   children: React.ReactNode;
 }) {
   const [activeId, setActiveId] = useState<string>(outline[0]?.id ?? "");
@@ -155,6 +158,19 @@ export function DocShell({
           </button>
 
           <DocThemeToggle />
+
+          {/* Formulario y no enlace: cerrar sesion cambia estado, y un GET lo
+              dispara cualquier cosa que precargue enlaces. */}
+          <form action="/auth/sign-out" method="post" className="shrink-0">
+            <button
+              type="submit"
+              className="text-muted hover:text-ink p-2"
+              aria-label={`Cerrar la sesión de ${email}`}
+              title={`${email} · cerrar sesión`}
+            >
+              <LogOut size={18} />
+            </button>
+          </form>
         </div>
 
         {/* Progreso de lectura: la misma cifra que el sidebar, en una linea. */}

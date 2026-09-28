@@ -16,6 +16,8 @@
     "@anthropic-ai/sdk": "^0.128.0",
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.8.0",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.2",
     "chart.js": "^4.5.1",
     "lucide-react": "^1.48.0",
     "next": "^16.3.6",
@@ -28,6 +30,7 @@
   },
   "devDependencies": {
     "@altec/config": "workspace:*",
+    "@altec/db": "workspace:*",
     "@altec/ui": "workspace:*",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.6.2",

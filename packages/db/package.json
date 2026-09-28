@@ -1,0 +1,23 @@
+{
+  "name": "@altec/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "access": "node scripts/access.mjs",
+    "push-content": "node scripts/push-content.mjs",
+    "doctor": "node scripts/doctor.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.95.0"
+  },
+  "devDependencies": {
+    "@altec/config": "workspace:*",
+    "typescript": "^5.9.3"
+  }
+}

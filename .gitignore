@@ -22,3 +22,8 @@ build/
 .DS_Store
 *.log
 coverage/
+
+# Contenido confidencial. La verdad vive en Supabase (tabla `documents`);
+# estos archivos son solo la copia de trabajo desde la que se sube con
+# `pnpm --filter @altec/db push-content`. No entran al repositorio.
+apps/web/content/*.md

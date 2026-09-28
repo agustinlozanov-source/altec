@@ -3,81 +3,22 @@ import "server-only";
 import type { AgentDefinition } from "@altec/agents";
 
 /**
- * Expediente confidencial de ALTEC y armado del contexto de un agente.
+ * Armado del contexto de un agente.
  *
- * El DOSSIER es confidencial: incluye el cap table, el punto de equilibrio y
- * el monto de la ronda. Nunca sale al navegador — el `import "server-only"` de
- * arriba hace que el build falle si alguien lo importa desde un componente de
- * cliente.
+ * El expediente de ALTEC —cap table, punto de equilibrio, monto de la ronda—
+ * ya no esta escrito en este archivo: vive en Supabase y entra por parametro.
+ * Estaba aqui, y estar aqui significaba estar en el repositorio, y el
+ * repositorio lo lee cualquiera que tenga acceso al codigo. Ahora lo devuelve
+ * la base de datos solo a quien tiene el ambito `camila`.
+ *
+ * El `import "server-only"` sigue: este modulo arma contexto confidencial y no
+ * tiene nada que hacer en un navegador.
  *
  * La PERSONALIDAD de cada agente no vive aqui: vive en `packages/agents`, que
  * si es publico. El contexto final se arma juntando las dos cosas, asi que dar
  * de alta un agente real nuevo no obliga a duplicar el expediente.
  */
 
-const ALTEC_DOSSIER = `
-## Sobre ALTEC Group
-
-### Qué es
-ALTEC Group SAPI de CV es un holding que agrupa 5 empresas bajo la categoría ALT: Advisory, Learning & Technology. Fundado por Agustín Lozano. Sede en CDMX, Reforma 445.
-
-### Las 5 empresas
-
-1. **Flow Hub** — Tecnología e Inteligencia Comercial. CRM con IA, automatizaciones, fábrica de software. +40 sistemas creados, +1,300 automatizaciones, +60 agentes IA. Modelo SaaS (MRR/ARR). Razón social: Flow Hub Tecnología e Inteligencia Comercial S.A. de C.V. — Constituida. Primera línea de producción del grupo.
-
-2. **ScaleX Latam** — Consultoría de escalabilidad. Método propio DX21 (7 pilares × 3 lentes, 41 dimensiones, 164 sub-dimensiones). Libro publicado: "Método de Escala para PyMEs Latinoamericanas". Plataforma: app.scalexlatam.com con 4 herramientas (SCANx, SCALEx, TEAMx, BOARDx). Escala por licencias a consultores independientes.
-
-3. **Avalluo / Quantía** — Valuación de activos. Dictaminación pericial de activos tangibles e intangibles. +12,000 activos valuados, alcance nacional 32 estados. Plataforma propia que reduce tiempos 200-300% vs competidores. Razón social: Quantía Inteligencia en Valuación S.A. de C.V. — Constituida.
-
-4. **Boston Skilling Center** — Educación ejecutiva y capacitación empresarial. Motor de generación de leads para todas las empresas del grupo mediante eventos educativos semanales.
-
-5. **Photocan** — Marketing y producción audiovisual. Branding, contenido, comunicación corporativa.
-
-### La categoría ALT
-Advisory · Learning · Technology. Tres industrias que se venden por separado pero ALTEC las integra en un ciclo donde cada una alimenta a las demás. No es una categoría existente — ALTEC la está creando.
-
-### Gobierno corporativo — Los 3 pilares
-1. **OPSP** (One Page Strategic Plan) — Plan estratégico vivo de cada empresa, revisado trimestralmente.
-2. **Launch Gate** — Sistema de validación de productos con 12 dimensiones. Nada se vende sin pasar por aquí.
-3. **Forecast** — Proyección de equipo, talento y capacidad a 12 meses.
-
-### Equipo fundador
-- **Agustín Lozano** — CEO & Founder. 45 años. Creador de las 5 empresas. MBA (UADE Buenos Aires), Lic. Mercadotecnia Internacional (UDEM). 14+ años en escalabilidad organizacional. Conferencista TEDx. Se reubica a CDMX para dirigir el grupo.
-- **Mario Moreno Cortés** — COO. Cofundador de Flow Hub y Avalluo. Operación y tecnología.
-- **Román Cantú** — CRO / Relaciones con Inversionistas. Red de contactos institucionales.
-- **Gumaro Bracho** — Director de Estrategia. Wolfgang Consulting Group.
-
-### Cap Table
-- Agustín Lozano: 25%
-- Mario Moreno: 18%
-- Román Cantú: 12%
-- Gumaro Bracho: 10%
-- Inversionista: 25%
-- Pool Serie B: 10%
-
-### Números clave
-- Punto de equilibrio del holding: $350,400 MXN/mes
-- Mercado de consultoría en México: $2,810M USD (crecimiento 8.79%)
-- Mercado EdTech LATAM: $4,900M USD (crecimiento 12.76%)
-- +4 millones de PyMEs en México
-
-### BHAG (Visión a 10 años)
-Para 2035, ALTEC será el grupo de referencia en la categoría ALT en Latinoamérica, con presencia en 5+ países, una red de +500 consultores certificados y un portafolio de empresas que genere más de $500M MXN anuales.
-
-### Máquina de revenue
-Eventos educativos semanales → generan cash flow + leads → convierten en consultoría y sistemas. Flow Hub es la primera línea de producción (Trimestre 1), ScaleX la segunda (Trimestre 2).
-
-### Inversión buscada
-$200,000 USD para constituir el holding, relocalizar a CDMX y arrancar operaciones.
-
-## Sobre AltecVO (Virtual Office)
-AltecVO es la oficina virtual de ALTEC. Un dashboard donde cada rol de consultoría está representado por un agente de IA. Modelo 80/20: la firma escala con agentes de IA operando, no con headcount como las firmas tradicionales.
-
-El VO tiene áreas: Laboratorio de Análisis, Oficina del Socio, Sala de Juntas, General, Consultoría, Motor de Automatización, Gestión de Proyectos, Zona de Partner, Recepción de Clientes, Lounge.
-
-## Sobre Altec Health Learning
-Vertical enfocada en investigación aplicada sobre salud mental y física de las personas. No es wellness genérico — es investigación seria, basada en datos, que produce herramientas accionables para líderes, emprendedores y equipos directivos. La dirige Camila Fuentes.
-`.trim();
 
 /**
  * Arma el contexto de un agente: quien es (publico, de packages/agents) mas lo
@@ -87,7 +28,11 @@ Vertical enfocada en investigación aplicada sobre salud mental y física de las
  * personalidad trabajada ni reglas de escalamiento, y soltarlos a hablar con
  * inversionistas seria improvisar en su nombre.
  */
-export function buildSystemPrompt(agent: AgentDefinition, extra?: string): string {
+export function buildSystemPrompt(
+  agent: AgentDefinition,
+  dossier: string,
+  extra?: string,
+): string {
   if (agent.status !== "real") {
     throw new Error(
       `El agente "${agent.key}" es un puesto de relleno: todavía no puede hablar por la firma.`,
@@ -117,7 +62,7 @@ export function buildSystemPrompt(agent: AgentDefinition, extra?: string): strin
     ...(agent.escalation
       ? ["## Qué llevas a una persona antes de actuar", list(agent.escalation), ""]
       : []),
-    ALTEC_DOSSIER,
+    dossier,
     "",
     ...(agent.guardrails ? ["## Reglas de comportamiento", list(agent.guardrails), ""] : []),
     ...(extra ? [extra] : []),

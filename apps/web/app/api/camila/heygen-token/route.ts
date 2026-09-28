@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { hasAccess } from "@/lib/camila/access";
+import { checkScope } from "@/lib/access";
 
 /**
  * Token de sesión de HeyGen LiveAvatar.
@@ -10,7 +10,8 @@ import { hasAccess } from "@/lib/camila/access";
 export const runtime = "nodejs";
 
 export async function POST() {
-  if (!(await hasAccess())) {
+  const access = await checkScope("camila");
+  if (access.state !== "allowed") {
     return NextResponse.json({ error: "Sin acceso." }, { status: 401 });
   }
 

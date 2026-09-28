@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
-import { hasAccess } from "@/lib/camila/access";
+import { CONTENT, checkScope, loadContent, logAccess } from "@/lib/access";
 import {
   CAMILA_MODEL,
   isNotConnected,
@@ -19,8 +19,17 @@ const MAX_HISTORY = 20;
 const MAX_QUESTION = 800;
 
 export async function POST(request: Request) {
-  if (!(await hasAccess())) {
+  const access = await checkScope("camila");
+  if (access.state !== "allowed") {
+    if (access.state === "denied") await logAccess("camila", "denied", access.email);
     return NextResponse.json({ error: "Sin acceso." }, { status: 401 });
+  }
+
+  // El expediente sale de la base, no del repositorio, y solo lo devuelve a
+  // quien tiene el ambito: la comprobacion la hace la politica RLS.
+  const dossier = await loadContent(CONTENT.camilaDossier);
+  if (!dossier) {
+    return NextResponse.json({ error: "El expediente no está cargado." }, { status: 503 });
   }
 
   const body = (await request.json().catch(() => ({}))) as {
@@ -51,7 +60,7 @@ export async function POST(request: Request) {
     const response = await claude().messages.create({
       model: CAMILA_MODEL,
       max_tokens: 700,
-      system: cachedSystem(systemPrompt()),
+      system: cachedSystem(systemPrompt(dossier)),
       // Efecto pensado: es una conversacion en vivo, no un analisis. El
       // esfuerzo bajo mantiene la respuesta en un par de segundos.
       output_config: { effort: "low" },
@@ -81,13 +90,17 @@ export async function POST(request: Request) {
   }
 }
 
-/** El contexto se arma en cada arranque, no en cada peticion: es estable. */
-let cached: string | null = null;
-function systemPrompt(): string {
-  if (!cached) {
-    const camila = agentByKey.get("camila");
-    if (!camila) throw new Error("Camila no está en el roster.");
-    cached = buildSystemPrompt(camila);
-  }
-  return cached;
+/**
+ * El contexto ya no se guarda entre peticiones.
+ *
+ * Antes se armaba una vez por arranque porque el expediente estaba escrito en
+ * el codigo y no cambiaba nunca. Ahora vive en Supabase: si alguien corrige una
+ * cifra, la siguiente respuesta tiene que llevarla, no la que tocara reiniciar.
+ * El ahorro que daba el cache era de milisegundos; el prompt caching de la API
+ * de Anthropic sigue funcionando igual, porque lo que se repite es el texto.
+ */
+function systemPrompt(dossier: string): string {
+  const camila = agentByKey.get("camila");
+  if (!camila) throw new Error("Camila no está en el roster.");
+  return buildSystemPrompt(camila, dossier);
 }

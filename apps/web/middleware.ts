@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { defaultLocale, isLocale, locales, LOCALE_COOKIE } from "@/lib/i18n/config";
+import { refreshSession } from "@/lib/supabase/middleware";
 
 /**
  * Cada página vive bajo su idioma: `/en/...` y `/es/...`.
@@ -35,7 +36,7 @@ const LEGACY: Record<string, string> = {
   "/oficina-virtual": "virtual-office",
 };
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (
@@ -46,13 +47,22 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Las rutas de sesión no llevan idioma y no se tocan.
+  if (pathname.startsWith("/auth")) {
+    return NextResponse.next();
+  }
+
   // El Documento Maestro no vive bajo un idioma: es el texto aprobado por el
   // consejo, en español, y no se traduce. Se queda fuera del redirect y se le
-  // marca el idioma a mano para que el `lang` del documento sea correcto.
-  if (pathname === "/document" || pathname.startsWith("/document/")) {
+  // marca el idioma a mano para que el `lang` del documento sea correcto. Lo
+  // mismo para la pantalla de acceso, que es su puerta.
+  if (pathname === "/acceso" || pathname === "/document" || pathname.startsWith("/document/")) {
     const response = NextResponse.next();
     response.headers.set("x-altec-locale", "es");
-    return response;
+    // Renovar el token aquí y no en la página: escribir cookies solo se puede
+    // desde el middleware o una ruta, y un token caducado a mitad de lectura
+    // cierra la puerta a quien ya había entrado.
+    return refreshSession(request, response);
   }
 
   const segments = pathname.split("/").filter(Boolean);
@@ -61,7 +71,8 @@ export function middleware(request: NextRequest) {
   if (first && isLocale(first)) {
     const response = NextResponse.next();
     response.headers.set("x-altec-locale", first);
-    return response;
+    // La consola de Camila también está detrás de sesión, y vive bajo idioma.
+    return refreshSession(request, response);
   }
 
   const locale = preferred(request);

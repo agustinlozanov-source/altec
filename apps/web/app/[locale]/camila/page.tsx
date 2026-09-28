@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { AltecVOLogo, Container, Section } from "@altec/ui";
-import { AccessForm } from "@/components/camila/access-form";
 import { CamilaConsole } from "@/components/camila/camila-console";
-import { hasAccess, isConfigured } from "@/lib/camila/access";
+import { checkScope, logAccess } from "@/lib/access";
+import { CamilaGate } from "@/components/camila/camila-gate";
 
 export const metadata: Metadata = {
   title: "Camila Fuentes · Senior Partner AI",
@@ -33,8 +33,9 @@ const capabilities = [
 ];
 
 export default async function CamilaPage(_props: Props) {
-  const configured = isConfigured();
-  const allowed = configured && (await hasAccess());
+  const access = await checkScope("camila");
+  if (access.state === "denied") await logAccess("camila", "denied", access.email);
+  if (access.state === "allowed") await logAccess("camila", "open", access.email);
 
   return (
     <>
@@ -56,7 +57,7 @@ export default async function CamilaPage(_props: Props) {
       </section>
 
       <Section tone="base" className="pt-6 pb-16">
-        {allowed ? <CamilaConsole /> : <AccessForm configured={configured} />}
+        {access.state === "allowed" ? <CamilaConsole /> : <CamilaGate access={access} />}
       </Section>
 
       <Section tone="alt">

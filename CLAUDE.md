@@ -8,7 +8,7 @@ Este repositorio contiene **todo** lo digital de ALTEC Group: el sitio corporati
 2. `docs/WEB.md`: blueprint del sitio `altec.mx` y del portal `docs.altec.mx`. Contenido, identidad visual y fases.
 3. `docs/ALTEC-VO.md`: especificación de ALTEC VO (`app.altec.mx`).
 4. `docs/referencias/`: prototipos HTML de la oficina virtual (`oficina-2d.html`, `oficina-3d.html`). **Son referencia visual y de comportamiento, no código a copiar.** Se reimplementan en React.
-5. `apps/web/content/documento-maestro.md`: el Documento Oficial del Holding, aprobado por el CEO. Es confidencial y es contenido, no documentación técnica: por eso vive con la app que lo publica y no en `docs/`.
+5. **El Documento Oficial del Holding** y el expediente de Camila son contenido confidencial y **no viven en el repositorio**: están en Supabase, en la tabla `documents`. `apps/web/content/*.md` es la copia de trabajo desde la que se suben, y está en `.gitignore`.
 
 Si dos documentos se contradicen, gana el de mayor prioridad. Si la contradicción afecta contenido o identidad visual, pregunta antes de decidir.
 
@@ -23,7 +23,7 @@ Si dos documentos se contradicen, gana el de mayor prioridad. Si la contradicci�
 │  └─ engine/     → servicio de agentes    Node + TypeScript     · Claude Agent SDK, corre como proceso continuo
 ├─ packages/
 │  ├─ ui/         → tokens de marca, preset de Tailwind, componentes compartidos, logos e isotipo en SVG
-│  ├─ db/         → esquema de base de datos, migraciones y cliente tipado (Postgres / Supabase)
+│  ├─ db/         → esquema, migraciones, tipos y scripts de administracion de acceso (Supabase)
 │  ├─ events/     → contrato de eventos entre engine y vo (tipos + validación con zod)
 │  ├─ agents/     → definición de agentes: roles, personalidad, skills, herramientas, reglas de escalamiento
 │  ├─ office3d/   → escena 3D de la oficina (React Three Fiber). Solo dibuja; no contiene lógica de negocio
@@ -79,7 +79,7 @@ El roster (`packages/agents`) marca cada agente con `status`. **`real`** es un a
 
 `buildSystemPrompt()` **rechaza** los puestos de relleno: soltarlos a hablar con inversionistas sería improvisar en nombre de la firma.
 
-**La separación que no se debe romper.** La personalidad de un agente es pública y vive en `packages/agents`, porque la consume la escena 3D en el navegador. El expediente de ALTEC —cap table, punto de equilibrio, monto de la ronda— es confidencial y vive en `apps/web/lib/camila/prompt.ts`, marcado con `import "server-only"`. El contexto final se arma juntando los dos **en el servidor**. Si alguien importa el expediente desde un componente de cliente, el build falla; está verificado.
+**La separación que no se debe romper.** La personalidad de un agente es pública y vive en `packages/agents`, porque la consume la escena 3D en el navegador. El expediente de ALTEC —cap table, punto de equilibrio, monto de la ronda— es confidencial y vive **en Supabase**, no en el código: `buildSystemPrompt(agent, dossier)` lo recibe por parámetro y quien lo lee es la política RLS de `documents`. Estuvo escrito en `prompt.ts`, y estar ahí significaba estar en el repositorio. El contexto final se arma juntando los dos **en el servidor**; `import "server-only"` sigue marcando ese módulo.
 
 Dar de alta un agente real nuevo es una sola cosa: escribir su definición en el roster con `status: "real"`. No hay que duplicar el expediente ni tocar las rutas.
 
@@ -87,13 +87,41 @@ Dar de alta un agente real nuevo es una sola cosa: escribir su definición en el
 
 El Documento Oficial del Holding se publica en `/document`, fuera del segmento de idioma: es el texto aprobado por el consejo, en español, y no se traduce.
 
-**La página no transcribe el documento: lo lee.** `lib/document/markdown.ts` convierte `content/documento-maestro.md` en bloques y `components/document` los pinta. Corregir una cifra en el MD cambia la web sola. La regla del brief —no cambiar ningún texto, número ni dato— queda garantizada por construcción, no por cuidado al copiar.
+**La página no transcribe el documento: lo lee.** `lib/document/markdown.ts` convierte el markdown que devuelve Supabase en bloques y `components/document` los pinta. Corregir una cifra es editar la fila y volver a subirla — sin desplegar. La regla del brief —no cambiar ningún texto, número ni dato— queda garantizada por construcción, no por cuidado al copiar.
 
 **Las visualizaciones se enganchan por el encabezado de la tabla**, con la clave `seccion::encabezados` (`components/document/enhancements.ts`). No por posición: si alguien reordena el documento, una gráfica no puede acabar colgada de la tabla equivocada — como mucho deja de aparecer, que es el fallo del lado seguro. Cuando una tabla se sustituye por una visualización, la visualización se construye con las celdas de esa misma tabla.
 
-**Está detrás de código de acceso** (`DOC_ACCESS_CODE`, `DOC_COOKIE_SECRET`), lleva `noindex` y no aparece en el sitemap. Sin cookie válida el servidor no manda una sola cifra del documento; está verificado. No se añade a `robots.txt`: un `Disallow` anunciaría la ruta a cualquiera que lea el archivo.
+**Está detrás de sesión** (ver *Acceso*), lleva `noindex` y no aparece en el sitemap. Sin permiso el servidor no manda una sola cifra; está verificado. No se añade a `robots.txt`: un `Disallow` anunciaría la ruta a cualquiera que lea el archivo.
 
 **Chart.js recibe los colores desde `@altec/ui/tokens`, no desde el CSS.** Tailwind 4 descarta de la hoja las variables de `@theme` que ninguna utilidad usa, y ninguna clase pinta con `--color-chart-N`: leerlas del CSS devuelve cadena vacía y el canvas dibuja en negro. Los colores que sí cambian con el modo (`--color-ink`, `--color-line`…) sí se leen del CSS, porque las usan utilidades y siempre acaban en la hoja.
+
+## Acceso
+
+Una sola puerta para el Documento Oficial del Holding (`/document`) y la consola de Camila (`/camila`). Supabase Auth con **enlace mágico**: sin contraseñas que reponer, que es lo que quieres para alguien que entra tres veces al año.
+
+**Es lista de invitados, no registro abierto.** `signInWithOtp` va con `shouldCreateUser: false`, así que quien no exista no recibe enlace aunque escriba su correo. Las altas las hace `pnpm --filter @altec/db access grant`, que crea la cuenta y la fila a la vez. El formulario responde lo mismo escriba quien escriba: decir "ese correo no está en la lista" lo convertiría en una forma de averiguar quiénes son los inversionistas de ALTEC.
+
+**Quien decide es Postgres, no un `if`.** La función `has_scope()` y las políticas RLS de `documents` son las que deciden qué devuelve una consulta. El código de la página no puede olvidarse de comprobar, porque no es quien comprueba. La llave de servicio —la única que se salta RLS— solo la usan el servidor y los scripts de administración.
+
+**Revocar no borra.** Se pone `revoked_at`: interesa saber que esa persona tuvo acceso y hasta cuándo. La sesión abierta caduca en menos de una hora.
+
+`access_log` registra quién abrió qué y cuándo. Es lo que un inversionista espera poder preguntar, y lo que un código compartido nunca pudo responder.
+
+```
+pnpm --filter @altec/db run access grant  correo@x.com document,camila "Nombre" "Empresa"
+pnpm --filter @altec/db run access link   correo@x.com    # enlace de entrada, sin mandar correo
+pnpm --filter @altec/db run access revoke correo@x.com
+pnpm --filter @altec/db run access list
+pnpm --filter @altec/db run access log
+pnpm --filter @altec/db run push-content        # sube apps/web/content/*.md a Supabase
+pnpm --filter @altec/db run doctor              # variables, tablas, RLS y fugas
+```
+
+Van con `run` porque `doctor` y `access` chocan con subcomandos propios de pnpm.
+
+El esquema está en `packages/db/migrations/`. Se aplica pegándolo en el editor SQL de Supabase: crear tablas y políticas no se puede con las llaves del proyecto, hace falta el editor o la cadena de conexión de Postgres.
+
+**El correo por defecto de Supabase no sirve para esto**: manda dos por hora y en proyectos nuevos solo a direcciones de la organización. Para que a un inversionista le llegue su enlace hace falta SMTP propio — Resend, que ya está en el stack por el formulario de contacto. Mientras tanto, `access link` genera el enlace sin pasar por el correo.
 
 ## Convenciones
 
