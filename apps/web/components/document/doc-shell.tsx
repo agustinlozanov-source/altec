@@ -91,6 +91,23 @@ export function DocShell({
     };
   }, [measure]);
 
+  /**
+   * Quita de la barra de direcciones los restos del enlace de acceso.
+   *
+   * El adaptador de Netlify reaña la query original a sus redirects, asi que
+   * despues de entrar la URL queda como `/document?token_hash=...`. El token ya
+   * esta gastado, pero este documento se comparte en pantalla y no hay motivo
+   * para que eso salga en una reunion ni se quede en el historial.
+   */
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const junk = ["token_hash", "type", "next", "code", "estado"];
+    if (!junk.some((key) => url.searchParams.has(key))) return;
+
+    for (const key of junk) url.searchParams.delete(key);
+    window.history.replaceState(null, "", url.pathname + url.search + url.hash);
+  }, []);
+
   // En movil, el cajon se cierra al ir a una seccion y con Escape.
   useEffect(() => {
     if (!drawerOpen) return;
