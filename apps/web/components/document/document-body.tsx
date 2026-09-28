@@ -43,7 +43,7 @@ import {
 
 /** Tablas que se presentan de otra forma. La clave es `seccion::encabezados`. */
 const TABLE_AS_VISUAL: Record<string, (rows: string[][]) => ReactNode> = {
-  "las-cinco-empresas::Empresa | Industria | Proyección Año 1 (MXN)": (rows) => (
+  "las-lineas-de-servicio::División | Línea de servicio | Proyección Año 1 (MXN)": (rows) => (
     <CompanyCards rows={rows} />
   ),
   "la-inversion::Concepto | Valor": (rows) => <StatGrid stats={statsFrom(rows)} />,

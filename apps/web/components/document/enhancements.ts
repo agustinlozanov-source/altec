@@ -121,10 +121,10 @@ export const TABLE_CHARTS: Record<string, ChartEntry> = {
     height: 300,
   },
 
-  "8.6::Empresa | Proyección Año 1 (MXN)": {
+  "8.6::Línea de servicio | Proyección Año 1 (MXN)": {
     spec: {
       type: "bar",
-      labels: ["ScaleX Latam", "Flow Hub", "Avalluo (Quantía)", "Boston Skilling", "Photocan"],
+      labels: ["ALTEC Consulting", "ALTEC Technology", "Avalluo", "ALTEC Academy", "ALTEC Media"],
       values: [6500000, 6510000, 5520000, 5520000, 2580000],
       unit: "mxn",
       colors: [0, 1, 2, 3, 4],
