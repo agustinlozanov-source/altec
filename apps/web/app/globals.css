@@ -34,60 +34,31 @@
 }
 
 @media print {
-  /* Al imprimir se va el indice, la cabecera y los botones: queda el texto. */
-  .doc-hide-print,
-  aside.doc-hide-print {
+  /*
+   * El documento no se imprime.
+   *
+   * Es confidencial y se lee en pantalla, donde cada apertura queda registrada
+   * con el correo de quien entro. Un PDF sale de ese circuito: se reenvia, se
+   * queda en una carpeta y ya no hay forma de saber quien lo tiene.
+   *
+   * Esto corta lo comodo —Cmd+P, "guardar como PDF"— y deja dicho por que. No
+   * es un candado: una captura de pantalla sigue existiendo. Es la diferencia
+   * entre poner una puerta y poner un cartel.
+   */
+  body > * {
     display: none !important;
   }
 
-  /* Papel: siempre claro, a todo el ancho y sin fondos que gasten tinta. */
-  :root {
-    --color-surface: #ffffff;
-    --color-ink: #000000;
-    --color-read: #1a1a1a;
-    --color-muted: #444444;
-    --color-line: rgb(0 0 0 / 0.25);
-    --color-line-strong: rgb(0 0 0 / 0.4);
-    --color-card: #ffffff;
-    --color-accent-ink: #3d5423;
-  }
-
-  .surface-base,
-  .surface-alt,
-  .surface-invert {
-    --color-surface: #ffffff;
-    --color-ink: #000000;
-    --color-read: #1a1a1a;
-    --color-muted: #444444;
-    --color-line: rgb(0 0 0 / 0.25);
-    --color-line-strong: rgb(0 0 0 / 0.4);
-    --color-card: #ffffff;
-    --color-accent-ink: #3d5423;
-  }
-
-  body {
-    background: #ffffff;
-  }
-
-  main {
-    padding-top: 0 !important;
-  }
-
-  /* Un bloque por página, y que los encabezados no queden colgando al pie. */
-  section[id^="bloque"] {
-    break-before: page;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4 {
-    break-after: avoid;
-  }
-
-  table,
-  figure,
-  pre {
-    break-inside: avoid;
+  body::after {
+    content: "Documento confidencial de ALTEC Group SAPI de CV. No está disponible para impresión ni descarga: se consulta en altecgroup.netlify.app/document, donde cada acceso queda registrado.";
+    display: block;
+    padding: 4rem 2rem;
+    max-width: 34rem;
+    margin: 0 auto;
+    font-family: var(--font-sans);
+    font-size: 11pt;
+    line-height: 1.7;
+    color: #000;
+    text-align: center;
   }
 }

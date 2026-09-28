@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowUp, ChevronRight, LogOut, Menu, Printer, X } from "lucide-react";
+import { ArrowUp, ChevronRight, LogOut, Menu, X } from "lucide-react";
 import { AltecLogo } from "@altec/ui";
 import { DocThemeToggle } from "./doc-theme-toggle";
 
@@ -140,7 +140,7 @@ export function DocShell({
 
   return (
     <div className="surface-base bg-surface min-h-screen">
-      <header className="doc-hide-print surface-invert fixed top-0 right-0 left-0 z-50 border-b border-white/10 bg-black/92 backdrop-blur-md">
+      <header className="surface-invert fixed top-0 right-0 left-0 z-50 border-b border-white/10 bg-black/92 backdrop-blur-md">
         <div className="flex h-16 items-center gap-3 px-4 md:px-6">
           <button
             type="button"
@@ -163,16 +163,6 @@ export function DocShell({
           <span className="border-attention/50 text-attention ml-auto shrink-0 rounded-full border px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.1em] uppercase">
             Confidencial
           </span>
-
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="text-muted hover:text-ink hidden p-2 md:block"
-            aria-label="Imprimir el documento"
-            title="Imprimir"
-          >
-            <Printer size={18} />
-          </button>
 
           <DocThemeToggle />
 
@@ -200,7 +190,7 @@ export function DocShell({
       </header>
 
       <div className="flex pt-16">
-        <aside className="doc-hide-print border-line bg-surface sticky top-16 hidden h-[calc(100vh-4rem)] w-[17rem] shrink-0 border-r lg:block">
+        <aside className="border-line bg-surface sticky top-16 hidden h-[calc(100vh-4rem)] w-[17rem] shrink-0 border-r lg:block">
           {nav}
         </aside>
 
@@ -240,7 +230,7 @@ export function DocShell({
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="doc-hide-print border-line bg-card text-ink hover:border-accent-ink fixed right-5 bottom-5 z-40 flex h-11 w-11 items-center justify-center rounded-full border shadow-lg backdrop-blur"
+          className="border-line bg-card text-ink hover:border-accent-ink fixed right-5 bottom-5 z-40 flex h-11 w-11 items-center justify-center rounded-full border shadow-lg backdrop-blur"
           aria-label="Volver al inicio del documento"
         >
           <ArrowUp size={18} />

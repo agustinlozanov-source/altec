@@ -96,7 +96,7 @@ export default async function DocumentPage() {
         <Chapter key={chapter.id} chapter={chapter} />
       ))}
 
-      <footer className="doc-hide-print surface-invert bg-surface">
+      <footer className="surface-invert bg-surface">
         <div className="mx-auto flex max-w-[62rem] flex-wrap items-center justify-between gap-4 px-5 py-10 md:px-10">
           <p className="text-muted font-mono text-xs">
             ALTEC Group SAPI de CV · Documento confidencial
