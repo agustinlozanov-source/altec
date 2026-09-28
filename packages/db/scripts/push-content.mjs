@@ -25,6 +25,12 @@ const PIECES = [
     file: "apps/web/content/documento-maestro.md",
   },
   {
+    slug: "memorandum",
+    title: "Memorándum de Inversión",
+    scope: "memorandum",
+    file: "apps/web/content/memorandum.md",
+  },
+  {
     slug: "expediente-camila",
     title: "Expediente confidencial de ALTEC",
     scope: "camila",

@@ -10,7 +10,7 @@
  */
 
 /** Que hay detras de la puerta. Coincide con el enum `altec_scope`. */
-export const scopes = ["document", "camila"] as const;
+export const scopes = ["document", "camila", "memorandum"] as const;
 export type Scope = (typeof scopes)[number];
 
 export function isScope(value: string): value is Scope {
@@ -55,6 +55,7 @@ export type AccessLogRow = {
 export const CONTENT = {
   masterDocument: "documento-maestro",
   camilaDossier: "expediente-camila",
+  memorandum: "memorandum",
 } as const;
 
 /**

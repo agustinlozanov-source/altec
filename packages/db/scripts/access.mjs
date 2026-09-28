@@ -14,7 +14,7 @@
  */
 import { admin, die } from "./lib.mjs";
 
-const SCOPES = ["document", "camila"];
+const SCOPES = ["document", "camila", "memorandum"];
 const [command, ...args] = process.argv.slice(2);
 const supabase = admin();
 

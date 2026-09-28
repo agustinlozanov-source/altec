@@ -111,7 +111,13 @@ export function StatGrid({
     <div className="border-line bg-card/40 my-8 grid gap-px overflow-hidden rounded-xl border md:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => (
         <div key={stat.label} className="bg-surface p-5 md:p-6">
-          <p className="font-display text-ink text-3xl leading-none font-extrabold tracking-tight md:text-4xl">
+          {/* Una cifra corta se pone enorme; una frase, no — a 4rem no cabe y
+              se parte en cuatro renglones. El tamaño lo decide el contenido. */}
+          <p
+            className={`font-display text-ink leading-tight font-extrabold tracking-tight ${
+              stat.value.length > 24 ? "text-lg md:text-xl" : "text-3xl md:text-4xl"
+            }`}
+          >
             {stat.value}
           </p>
           <p className="text-accent-ink mt-3 font-mono text-[0.7rem] tracking-[0.1em] uppercase">

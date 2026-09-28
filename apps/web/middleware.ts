@@ -56,7 +56,12 @@ export async function middleware(request: NextRequest) {
   // consejo, en español, y no se traduce. Se queda fuera del redirect y se le
   // marca el idioma a mano para que el `lang` del documento sea correcto. Lo
   // mismo para la pantalla de acceso, que es su puerta.
-  if (pathname === "/acceso" || pathname === "/document" || pathname.startsWith("/document/")) {
+  if (
+    pathname === "/acceso" ||
+    pathname === "/document" ||
+    pathname === "/memorandum" ||
+    pathname.startsWith("/document/")
+  ) {
     const response = NextResponse.next();
     response.headers.set("x-altec-locale", "es");
     // Renovar el token aquí y no en la página: escribir cookies solo se puede

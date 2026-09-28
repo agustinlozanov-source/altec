@@ -156,3 +156,94 @@ export const FUNNEL_STAGES = [
   { label: "Proyectos de consultoría", value: 2.5, display: "2-3", rate: "35-50% de diagnosticados" },
   { label: "Clientes recurrentes (VO)", value: 1.5, display: "1-2", rate: "50-70% de proyectos" },
 ];
+
+/* --------------------------------------------------------------------------
+ * Memorandum de Inversion
+ *
+ * Registro aparte del Documento Maestro a proposito. Los dos tienen tablas con
+ * encabezados parecidos —"Concepto | Valor" aparece en ambos— y una sola tabla
+ * de claves acabaria colgando la grafica de un documento en el otro.
+ * ----------------------------------------------------------------------- */
+
+export const MEMO_TABLE_CHARTS: Record<string, ChartEntry> = {
+  "3.2::Instrumento | Rendimiento anual": {
+    spec: {
+      type: "bar",
+      horizontal: true,
+      labels: [
+        "CETES 28 días",
+        "Bolsa Mexicana (IPC)",
+        "Bienes raíces (CDMX)",
+        "Fondos diversificados",
+        "ALTEC (proyectada)",
+      ],
+      values: [11, 10, 6, 12.5, 184.5],
+      unit: "percent",
+      colors: [7, 7, 7, 7, 0],
+      highlight: [4],
+    },
+    caption:
+      "La de ALTEC es una proyección; las demás son rendimientos observados. La advertencia de arriba aplica.",
+    height: 260,
+  },
+
+  "3.3::Escenario | Revenue Año 2 | Múltiplo | Valuación | Valor del 25% | MOIC | TIR": {
+    spec: {
+      type: "bar",
+      labels: ["Conservador (70%)", "Base (100%)", "Optimista (130%)"],
+      values: [4.7, 8.1, 13.6],
+      unit: "count",
+      colors: [7, 0, 1],
+    },
+    caption: "MOIC por escenario — cuántas veces se multiplica el capital a 24 meses.",
+    height: 260,
+  },
+
+  "4.2::Línea de ingreso | Métrica de cálculo | Revenue Año 1": {
+    spec: {
+      type: "doughnut",
+      labels: [
+        "Proyectos de consultoría",
+        "Eventos educativos",
+        "Diagnósticos DX21",
+        "ALTEC VO (MRR)",
+      ],
+      values: [1000000, 585000, 250000, 144000],
+      unit: "usd",
+      colors: [0, 1, 2, 3],
+    },
+    caption: "Revenue Año 1 de ALTEC consultora, por línea de ingreso.",
+    height: 300,
+  },
+
+  "cap-5::Categoría | % | Monto (MXN) | Descripción": {
+    spec: {
+      type: "doughnut",
+      labels: ["Talento", "Renta", "Marketing", "Legal"],
+      values: [1818600, 812000, 480000, 489400],
+      unit: "mxn",
+      colors: [0, 1, 2, 3],
+    },
+    caption: "Destino de los $3,600,000 MXN en 12 meses.",
+    height: 300,
+  },
+
+  "cap-7::Socio | Participación | Rol": {
+    spec: {
+      type: "doughnut",
+      labels: [
+        "Inversionista(s)",
+        "Agustín Lozano",
+        "Mario Moreno Cortés",
+        "Román Cantú",
+        "Gumaro Bracho",
+        "Pool Serie B",
+      ],
+      values: [25, 25, 18, 12, 10, 10],
+      unit: "percent",
+      colors: [0, 1, 2, 3, 4, 7],
+    },
+    caption: "Cap table al cierre de la ronda.",
+    height: 300,
+  },
+};

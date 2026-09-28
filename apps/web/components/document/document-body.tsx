@@ -1,20 +1,28 @@
 import type { ReactNode } from "react";
 import {
+  BarChart3,
+  BookOpen,
+  CalendarRange,
   ClipboardList,
   GraduationCap,
   HandCoins,
   Handshake,
+  Layers,
+  PieChart,
   Rocket,
   Scan,
   Share2,
   ShieldCheck,
+  Target,
+  TrendingUp,
   Users,
 } from "lucide-react";
-import type { Block, DocChapter, DocSection } from "@/lib/document/markdown";
+import type { LucideIcon } from "lucide-react";
+import { chapterLabel, type Block, type DocChapter, type DocSection } from "@/lib/document/markdown";
 import { DocBlock, DocBlocks, DocTable } from "./prose";
 import { DocChart } from "./chart";
 import { Glossary, type GlossaryGroup } from "./glossary";
-import { FUNNEL_STAGES, TABLE_CHARTS } from "./enhancements";
+import { FUNNEL_STAGES, MEMO_TABLE_CHARTS, TABLE_CHARTS, type ChartEntry } from "./enhancements";
 import {
   AltCycle,
   CadenceCards,
@@ -40,6 +48,29 @@ import {
  * cuando una tabla se sustituye por una visualizacion, la visualizacion se
  * construye con las celdas de esa misma tabla.
  */
+
+/**
+ * Todo lo que un documento cambia respecto del renderizado plano.
+ *
+ * Va por documento y no en un solo mapa global porque el Documento Maestro y
+ * el Memorandum tienen tablas con encabezados parecidos: "Concepto | Valor"
+ * existe en los dos. Con un mapa compartido, una grafica de uno acabaria
+ * colgada de la tabla del otro, con cifras que no son.
+ */
+export type DocRegistry = {
+  charts: Record<string, ChartEntry>;
+  visuals: Record<string, (rows: string[][]) => ReactNode>;
+  /** Conserva la tabla y añade una figura hecha a mano debajo. */
+  figures: Record<string, ReactNode>;
+  paragraphGroups: { section: string; test: RegExp; render: (p: string[]) => ReactNode }[];
+  afterBlock: { section: string; test: RegExp; node: ReactNode }[];
+  afterSection: Record<string, ReactNode>;
+  /** Bloques de codigo que se sustituyen por un diagrama, por clave de seccion. */
+  codeAs: Record<string, ReactNode>;
+  /** La seccion, o el capitulo entero, que es un glosario. */
+  glossarySection?: string;
+  glossaryChapter?: string;
+};
 
 /** Tablas que se presentan de otra forma. La clave es `seccion::encabezados`. */
 const TABLE_AS_VISUAL: Record<string, (rows: string[][]) => ReactNode> = {
@@ -122,17 +153,23 @@ const AFTER_SECTION: Record<string, ReactNode> = {
  * Render
  * ----------------------------------------------------------------------- */
 
-function renderBlocks(section: DocSection): ReactNode[] {
+/**
+ * Pinta una tira de bloques aplicando lo que diga el registro.
+ *
+ * `key` es la clave de la seccion, o la del capitulo cuando el capitulo no
+ * tiene subsecciones — en el Memorandum, cuatro capitulos llevan su tabla
+ * directamente bajo el titulo, y sin esto se quedarian sin visualizacion.
+ */
+function renderBlocks(blocks: Block[], key: string, reg: DocRegistry): ReactNode[] {
   const pieces: ReactNode[] = [];
-  const blocks = section.blocks;
   let index = 0;
 
   while (index < blocks.length) {
     const block = blocks[index]!;
 
     if (block.kind === "paragraph") {
-      const group = PARAGRAPH_GROUPS.find(
-        (candidate) => candidate.section === section.key && candidate.test.test(block.text),
+      const group = reg.paragraphGroups.find(
+        (candidate) => candidate.section === key && candidate.test.test(block.text),
       );
       if (group) {
         const collected: string[] = [];
@@ -148,16 +185,16 @@ function renderBlocks(section: DocSection): ReactNode[] {
     }
 
     if (block.kind === "table") {
-      const key = `${section.key}::${block.signature}`;
+      const tableKey = `${key}::${block.signature}`;
 
-      const asVisual = TABLE_AS_VISUAL[key];
+      const asVisual = reg.visuals[tableKey];
       if (asVisual) {
         pieces.push(<div key={index}>{asVisual(block.rows)}</div>);
         index += 1;
         continue;
       }
 
-      const chart = TABLE_CHARTS[key];
+      const chart = reg.charts[tableKey];
       if (chart) {
         pieces.push(
           <div key={index}>
@@ -169,12 +206,13 @@ function renderBlocks(section: DocSection): ReactNode[] {
         continue;
       }
 
-      // La matematica del embudo lleva su propia figura, no una de Chart.js.
-      if (key === "6.1::Etapa | Cantidad | Tasa de conversión | Fuente del dato") {
+      // Figuras hechas a mano: conservan la tabla y añaden la suya debajo.
+      const figure = reg.figures[tableKey];
+      if (figure) {
         pieces.push(
           <div key={index}>
             <DocTable head={block.head} rows={block.rows} />
-            <FunnelChart stages={FUNNEL_STAGES} />
+            {figure}
           </div>,
         );
         index += 1;
@@ -182,9 +220,10 @@ function renderBlocks(section: DocSection): ReactNode[] {
       }
     }
 
-    // El diagrama ASCII del flywheel se sustituye por el diagrama de verdad.
-    if (block.kind === "code" && section.key === "4.1") {
-      pieces.push(<Flywheel key={index} />);
+    // Un bloque de codigo que en realidad es un diagrama.
+    const asDiagram = block.kind === "code" ? reg.codeAs[key] : undefined;
+    if (asDiagram) {
+      pieces.push(<div key={index}>{asDiagram}</div>);
       index += 1;
       continue;
     }
@@ -193,16 +232,14 @@ function renderBlocks(section: DocSection): ReactNode[] {
 
     const text = block.kind === "heading" || block.kind === "paragraph" ? block.text : null;
     if (text !== null) {
-      const extra = AFTER_BLOCK.find(
-        (rule) => rule.section === section.key && rule.test.test(text),
-      );
+      const extra = reg.afterBlock.find((rule) => rule.section === key && rule.test.test(text));
       if (extra) pieces.push(<div key={`after-${index}`}>{extra.node}</div>);
     }
 
     index += 1;
   }
 
-  const closing = AFTER_SECTION[section.key];
+  const closing = reg.afterSection[key];
   if (closing) pieces.push(<div key="closing">{closing}</div>);
 
   return pieces;
@@ -230,11 +267,28 @@ function glossaryGroups(section: DocSection): GlossaryGroup[] {
   return groups.filter((group) => group.terms.length > 0);
 }
 
-function SectionBody({ section }: { section: DocSection }) {
-  if (section.key === "anexo-b") {
+/** El glosario del Memorandum: cada categoria es una seccion con su tabla. */
+function chapterGlossary(chapter: DocChapter): GlossaryGroup[] {
+  return chapter.sections
+    .map((section) => ({
+      category: section.title,
+      terms: section.blocks
+        .filter((b): b is Extract<Block, { kind: "table" }> => b.kind === "table")
+        .flatMap((table) =>
+          table.rows.map((row) => ({
+            term: (row[0] ?? "").trim(),
+            definition: (row[1] ?? "").trim(),
+          })),
+        ),
+    }))
+    .filter((group) => group.terms.length > 0);
+}
+
+function SectionBody({ section, reg }: { section: DocSection; reg: DocRegistry }) {
+  if (section.key === reg.glossarySection) {
     return <Glossary groups={glossaryGroups(section)} />;
   }
-  return <div className="space-y-5">{renderBlocks(section)}</div>;
+  return <div className="space-y-5">{renderBlocks(section.blocks, section.key, reg)}</div>;
 }
 
 /** Bloque 5 no tiene contenido todavia y el documento lo dice. Se muestra. */
@@ -251,10 +305,24 @@ function PendingChapter({ lead }: { lead: Block[] }) {
   );
 }
 
-export function Chapter({ chapter }: { chapter: DocChapter }) {
-  const Icon = chapter.number ? CHAPTER_ICONS[chapter.number] : undefined;
-  const label = chapter.title.replace(/^Bloque\s+\d+\s*—\s*/, "");
-  const pending = chapter.sections.length === 0 && chapter.lead.length > 0;
+export function Chapter({
+  chapter,
+  reg,
+  icons,
+}: {
+  chapter: DocChapter;
+  reg: DocRegistry;
+  icons?: Record<number, LucideIcon>;
+}) {
+  const Icon = chapter.number ? (icons ?? CHAPTER_ICONS)[chapter.number] : undefined;
+  const label = chapterLabel(chapter.title);
+  // Solo el Bloque 5 del Documento Maestro: declara que esta sin escribir.
+  const pending =
+    chapter.sections.length === 0 &&
+    chapter.lead.some((b) => b.kind === "paragraph" && b.text.includes("Sección pendiente"));
+  // Un capitulo sin subsecciones lleva sus tablas en el cuerpo: el registro se
+  // aplica igual, usando la clave del capitulo.
+  const isGlossary = chapter.key === reg.glossaryChapter;
 
   return (
     <section
@@ -283,24 +351,87 @@ export function Chapter({ chapter }: { chapter: DocChapter }) {
         ) : (
           <>
             {chapter.lead.length > 0 ? (
-              <div className="mt-10">
-                <DocBlocks blocks={chapter.lead} />
+              <div className="mt-10 space-y-5">
+                {renderBlocks(chapter.lead, chapter.key, reg)}
               </div>
             ) : null}
 
-            {chapter.sections.map((section) => (
-              <article key={section.id} id={section.id} className="mt-16 scroll-mt-20">
-                <h3 className="font-display text-ink border-line border-b pb-3 text-2xl font-bold tracking-tight md:text-3xl">
-                  {section.title}
-                </h3>
-                <div className="mt-6">
-                  <SectionBody section={section} />
-                </div>
-              </article>
-            ))}
+            {isGlossary ? (
+              <div className="mt-10">
+                <Glossary groups={chapterGlossary(chapter)} />
+              </div>
+            ) : (
+              chapter.sections.map((section) => (
+                <article key={section.id} id={section.id} className="mt-16 scroll-mt-20">
+                  <h3 className="font-display text-ink border-line border-b pb-3 text-2xl font-bold tracking-tight md:text-3xl">
+                    {section.title}
+                  </h3>
+                  <div className="mt-6">
+                    <SectionBody section={section} reg={reg} />
+                  </div>
+                </article>
+              ))
+            )}
           </>
         )}
       </div>
     </section>
   );
 }
+
+/* --------------------------------------------------------------------------
+ * Los dos documentos
+ * ----------------------------------------------------------------------- */
+
+/** Documento Oficial del Holding. */
+export const masterRegistry: DocRegistry = {
+  charts: TABLE_CHARTS,
+  visuals: TABLE_AS_VISUAL,
+  figures: {
+    "6.1::Etapa | Cantidad | Tasa de conversión | Fuente del dato": (
+      <FunnelChart stages={FUNNEL_STAGES} />
+    ),
+  },
+  paragraphGroups: PARAGRAPH_GROUPS,
+  afterBlock: AFTER_BLOCK,
+  afterSection: AFTER_SECTION,
+  // El diagrama ASCII del flywheel, dibujado de verdad.
+  codeAs: { "4.1": <Flywheel /> },
+  glossarySection: "anexo-b",
+};
+
+/** Memorandum de Inversion. */
+export const memorandumRegistry: DocRegistry = {
+  charts: MEMO_TABLE_CHARTS,
+  visuals: {
+    "cap-1::Concepto | Valor": (rows) => <StatGrid stats={statsFrom(rows)} />,
+    "4.5::Concepto | Valor": (rows) => <StatGrid stats={statsFrom(rows)} />,
+    "6.2::Derecho | Descripción": (rows) => (
+      <RightsCards
+        rows={rows}
+        icons={[Users, Handshake, Share2, Scan, ShieldCheck, ClipboardList, HandCoins]}
+      />
+    ),
+    "cap-8::Fecha | Hito": (rows) => <HorizonTimeline rows={rows} />,
+  },
+  figures: {},
+  paragraphGroups: [],
+  afterBlock: [],
+  afterSection: {},
+  // Las formulas de MOIC y TIR van como codigo: es lo que son.
+  codeAs: {},
+  glossaryChapter: "cap-9",
+};
+
+/** Iconos de los capitulos del Memorandum. */
+export const MEMO_ICONS: Record<number, LucideIcon> = {
+  1: Target,
+  2: Layers,
+  3: TrendingUp,
+  4: BarChart3,
+  5: PieChart,
+  6: ShieldCheck,
+  7: Users,
+  8: CalendarRange,
+  9: BookOpen,
+};

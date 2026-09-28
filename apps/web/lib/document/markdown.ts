@@ -28,7 +28,7 @@ export type DocSection = {
   blocks: Block[];
 };
 
-/** Un `# Bloque N` del documento. */
+/** Un capitulo: un titulo de primer nivel despues de la portada. */
 export type DocChapter = {
   key: string;
   number: number | null;
@@ -203,15 +203,34 @@ function sectionKey(title: string): string {
   return slugify(title);
 }
 
+/**
+ * "Bloque 3 — Modelo de Negocio" -> 3; "4. Economia del Negocio" -> 4.
+ *
+ * Los dos documentos numeran sus capitulos distinto. En vez de tener un parser
+ * por documento, se reconocen las dos formas: es la misma idea escrita de dos
+ * maneras.
+ */
+function chapterNumber(title: string): number | null {
+  const match = /^(?:Bloque\s+)?(\d+)(?:\s*[.—-]|\s)/.exec(title.trim());
+  return match ? Number(match[1]) : null;
+}
+
+/** Quita el numero del titulo: lo pinta el encabezado por su cuenta. */
+export function chapterLabel(title: string): string {
+  return title.replace(/^(?:Bloque\s+)?\d+\s*[.—-]?\s*/, "").trim();
+}
+
 export function parseDocument(markdown: string): ParsedDoc {
   const seenIds = new Set<string>();
   const lines = markdown.replace(/\r\n/g, "\n").split("\n");
 
-  // El documento arranca con la portada y despues encadena `# Bloque N`.
-  const chapterStarts: number[] = [];
+  // La portada es el primer `#`; de ahi en adelante, cada `#` abre capitulo.
+  // Antes se buscaba "# Bloque", que solo existe en el Documento Maestro.
+  const headingOnes: number[] = [];
   lines.forEach((line, index) => {
-    if (/^#\s+Bloque\s/.test(line.trim())) chapterStarts.push(index);
+    if (/^#\s+\S/.test(line.trim()) && !/^##/.test(line.trim())) headingOnes.push(index);
   });
+  const chapterStarts = headingOnes.slice(1);
 
   const coverEnd = chapterStarts[0] ?? lines.length;
   const coverBlocks = parseBlocks(lines.slice(0, coverEnd), seenIds);
@@ -228,9 +247,9 @@ export function parseDocument(markdown: string): ParsedDoc {
     const blocks = parseBlocks(lines.slice(start, end), seenIds);
 
     const head = blocks[0];
-    const rawTitle = head?.kind === "heading" ? head.text : `Bloque ${index + 1}`;
-    const id = head?.kind === "heading" ? head.id : `bloque-${index + 1}`;
-    const numberMatch = /^Bloque\s+(\d+)/.exec(rawTitle);
+    const rawTitle = head?.kind === "heading" ? head.text : `Sección ${index + 1}`;
+    const id = head?.kind === "heading" ? head.id : `seccion-${index + 1}`;
+    const number = chapterNumber(rawTitle);
 
     const body = blocks.slice(1);
     const lead: Block[] = [];
@@ -253,8 +272,8 @@ export function parseDocument(markdown: string): ParsedDoc {
     }
 
     return {
-      key: `bloque-${numberMatch ? numberMatch[1] : index + 1}`,
-      number: numberMatch ? Number(numberMatch[1]) : null,
+      key: `cap-${number ?? index + 1}`,
+      number: number ?? index + 1,
       title: rawTitle,
       id,
       lead,
