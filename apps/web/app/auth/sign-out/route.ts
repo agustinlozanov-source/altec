@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
+import { publicOrigin } from "@/lib/origin";
 
 /**
  * Cerrar sesion es POST y no GET a proposito: un GET lo dispara cualquier
@@ -9,5 +10,5 @@ import { supabaseServer } from "@/lib/supabase/server";
 export async function POST(request: NextRequest) {
   const supabase = await supabaseServer();
   await supabase.auth.signOut();
-  return NextResponse.redirect(new URL("/acceso", request.nextUrl.origin), { status: 303 });
+  return NextResponse.redirect(new URL("/acceso", publicOrigin(request)), { status: 303 });
 }

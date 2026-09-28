@@ -33,9 +33,11 @@ export async function sendLink(
 
   const next = String(formData.get("next") ?? "/document");
   const header = await headers();
+  // Mismo criterio que el callback: detras del proxy de Netlify, `host` puede
+  // ser el dominio del deploy de rama.
   const origin =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    `${header.get("x-forwarded-proto") ?? "https"}://${header.get("host")}`;
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
+    `${header.get("x-forwarded-proto") ?? "https"}://${header.get("x-forwarded-host") ?? header.get("host")}`;
 
   const supabase = await supabaseServer();
   const { error } = await supabase.auth.signInWithOtp({

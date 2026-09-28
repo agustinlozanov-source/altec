@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
+import { publicOrigin } from "@/lib/origin";
 
 /**
  * El aterrizaje del enlace del correo.
@@ -10,7 +11,8 @@ import { supabaseServer } from "@/lib/supabase/server";
  * rompa el acceso.
  */
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = request.nextUrl;
+  const { searchParams } = request.nextUrl;
+  const origin = publicOrigin(request);
   const code = searchParams.get("code");
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type");

@@ -79,13 +79,26 @@ switch (command) {
     const { data, error } = await supabase.auth.admin.generateLink({
       type: "magiclink",
       email: who,
-      options: { redirectTo: `${site}/auth/callback?next=${encodeURIComponent(next)}` },
     });
 
     if (error) die(`No se pudo generar el enlace: ${error.message}`);
 
+    // Se apunta a NUESTRO callback con el token, no al `action_link` que
+    // devuelve Supabase.
+    //
+    // Ese `action_link` pasa por /auth/v1/verify, que usa el flujo implicito y
+    // devuelve la sesion en el fragmento de la URL — despues del `#`. El
+    // navegador no manda el fragmento al servidor, asi que un callback que
+    // corre en el servidor no puede verla, y el enlace parece caducado aunque
+    // la sesion se haya creado. Con el token en la query, `verifyOtp` la monta
+    // del lado del servidor y las cookies quedan puestas.
+    const url = new URL(`${site}/auth/callback`);
+    url.searchParams.set("token_hash", data.properties.hashed_token);
+    url.searchParams.set("type", "magiclink");
+    url.searchParams.set("next", next);
+
     console.log(`Enlace para ${who} — caduca en una hora y solo sirve una vez:\n`);
-    console.log(data.properties.action_link);
+    console.log(url.toString());
     console.log(`\nTrátalo como una contraseña: quien lo tenga, entra.`);
     break;
   }
