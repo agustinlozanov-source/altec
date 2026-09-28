@@ -155,9 +155,12 @@ export function DocShell({
             <AltecLogo className="h-6 w-auto" />
           </Link>
 
+          {/* El nombre del documento sale del documento. Estaba escrito a
+              mano, y al llegar el segundo la cabecera decia "Memorándum de
+              Inversión — Documento Oficial del Holding". */}
           <p className="text-ink truncate text-sm font-semibold lg:ml-4">
-            <span className="hidden md:inline">{title} — </span>
-            Documento Oficial del Holding
+            <span className="text-muted hidden md:inline">ALTEC Group — </span>
+            {title}
           </p>
 
           <span className="border-attention/50 text-attention ml-auto shrink-0 rounded-full border px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.1em] uppercase">
