@@ -123,6 +123,14 @@ El esquema está en `packages/db/migrations/`. Se aplica pegándolo en el editor
 
 **El correo por defecto de Supabase no sirve para esto**: manda dos por hora y en proyectos nuevos solo a direcciones de la organización. Para que a un inversionista le llegue su enlace hace falta SMTP propio — Resend, que ya está en el stack por el formulario de contacto. Mientras tanto, `access link` genera el enlace sin pasar por el correo.
 
+### Netlify y las redirecciones
+
+Dos cosas que solo se ven en producción y cuestan encontrar:
+
+**`request.nextUrl.origin` miente.** Dentro de una función de Netlify devuelve el dominio del deploy de rama (`main--sitio.netlify.app`), no aquel por el que entró la visita. Redirigir ahí después de iniciar sesión tira la sesión: las cookies se pusieron para un host y el redirect lleva a otro. Para construir una URL absoluta se usa `lib/origin.ts`, que prefiere `NEXT_PUBLIC_SITE_URL`.
+
+**Los redirects arrastran la query original.** Un `NextResponse.redirect` a `/document` acaba en `/document?token_hash=…`. En local no pasa. Por eso el lector del documento limpia la barra de direcciones al entrar: el token es de un solo uso, pero ese documento se comparte en pantalla.
+
 ## Convenciones
 
 - **Contenido** en español de México. **Código** (nombres de variables, funciones, archivos, commits) en inglés.

@@ -73,6 +73,20 @@ switch (command) {
     const next = args[1] ?? "/document";
     const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
+    // Sin este filtro, `generateLink` da de alta la cuenta si no existe, y un
+    // dedazo acaba creando un usuario que nadie invito. No es una fuga —sin
+    // fila en `viewers`, `has_scope` dice que no y RLS no devuelve nada— pero
+    // esa cuenta ya puede pedir enlaces desde el formulario, y ensucia la
+    // lista de quien tiene cuenta con gente que no deberia tenerla.
+    const { data: viewer } = await supabase
+      .from("viewers")
+      .select("email, scopes, revoked_at")
+      .eq("email", who)
+      .maybeSingle();
+
+    if (!viewer) die(`${who} no está en la lista. Dale de alta primero con: access grant ${who} document`);
+    if (viewer.revoked_at) die(`${who} tiene el acceso revocado. Vuelve a darle de alta con: access grant`);
+
     // Genera el enlace sin mandar correo. Sirve para dos cosas: probar sin
     // depender del proveedor de correo, y dar acceso a alguien en una reunion
     // sin esperar a que le llegue nada.
