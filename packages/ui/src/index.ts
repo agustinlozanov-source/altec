@@ -1,4 +1,4 @@
-export { altec, voState } from "./tokens";
+export { altec, voState, chart, chartSeries } from "./tokens";
 export type { AltecColor, VoStateColor } from "./tokens";
 
 export { cn } from "./cn";

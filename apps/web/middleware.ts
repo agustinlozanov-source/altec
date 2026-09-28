@@ -46,6 +46,15 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // El Documento Maestro no vive bajo un idioma: es el texto aprobado por el
+  // consejo, en español, y no se traduce. Se queda fuera del redirect y se le
+  // marca el idioma a mano para que el `lang` del documento sea correcto.
+  if (pathname === "/document" || pathname.startsWith("/document/")) {
+    const response = NextResponse.next();
+    response.headers.set("x-altec-locale", "es");
+    return response;
+  }
+
   const segments = pathname.split("/").filter(Boolean);
   const first = segments[0];
 

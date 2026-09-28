@@ -11,12 +11,12 @@ const css = readFileSync(join(here, "../src/styles/theme.css"), "utf8");
 const ts = readFileSync(join(here, "../src/tokens.ts"), "utf8");
 
 const cssVars = new Map();
-for (const [, name, value] of css.matchAll(/--color-([a-z-]+):\s*(#[0-9a-fA-F]{6});/g)) {
+for (const [, name, value] of css.matchAll(/--color-([a-z0-9-]+):\s*(#[0-9a-fA-F]{6});/g)) {
   cssVars.set(name, value.toLowerCase());
 }
 
 const tsVars = new Map();
-for (const [, key, value] of ts.matchAll(/^\s{2}([a-zA-Z]+):\s*"(#[0-9a-fA-F]{6})",/gm)) {
+for (const [, key, value] of ts.matchAll(/^\s{2}([a-zA-Z0-9]+):\s*"(#[0-9a-fA-F]{6})",/gm)) {
   tsVars.set(key, value.toLowerCase());
 }
 
@@ -32,6 +32,14 @@ const expected = [
   ["collab", "vo-collab"],
   ["awaiting", "vo-awaiting"],
   ["idle", "vo-idle"],
+  ["series1", "chart-1"],
+  ["series2", "chart-2"],
+  ["series3", "chart-3"],
+  ["series4", "chart-4"],
+  ["series5", "chart-5"],
+  ["series6", "chart-6"],
+  ["series7", "chart-7"],
+  ["series8", "chart-8"],
 ];
 
 const problems = [];

@@ -6,3 +6,88 @@
 /* Las clases de @altec/ui viven fuera de esta app, hay que decirle a
    Tailwind que tambien escanee ese paquete. */
 @source "../../../packages/ui/src";
+
+/* ---------------------------------------------------------------------------
+ * Documento Maestro
+ *
+ * Reglas que solo aplican al lector del documento: barras de desplazamiento
+ * discretas dentro de tablas e indice, y una version imprimible.
+ * ------------------------------------------------------------------------ */
+
+.doc-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
+}
+
+.doc-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.doc-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.doc-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-line-strong);
+  border-radius: 999px;
+}
+
+@media print {
+  /* Al imprimir se va el indice, la cabecera y los botones: queda el texto. */
+  .doc-hide-print,
+  aside.doc-hide-print {
+    display: none !important;
+  }
+
+  /* Papel: siempre claro, a todo el ancho y sin fondos que gasten tinta. */
+  :root {
+    --color-surface: #ffffff;
+    --color-ink: #000000;
+    --color-read: #1a1a1a;
+    --color-muted: #444444;
+    --color-line: rgb(0 0 0 / 0.25);
+    --color-line-strong: rgb(0 0 0 / 0.4);
+    --color-card: #ffffff;
+    --color-accent-ink: #3d5423;
+  }
+
+  .surface-base,
+  .surface-alt,
+  .surface-invert {
+    --color-surface: #ffffff;
+    --color-ink: #000000;
+    --color-read: #1a1a1a;
+    --color-muted: #444444;
+    --color-line: rgb(0 0 0 / 0.25);
+    --color-line-strong: rgb(0 0 0 / 0.4);
+    --color-card: #ffffff;
+    --color-accent-ink: #3d5423;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  main {
+    padding-top: 0 !important;
+  }
+
+  /* Un bloque por página, y que los encabezados no queden colgando al pie. */
+  section[id^="bloque"] {
+    break-before: page;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    break-after: avoid;
+  }
+
+  table,
+  figure,
+  pre {
+    break-inside: avoid;
+  }
+}

@@ -26,6 +26,18 @@
   --color-vo-awaiting: #f5a524;
   --color-vo-idle: #6b6b6b;
 
+  /* --- Escala de series para graficas (src/tokens.ts) ---
+     Rellenos, no texto. Arranca en el verde de marca y se abre lo justo para
+     que ocho rebanadas se distingan sobre claro y sobre oscuro. */
+  --color-chart-1: #c1ff72;
+  --color-chart-2: #7fa8ff;
+  --color-chart-3: #c39bff;
+  --color-chart-4: #f5a524;
+  --color-chart-5: #5fd3a6;
+  --color-chart-6: #ff7a8a;
+  --color-chart-7: #8fe04a;
+  --color-chart-8: #9aa0a6;
+
   /* --- Capa semantica ---
      Estos NO son colores: son papeles. Aqui llevan su valor de modo oscuro,
      que es el predeterminado; cada contexto de superficie los redefine.
@@ -33,15 +45,27 @@
      OJO: tienen que llevar el color literal, no `var(--otra-cosa)`. Una
      variable que referencia a otra se resuelve en el elemento donde se
      DECLARA, y el valor ya resuelto es el que heredan los hijos: la
-     indireccion rompe los contextos. */
+     indireccion rompe los contextos.
+
+     `--color-read` es aparte de `--color-ink` a proposito: para un documento
+     largo, el negro puro sobre blanco y el blanco puro sobre negro cansan. Es
+     el gris de texto corrido — 14.2:1 en claro, 14.0:1 en oscuro, por encima
+     incluso de AAA. `--color-ink` se reserva para titulos y cifras. */
   --color-surface: #000000;
   --color-ink: #fff0e4;
   --color-muted: rgb(255 240 228 / 0.66);
+  --color-read: #dcdcdc;
   --color-line: rgb(255 240 228 / 0.12);
   --color-line-strong: rgb(255 240 228 / 0.28);
   --color-card: #1a1a1a;
   --color-accent-ink: #c1ff72;
   --color-on-accent: #000000;
+  /* El ambar de "algo requiere tu atencion": errores de formulario y el estado
+     de espera en ALTEC VO. Tiene que estar declarado AQUI, no solo en los
+     contextos de abajo: Tailwind solo genera `text-attention` y compañia para
+     las variables que ve dentro de `@theme`. Declarado solo en los contextos,
+     la clase no existe y el color no se aplica en ningun sitio. */
+  --color-attention: #f5a524;
 
   /* --- Tipografia (docs/WEB.md §2.2) --- */
   --font-display: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
@@ -102,6 +126,7 @@
   --color-surface: #0e0f11;
   --color-ink: #ffffff;
   --color-muted: #cccccc;
+  --color-read: #dcdcdc;
   --color-line: rgb(255 255 255 / 0.1);
   --color-line-strong: rgb(255 255 255 / 0.3);
   --color-card: #1e1f22;
@@ -117,6 +142,7 @@
   --color-surface: #18191b;
   --color-ink: #ffffff;
   --color-muted: #cccccc;
+  --color-read: #dcdcdc;
   --color-line: rgb(255 255 255 / 0.1);
   --color-line-strong: rgb(255 255 255 / 0.3);
   --color-card: #26282c;
@@ -133,6 +159,7 @@
   --color-surface: #000000;
   --color-ink: #ffffff;
   --color-muted: #cccccc;
+  --color-read: #dcdcdc;
   --color-line: rgb(255 255 255 / 0.12);
   --color-line-strong: rgb(255 255 255 / 0.3);
   --color-card: #1a1a1a;
@@ -149,6 +176,7 @@
   --color-surface: #ffffff;
   --color-ink: #04000b;
   --color-muted: #666666;
+  --color-read: #2b2a30;
   --color-line: rgb(4 0 11 / 0.1);
   --color-line-strong: rgb(4 0 11 / 0.22);
   --color-card: #f2f3ef;
@@ -164,6 +192,7 @@
   --color-surface: #f2f3ef;
   --color-ink: #04000b;
   --color-muted: #666666;
+  --color-read: #2b2a30;
   --color-line: rgb(4 0 11 / 0.1);
   --color-line-strong: rgb(4 0 11 / 0.22);
   --color-card: #ffffff;

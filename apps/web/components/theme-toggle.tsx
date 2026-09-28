@@ -15,11 +15,14 @@ import { cn } from "@altec/ui";
 
 export const THEME_KEY = "altec-theme";
 
-type Mode = "dark" | "light";
+export type Mode = "dark" | "light";
 
 /** Aplica y recuerda el modo. Va fuera del componente: el compilador de React
- *  no permite escribir sobre valores capturados en el render. */
-function apply(mode: Mode) {
+ *  no permite escribir sobre valores capturados en el render.
+ *
+ *  Se exporta porque el Documento Maestro lleva su propio interruptor en la
+ *  cabecera: la presentación cambia, el estado es el mismo. */
+export function setThemeMode(mode: Mode) {
   document.documentElement.dataset.theme = mode;
   try {
     localStorage.setItem(THEME_KEY, mode);
@@ -28,7 +31,7 @@ function apply(mode: Mode) {
   }
 }
 
-function subscribe(onChange: () => void) {
+export function subscribeToTheme(onChange: () => void) {
   const observer = new MutationObserver(onChange);
   observer.observe(document.documentElement, {
     attributes: true,
@@ -37,15 +40,15 @@ function subscribe(onChange: () => void) {
   return () => observer.disconnect();
 }
 
-const readMode = (): Mode =>
+export const readThemeMode = (): Mode =>
   document.documentElement.dataset.theme === "light" ? "light" : "dark";
 
-const serverMode = (): Mode => "dark";
+export const serverThemeMode = (): Mode => "dark";
 
 export function ThemeToggle() {
-  const mode = useSyncExternalStore(subscribe, readMode, serverMode);
+  const mode = useSyncExternalStore(subscribeToTheme, readThemeMode, serverThemeMode);
 
-  const set = (next: Mode) => apply(next);
+  const set = (next: Mode) => setThemeMode(next);
 
   return (
     <div

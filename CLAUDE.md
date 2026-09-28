@@ -8,6 +8,7 @@ Este repositorio contiene **todo** lo digital de ALTEC Group: el sitio corporati
 2. `docs/WEB.md`: blueprint del sitio `altec.mx` y del portal `docs.altec.mx`. Contenido, identidad visual y fases.
 3. `docs/ALTEC-VO.md`: especificación de ALTEC VO (`app.altec.mx`).
 4. `docs/referencias/`: prototipos HTML de la oficina virtual (`oficina-2d.html`, `oficina-3d.html`). **Son referencia visual y de comportamiento, no código a copiar.** Se reimplementan en React.
+5. `apps/web/content/documento-maestro.md`: el Documento Oficial del Holding, aprobado por el CEO. Es confidencial y es contenido, no documentación técnica: por eso vive con la app que lo publica y no en `docs/`.
 
 Si dos documentos se contradicen, gana el de mayor prioridad. Si la contradicción afecta contenido o identidad visual, pregunta antes de decidir.
 
@@ -81,6 +82,18 @@ El roster (`packages/agents`) marca cada agente con `status`. **`real`** es un a
 **La separación que no se debe romper.** La personalidad de un agente es pública y vive en `packages/agents`, porque la consume la escena 3D en el navegador. El expediente de ALTEC —cap table, punto de equilibrio, monto de la ronda— es confidencial y vive en `apps/web/lib/camila/prompt.ts`, marcado con `import "server-only"`. El contexto final se arma juntando los dos **en el servidor**. Si alguien importa el expediente desde un componente de cliente, el build falla; está verificado.
 
 Dar de alta un agente real nuevo es una sola cosa: escribir su definición en el roster con `status: "real"`. No hay que duplicar el expediente ni tocar las rutas.
+
+## Documento Maestro (`/document`)
+
+El Documento Oficial del Holding se publica en `/document`, fuera del segmento de idioma: es el texto aprobado por el consejo, en español, y no se traduce.
+
+**La página no transcribe el documento: lo lee.** `lib/document/markdown.ts` convierte `content/documento-maestro.md` en bloques y `components/document` los pinta. Corregir una cifra en el MD cambia la web sola. La regla del brief —no cambiar ningún texto, número ni dato— queda garantizada por construcción, no por cuidado al copiar.
+
+**Las visualizaciones se enganchan por el encabezado de la tabla**, con la clave `seccion::encabezados` (`components/document/enhancements.ts`). No por posición: si alguien reordena el documento, una gráfica no puede acabar colgada de la tabla equivocada — como mucho deja de aparecer, que es el fallo del lado seguro. Cuando una tabla se sustituye por una visualización, la visualización se construye con las celdas de esa misma tabla.
+
+**Está detrás de código de acceso** (`DOC_ACCESS_CODE`, `DOC_COOKIE_SECRET`), lleva `noindex` y no aparece en el sitemap. Sin cookie válida el servidor no manda una sola cifra del documento; está verificado. No se añade a `robots.txt`: un `Disallow` anunciaría la ruta a cualquiera que lea el archivo.
+
+**Chart.js recibe los colores desde `@altec/ui/tokens`, no desde el CSS.** Tailwind 4 descarta de la hoja las variables de `@theme` que ninguna utilidad usa, y ninguna clase pinta con `--color-chart-N`: leerlas del CSS devuelve cadena vacía y el canvas dibuja en negro. Los colores que sí cambian con el modo (`--color-ink`, `--color-line`…) sí se leen del CSS, porque las usan utilidades y siempre acaban en la hoja.
 
 ## Convenciones
 
