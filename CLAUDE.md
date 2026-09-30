@@ -121,7 +121,9 @@ Van con `run` porque `doctor` y `access` chocan con subcomandos propios de pnpm.
 
 El esquema está en `packages/db/migrations/`. Se aplica pegándolo en el editor SQL de Supabase: crear tablas y políticas no se puede con las llaves del proyecto, hace falta el editor o la cadena de conexión de Postgres.
 
-**El correo por defecto de Supabase no sirve para esto**: manda dos por hora y en proyectos nuevos solo a direcciones de la organización. Para que a un inversionista le llegue su enlace hace falta SMTP propio — Resend, que ya está en el stack por el formulario de contacto. Mientras tanto, `access link` genera el enlace sin pasar por el correo.
+**El correo sale por Resend** (SMTP propio en Supabase Auth, remitente `acceso@altec.group`). El de Supabase por defecto no servía: dos por hora y solo a direcciones de la organización. Con Resend, a quien esté dado de alta se le manda la dirección y él pide su propio enlace — `access link` queda como atajo para dar acceso en mitad de una reunión, no como la vía normal.
+
+**El Memorándum pasa por el convenio de confidencialidad.** Antes de verlo, quien entra lee el texto, escribe su nombre y acepta; queda registrado con correo, empresa, teléfono, IP, hora y la versión del texto — lo que promete su propia cláusula 12(f). La versión es el hash del convenio: si cambia una coma, cambia la versión y se vuelve a pedir la firma a todo el mundo, porque un "acepto" contra un texto que ya no existe no vale nada. Se consulta con `access firmas`.
 
 ### Netlify y las redirecciones
 
