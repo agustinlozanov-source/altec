@@ -97,7 +97,7 @@ El Documento Oficial del Holding se publica en `/document`, fuera del segmento d
 
 ## Acceso
 
-Una sola puerta para el Documento Oficial del Holding (`/document`) y la consola de Camila (`/camila`). Supabase Auth con **enlace mágico**: sin contraseñas que reponer, que es lo que quieres para alguien que entra tres veces al año.
+El sitio vive en **altec.group**. Una sola puerta para el Memorándum de Inversión (`/memorandum`), el Documento Oficial del Holding (`/document`) y la consola de Camila (`/camila`). Supabase Auth con **enlace mágico**: sin contraseñas que reponer, que es lo que quieres para alguien que entra tres veces al año.
 
 **Es lista de invitados, no registro abierto.** `signInWithOtp` va con `shouldCreateUser: false`, así que quien no exista no recibe enlace aunque escriba su correo. Las altas las hace `pnpm --filter @altec/db access grant`, que crea la cuenta y la fila a la vez. El formulario responde lo mismo escriba quien escriba: decir "ese correo no está en la lista" lo convertiría en una forma de averiguar quiénes son los inversionistas de ALTEC.
 
