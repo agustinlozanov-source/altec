@@ -8,6 +8,7 @@ import {
   HandCoins,
   Handshake,
   Layers,
+  LineChart,
   PieChart,
   Rocket,
   Scan,
@@ -405,14 +406,13 @@ export const memorandumRegistry: DocRegistry = {
   charts: MEMO_TABLE_CHARTS,
   visuals: {
     "cap-1::Concepto | Valor": (rows) => <StatGrid stats={statsFrom(rows)} />,
-    "4.5::Concepto | Valor": (rows) => <StatGrid stats={statsFrom(rows)} />,
-    "6.2::Derecho | Descripción": (rows) => (
+    "7.2::Derecho | Descripción": (rows) => (
       <RightsCards
         rows={rows}
         icons={[Users, Handshake, Share2, Scan, ShieldCheck, ClipboardList, HandCoins]}
       />
     ),
-    "cap-8::Fecha | Hito": (rows) => <HorizonTimeline rows={rows} />,
+    "cap-9::Fecha | Hito": (rows) => <HorizonTimeline rows={rows} />,
   },
   figures: {},
   paragraphGroups: [],
@@ -420,7 +420,7 @@ export const memorandumRegistry: DocRegistry = {
   afterSection: {},
   // Las formulas de MOIC y TIR van como codigo: es lo que son.
   codeAs: {},
-  glossaryChapter: "cap-9",
+  glossaryChapter: "cap-11",
 };
 
 /** Iconos de los capitulos del Memorandum. */
@@ -429,9 +429,11 @@ export const MEMO_ICONS: Record<number, LucideIcon> = {
   2: Layers,
   3: TrendingUp,
   4: BarChart3,
-  5: PieChart,
-  6: ShieldCheck,
-  7: Users,
-  8: CalendarRange,
-  9: BookOpen,
+  5: LineChart,
+  6: PieChart,
+  7: ShieldCheck,
+  8: Users,
+  9: CalendarRange,
+  10: Scan,
+  11: BookOpen,
 };

@@ -177,7 +177,7 @@ export const MEMO_TABLE_CHARTS: Record<string, ChartEntry> = {
         "Fondos diversificados",
         "ALTEC (proyectada)",
       ],
-      values: [11, 10, 6, 12.5, 184.5],
+      values: [11, 10, 6, 12.5, 131.4],
       unit: "percent",
       colors: [7, 7, 7, 7, 0],
       highlight: [4],
@@ -187,36 +187,54 @@ export const MEMO_TABLE_CHARTS: Record<string, ChartEntry> = {
     height: 260,
   },
 
-  "3.3::Escenario | Revenue Año 2 | Múltiplo | Valuación | Valor del 25% | MOIC | TIR": {
+  "4.1::Concepto | 2027 | 2028 | 2029": {
     spec: {
       type: "bar",
-      labels: ["Conservador (70%)", "Base (100%)", "Optimista (130%)"],
-      values: [4.7, 8.1, 13.6],
-      unit: "count",
-      colors: [7, 0, 1],
+      labels: ["2027", "2028", "2029"],
+      values: [19064250, 42254010, 74532946],
+      unit: "mxn",
+      colors: [7, 1, 0],
     },
-    caption: "MOIC por escenario — cuántas veces se multiplica el capital a 24 meses.",
+    caption: "Ingresos por año. El salto de 2027 a 2028 es de 121.6%; de 2028 a 2029, de 76.4%.",
     height: 260,
   },
 
-  "4.2::Línea de ingreso | Métrica de cálculo | Revenue Año 1": {
+  "4.2::Línea | 2027 | 2028 | 2029": {
     spec: {
       type: "doughnut",
       labels: [
-        "Proyectos de consultoría",
-        "Eventos educativos",
+        "Masterclasses ALTEC",
         "Diagnósticos DX21",
-        "ALTEC VO (MRR)",
+        "Consultoría",
+        "Oficina virtual — mensualidades",
+        "Oficina virtual — implementación",
+        "Talleres Flow Hub",
+        "CRM — implementación",
+        "CRM — mensualidades",
+        "Avalluo",
       ],
-      values: [1000000, 585000, 250000, 144000],
-      unit: "usd",
-      colors: [0, 1, 2, 3],
+      values: [4680000, 3276000, 2570400, 2635200, 626400, 900000, 1530000, 1361250, 1485000],
+      unit: "mxn",
     },
-    caption: "Revenue Año 1 de ALTEC consultora, por línea de ingreso.",
-    height: 300,
+    caption:
+      "Ingresos de 2027 por línea. El recurrente —mensualidades de oficina virtual y CRM— es el 21.0%.",
+    height: 320,
   },
 
-  "cap-5::Categoría | % | Monto (MXN) | Descripción": {
+  "4.5::Concepto | 2027 | 2028 | 2029": {
+    spec: {
+      type: "bar",
+      labels: ["2027", "2028", "2029"],
+      values: [6584025, 18147280, 37327940],
+      unit: "mxn",
+      colors: [7, 1, 0],
+    },
+    caption:
+      "EBITDA por año. El margen pasa de 34.5% a 50.1% conforme el ingreso recurrente se acumula sobre una estructura fija que crece por escalones.",
+    height: 260,
+  },
+
+  "cap-6::Categoría | % | Monto (MXN) | Descripción": {
     spec: {
       type: "doughnut",
       labels: ["Talento", "Renta", "Marketing", "Legal"],
@@ -228,7 +246,7 @@ export const MEMO_TABLE_CHARTS: Record<string, ChartEntry> = {
     height: 300,
   },
 
-  "cap-7::Socio | Participación | Rol": {
+  "cap-8::Socio | Participación | Rol": {
     spec: {
       type: "doughnut",
       labels: [
@@ -244,6 +262,23 @@ export const MEMO_TABLE_CHARTS: Record<string, ChartEntry> = {
       colors: [0, 1, 2, 3, 4, 7],
     },
     caption: "Cap table al cierre de la ronda.",
+    height: 300,
+  },
+
+  "5.2::Mes | Ingresos | Costos variables | Nómina | Operación | Flujo del mes | Caja acumulada": {
+    spec: {
+      type: "line",
+      labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+      values: [
+        3299669, 3072284, 2847610, 3112274, 3427443, 3849082, 4658568, 5694547, 6814893, 8019604,
+        9308681, 10184025,
+      ],
+      unit: "mxn",
+      area: true,
+      goal: { value: 3600000, label: "Capital inicial" },
+    },
+    caption:
+      "Caja acumulada mes a mes. La línea punteada es el capital de entrada: el fondo de marzo — $2,847,610 — es el momento de mayor consumo, un 20.9%.",
     height: 300,
   },
 };

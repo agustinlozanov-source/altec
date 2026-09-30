@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check:docs": "node --experimental-strip-types scripts/check-document-links.mjs"
   },
   "dependencies": {
     "@altec/agents": "workspace:*",
