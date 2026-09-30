@@ -220,6 +220,18 @@ export function chapterLabel(title: string): string {
   return title.replace(/^(?:Bloque\s+)?\d+\s*[.—-]?\s*/, "").trim();
 }
 
+/**
+ * El documento entero como una tira de bloques, sin capitulos.
+ *
+ * Para textos cortos que no tienen estructura de documento largo — el convenio
+ * de confidencialidad, por ejemplo. `parseDocument` trata el primer `#` como
+ * portada y los siguientes como capitulos; un contrato de una pagina no encaja
+ * en eso y acabaria con el cuerpo vacio.
+ */
+export function parseFlat(markdown: string): Block[] {
+  return parseBlocks(markdown.replace(/\r\n/g, "\n").split("\n"), new Set<string>());
+}
+
 export function parseDocument(markdown: string): ParsedDoc {
   const seenIds = new Set<string>();
   const lines = markdown.replace(/\r\n/g, "\n").split("\n");

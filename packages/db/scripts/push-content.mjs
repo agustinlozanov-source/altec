@@ -31,6 +31,12 @@ const PIECES = [
     file: "apps/web/content/memorandum.md",
   },
   {
+    slug: "convenio-confidencialidad",
+    title: "Convenio de Confidencialidad",
+    scope: "memorandum",
+    file: "apps/web/content/convenio-confidencialidad.md",
+  },
+  {
     slug: "expediente-camila",
     title: "Expediente confidencial de ALTEC",
     scope: "camila",

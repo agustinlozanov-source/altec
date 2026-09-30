@@ -5,7 +5,11 @@ import { DocumentReader } from "@/components/document/document-reader";
 import { MEMO_ICONS, memorandumRegistry } from "@/components/document/document-body";
 import { NotAuthorized, NotConfigured } from "@/components/document/gate-notices";
 import { checkScope, logAccess } from "@/lib/access";
+import { hasAccepted, loadAgreement } from "@/lib/acceptance";
+import { parseFlat } from "@/lib/document/markdown";
 import { loadParsed } from "@/lib/document/source";
+import { ConfidentialityGate } from "@/components/document/confidentiality-gate";
+import { acceptAgreement } from "./actions";
 
 export const metadata: Metadata = {
   title: "Memorándum de Inversión",
@@ -34,6 +38,18 @@ export default async function MemorandumPage() {
   if (access.state === "denied") {
     await logAccess("memorandum", "denied", access.email);
     return <NotAuthorized email={access.email} />;
+  }
+
+  // El convenio va antes del documento: quien no lo ha firmado no pasa de aqui.
+  const agreement = await loadAgreement();
+  if (agreement && !(await hasAccepted(access.email, "memorandum", agreement.version))) {
+    return (
+      <ConfidentialityGate
+        blocks={parseFlat(agreement.text)}
+        email={access.email}
+        action={acceptAgreement}
+      />
+    );
   }
 
   const doc = await loadParsed(CONTENT.memorandum);

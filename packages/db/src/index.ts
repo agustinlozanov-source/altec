@@ -42,6 +42,26 @@ export type DocumentRow = {
 
 export type AccessAction = "open" | "denied";
 
+/**
+ * La firma del convenio de confidencialidad.
+ *
+ * `version` es el hash del texto aceptado. Un "acepto" solo vale contra el
+ * texto que esa persona tuvo delante: si el convenio cambia, la aceptacion
+ * anterior deja de contar y se vuelve a pedir.
+ */
+export type AcceptanceRow = {
+  id: number;
+  email: string;
+  scope: Scope;
+  version: string;
+  signed_name: string;
+  company: string | null;
+  phone: string | null;
+  ip: string | null;
+  user_agent: string | null;
+  accepted_at: string;
+};
+
 export type AccessLogRow = {
   id: number;
   email: string;
@@ -56,6 +76,8 @@ export const CONTENT = {
   masterDocument: "documento-maestro",
   camilaDossier: "expediente-camila",
   memorandum: "memorandum",
+  /** El convenio de confidencialidad que se firma antes de leer. */
+  confidentiality: "convenio-confidencialidad",
 } as const;
 
 /**
@@ -86,6 +108,12 @@ export type Database = {
         Row: AccessLogRow;
         Insert: Omit<AccessLogRow, "id" | "at"> & { at?: string };
         Update: Partial<AccessLogRow>;
+        Relationships: [];
+      };
+      acceptances: {
+        Row: AcceptanceRow;
+        Insert: Omit<AcceptanceRow, "id" | "accepted_at"> & { accepted_at?: string };
+        Update: Partial<AcceptanceRow>;
         Relationships: [];
       };
     };

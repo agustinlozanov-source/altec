@@ -154,6 +154,27 @@ switch (command) {
     break;
   }
 
+  case "firmas": {
+    const { data, error } = await supabase
+      .from("acceptances")
+      .select("accepted_at, email, signed_name, company, ip, scope, version")
+      .order("accepted_at", { ascending: false })
+      .limit(50);
+
+    if (error) die(`No se pudo leer las firmas: ${error.message}`);
+    if (!data.length) {
+      console.log("Todavía nadie ha firmado el convenio.");
+      break;
+    }
+
+    for (const row of data) {
+      const when = new Date(row.accepted_at).toLocaleString("es-MX");
+      console.log(`· ${when.padEnd(22)} ${row.email.padEnd(32)} "${row.signed_name}"`);
+      console.log(`  ${" ".padEnd(22)} ${(row.company ?? "—").padEnd(32)} ${row.ip ?? "sin IP"}  v${row.version}`);
+    }
+    break;
+  }
+
   case "log": {
     const limit = Number(args[0] ?? 30);
     const { data, error } = await supabase
@@ -186,6 +207,7 @@ switch (command) {
         "  access revoke <correo>",
         "  access list",
         "  access log [n]",
+        "  access firmas                     quien acepto el convenio y cuando",
         "",
         `Ámbitos: ${SCOPES.join(", ")}`,
       ].join("\n"),
