@@ -2,6 +2,11 @@ import type { ReactNode } from "react";
 import {
   BarChart3,
   BookOpen,
+  GitMerge,
+  KeyRound,
+  ListOrdered,
+  Server,
+  Workflow,
   CalendarRange,
   ClipboardList,
   GraduationCap,
@@ -421,6 +426,37 @@ export const memorandumRegistry: DocRegistry = {
   // Las formulas de MOIC y TIR van como codigo: es lo que son.
   codeAs: {},
   glossaryChapter: "cap-11",
+};
+
+/**
+ * Arquitectura de ALTEC VO.
+ *
+ * Sin visualizaciones propias: sus tablas son comparativas y decisiones, no
+ * cifras. Una grafica ahi no añadiria nada — diria lo mismo con menos
+ * precision.
+ */
+export const architectureRegistry: DocRegistry = {
+  charts: {},
+  visuals: {},
+  figures: {},
+  paragraphGroups: [],
+  afterBlock: [],
+  afterSection: {},
+  codeAs: {},
+};
+
+/** Iconos de los capitulos de Arquitectura. */
+export const ARCH_ICONS: Record<number, LucideIcon> = {
+  1: GitMerge,
+  2: Server,
+  3: Workflow,
+  4: Users,
+  5: KeyRound,
+  6: ClipboardList,
+  7: Layers,
+  8: ShieldCheck,
+  9: PieChart,
+  10: ListOrdered,
 };
 
 /** Iconos de los capitulos del Memorandum. */

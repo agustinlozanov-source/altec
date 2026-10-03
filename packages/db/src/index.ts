@@ -78,6 +78,8 @@ export const CONTENT = {
   memorandum: "memorandum",
   /** El convenio de confidencialidad que se firma antes de leer. */
   confidentiality: "convenio-confidencialidad",
+  /** Decisiones de arquitectura de ALTEC VO como producto. */
+  architecture: "arquitectura-vo",
 } as const;
 
 /**

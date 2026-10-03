@@ -56,7 +56,7 @@ for (const table of ["viewers", "documents", "access_log"]) {
 // --- Contenido -------------------------------------------------------------
 
 const { data: docs } = await supabase.from("documents").select("slug, scope, body");
-for (const slug of ["documento-maestro", "memorandum", "convenio-confidencialidad", "expediente-camila"]) {
+for (const slug of ["documento-maestro", "memorandum", "arquitectura-vo", "convenio-confidencialidad", "expediente-camila"]) {
   const row = docs?.find((d) => d.slug === slug);
   if (row) ok(`contenido ${slug}`, `${row.body.split("\n").length} líneas, ámbito "${row.scope}"`);
   else bad(`contenido ${slug}`, "sin subir — corre push-content");

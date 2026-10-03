@@ -31,6 +31,12 @@ const PIECES = [
     file: "apps/web/content/memorandum.md",
   },
   {
+    slug: "arquitectura-vo",
+    title: "Arquitectura de ALTEC VO",
+    scope: "document",
+    file: "apps/web/content/arquitectura-vo.md",
+  },
+  {
     slug: "convenio-confidencialidad",
     title: "Convenio de Confidencialidad",
     scope: "memorandum",

@@ -60,6 +60,7 @@ export async function middleware(request: NextRequest) {
     pathname === "/acceso" ||
     pathname === "/document" ||
     pathname === "/memorandum" ||
+    pathname === "/arquitectura" ||
     pathname.startsWith("/document/")
   ) {
     const response = NextResponse.next();
